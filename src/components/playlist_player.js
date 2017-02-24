@@ -1,9 +1,10 @@
 import React from 'react'
 import SoundCloudAudio from 'soundcloud-audio'
+import Youtube from 'react-youtube'
+import Sound from 'react-sound'
 import { classifyItem } from '../lib/classifier'
 import { soundcloud } from '../config'
 import { getYoutubeId } from '../lib/youtube'
-import Youtube from 'react-youtube'
 
 const scPlayer = new SoundCloudAudio(soundcloud.clientID)
 const youtubeOptions = {
@@ -42,7 +43,12 @@ class PlaylistPlayer extends React.Component {
         break;
       
       case 'mp3':
-        console.log('playing mp3')
+        el = (
+          <Sound
+            url={item.attachment.url}
+            playStatus="PLAYING"
+          />
+        )
         break;
     
       default:
