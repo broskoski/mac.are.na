@@ -2,6 +2,6 @@ module.exports = {
   apiBase: 'http://api.are.na/v2',
   playlistChannel: 'mac-are-na',
   soundcloud: {
-    clientID: '52827056452bfe16056d4fa66a137529'
+    clientID: '22a3b26ea50a24176821d75d9cde8c57'
   }
 }

@@ -4,6 +4,7 @@ import { apiBase } from '../config'
 import { onlySongs } from '../lib/filter'
 import Header from '../components/header'
 import PlaylistDisplay from '../components/playlist_display'
+import PlaylistPlayer from '../components/playlist_player'
 import PlaylistItem from '../components/playlist_item'
 
 class Playlist extends React.Component {
@@ -38,7 +39,7 @@ class Playlist extends React.Component {
         <PlaylistItem
           key={this.state.items[i].id} 
           item={this.state.items[i]}
-          isSelected={this.state.items[i].id == this.state.selectedID}
+          isSelected={this.state.items[i].id === this.state.selectedID}
           onPress={(id) => {
             console.log('onPress', id, 'this', this)
             this.setState({ selectedID: id }) 
@@ -48,13 +49,14 @@ class Playlist extends React.Component {
     }
 
     const selectedItem = find(this.state.items, (item) => {
-      return item.id == this.state.selectedID
+      return item.id === this.state.selectedID
     })
     
     return (
       <div className='w-100 min-vh-100 pa3 pa5-ns'>
         <Header />
         <PlaylistDisplay item={selectedItem} />
+        <PlaylistPlayer item={selectedItem} />
         {items}
       </div>
     )
