@@ -2,6 +2,14 @@
 
 [WIP Are.na channel -> playlist]
 
+## Installation
+```
+npm install
+```
+```
+npm start
+```
+
 ## Todo
 - [ ] Play / Pause buttons
 - [ ] Next / Prev buttons
