@@ -8,7 +8,7 @@ class Home extends React.Component {
     super(props)
     this.state = {
       page: 1,
-      per: 20,
+      per: 100,
       playlists: [],
     }
   }

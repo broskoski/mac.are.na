@@ -6,7 +6,7 @@ class PlaylistLink extends React.Component {
     const playlist = this.props.playlist
     return (
       <div className="bb pv3">
-        <Link className="link dim black" to={`/playlist/${playlist.slug}`}>
+        <Link className="list-item link dim black" to={`/playlist/${playlist.slug}`}>
           {playlist.user.full_name} / {playlist.title}
         </Link>
       </div>

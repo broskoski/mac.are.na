@@ -12,3 +12,17 @@ html {
 *, *:before, *:after {
   box-sizing: inherit;
 }
+
+.logo {
+  width: 1.3em;
+  margin-right: 0.4em;
+  margin-bottom: -0.12em;
+}
+
+.list-item {
+  padding: 0 0.5em;
+}
+
+a:hover, a:active, a:focus {
+  outline: medium none !important;
+}

@@ -11,7 +11,7 @@ class PlaylistItem extends React.Component {
     )
     return (
       <div style={{ cursor: "pointer" }} className={selectedClass} onClick={() => this.props.onPress(item.id)}>
-        <a className="link dim black">
+        <a className="list-item link dim black">
           {item.title}
         </a>
       </div>
