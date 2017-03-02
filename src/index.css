@@ -23,6 +23,29 @@ html {
   padding: 0 0.5em;
 }
 
+/* button press */
 a:hover, a:active, a:focus {
   outline: medium none !important;
+}
+
+/* pagination */
+.pagination {
+  margin-top: 40px;
+  text-align: center;
+}
+.pagination li.active {
+  background-color: black;
+}
+
+.pagination li:hover a {
+  color: grey;
+}
+
+
+/* top li border */
+.bb {
+  border-top: solid 1px black;
+}
+.w-100 > .bb ~ .bb {
+  border-top: none;
 }
