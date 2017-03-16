@@ -43,7 +43,6 @@ class Playlist extends React.Component {
       selectedItemIndex + 1 
     )
     const newItem = this.state.items[newItemIndex]
-    console.log('playing new item', newItem, this)
     this.setState({
       selectedItem: newItem
     })

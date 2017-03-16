@@ -48,7 +48,6 @@ class PlaylistPlayer extends React.Component {
         break;
       
       case 'mp3':
-        console.log('mp3')
         el = (
           <Sound
             url={item.attachment.url}

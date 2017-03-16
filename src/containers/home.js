@@ -88,7 +88,6 @@ class Home extends React.Component {
         />
       );
     }
-    console.log('this.state.activePage', this.state.activePage)
     return (
       <div className='w-100 min-vh-100 pa3 pa5-ns'>
         <Header />
