@@ -47,35 +47,32 @@ class Home extends React.Component {
 
     if(eventKey === 'next') {
       if(activePage !== maxPage) {
-        console.log(this.setState({activePage: activePage + 1}));
-        // return this.updatePlaylist(pageUpdate);
+        return this.updatePlaylist(activePage + 1);
       } else {
-        return this.setState({activePage: maxPage});
+        return this.updatePlaylist(maxPage);
       }
     }
     if(eventKey === 'prev') {
       if(activePage !== 1) {
-        const pageUpdate = this.setState({activePage: activePage - 1});
-        return this.updatePlaylist(pageUpdate);
+        return this.updatePlaylist(activePage - 1);
       } else {
-        return this.setState({activePage: 1});
+        return this.updatePlaylist(1);
       }
     }
-    this.setState({activePage: selectedEvent.eventKey});
+    return this.updatePlaylist(selectedEvent.eventKey);
   }
 
-  updatePlaylist(pageUpdate) {
-
-    const component = pageUpdate
-
-    console.log(pageUpdate);
-
-    fetch(`${apiBase}/channels/${playlistChannel}/contents?page=${this.state.activePage}&per=${this.state.per}`)
+  updatePlaylist(page) {
+    const component = this
+    fetch(`${apiBase}/channels/${playlistChannel}/contents?page=${page}&per=${this.state.per}`)
       .then(function(response) {
         return response.json();
       }).then(function(response) {
         const playlists = response.contents;
-        component.setState({ playlists });
+        component.setState({ 
+          playlists,
+          activePage: page
+        });
       }).catch(function(ex) {
         console.log('parsing failed', ex);
       })
@@ -97,7 +94,7 @@ class Home extends React.Component {
         {playlists}
         <Pagination
           items={Math.ceil(this.state.playlists_length / this.state.per)}
-          onSelect={this.handleSelect.bind(this)}
+          onSelect={(event, selectedEvent) => this.handleSelect(event, selectedEvent)}
           activePage={this.state.activePage}
            />
       </div>
