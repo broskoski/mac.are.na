@@ -31,6 +31,7 @@ class PlaylistPlayer extends React.Component {
       
       case 'youtube':
         const id = getYoutubeId(item.source.url)
+        console.log('id', id)
         if (id) {
           el = (
             <div style={{display: 'none'}}>
@@ -45,6 +46,7 @@ class PlaylistPlayer extends React.Component {
         break;
       
       case 'mp3':
+        console.log('mp3')
         el = (
           <Sound
             url={item.attachment.url}
