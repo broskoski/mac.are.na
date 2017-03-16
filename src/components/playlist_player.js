@@ -31,10 +31,12 @@ class PlaylistPlayer extends React.Component {
       
       case 'youtube':
         const id = getYoutubeId(item.source.url)
-        console.log('id', id)
         if (id) {
           el = (
-            <div style={{display: 'none'}}>
+            <div style={{
+              position: 'absolute',
+              right: '100%'
+            }}>
               <Youtube
                 opts={youtubeOptions}
                 videoId={id} 
