@@ -34,6 +34,7 @@ class Playlist extends React.Component {
   }
 
   playNext() {
+    console.log('playNext')
     const selectedItemIndex = findIndex(this.state.items, (item) => {
       return item.id === this.state.selectedID
     })
@@ -43,6 +44,7 @@ class Playlist extends React.Component {
       selectedItemIndex + 1 
     )
     const newItem = this.state.items[newItemIndex]
+    console.log('playing', newItem)
     this.setState({
       selectedItem: newItem
     })
@@ -56,7 +58,7 @@ class Playlist extends React.Component {
           key={this.state.items[i].id} 
           item={this.state.items[i]}
           isSelected={this.state.items[i].id === this.state.selectedID}
-          onTrackEnd={this.playNext}
+          onEnd={() => this.playNext()}
           onPress={(id) => {
             this.setState({ selectedID: id }) 
           }}
