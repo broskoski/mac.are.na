@@ -8,6 +8,8 @@ import PlaylistDisplay from '../components/playlist_display'
 import PlaylistPlayer from '../components/playlist_player'
 import PlaylistItem from '../components/playlist_item'
 
+const base = apiBase[process.env.NODE_ENV]
+
 class Playlist extends React.Component {
   constructor(props) {
     super(props)
@@ -23,7 +25,7 @@ class Playlist extends React.Component {
     
     this.setState({ playlistID })
 
-    fetch(`${apiBase}/channels/${playlistID}/contents`)
+    fetch(`${base}/channels/${playlistID}/contents`)
       .then(function(response) {
         return response.json();
       }).then(function(response) {

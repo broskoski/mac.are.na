@@ -4,6 +4,8 @@ import { apiBase, playlistChannel } from '../config'
 import PlaylistLink from '../components/playlist_link'
 import Header from '../components/header'
 
+const base = apiBase[process.env.NODE_ENV]
+
 class Home extends React.Component {
 
   constructor(props) {
@@ -18,7 +20,7 @@ class Home extends React.Component {
 
   componentWillMount() {
     const component = this
-    fetch(`${apiBase}/channels/${playlistChannel}/thumb`)
+    fetch(`${base}/channels/${playlistChannel}/thumb`)
       .then(function(response) {
         return response.json();
       }).then(function(response) {
@@ -28,7 +30,7 @@ class Home extends React.Component {
         console.log('parsing failed', ex);
       })
 
-    fetch(`${apiBase}/channels/${playlistChannel}/contents?page=${this.state.activePage}&per=${this.state.per}`)
+    fetch(`${base}/channels/${playlistChannel}/contents?page=${this.state.activePage}&per=${this.state.per}`)
       .then(function(response) {
         return response.json();
       }).then(function(response) {
@@ -64,7 +66,7 @@ class Home extends React.Component {
 
   updatePlaylist(page) {
     const component = this
-    fetch(`${apiBase}/channels/${playlistChannel}/contents?page=${page}&per=${this.state.per}`)
+    fetch(`${base}/channels/${playlistChannel}/contents?page=${page}&per=${this.state.per}`)
       .then(function(response) {
         return response.json();
       }).then(function(response) {
