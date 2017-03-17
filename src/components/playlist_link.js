@@ -1,5 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router'
+import { unescape } from 'lodash'
 
 class PlaylistLink extends React.Component {
   render () {
@@ -10,10 +11,14 @@ class PlaylistLink extends React.Component {
       itemClass + ' bg-light-pink ' :
       itemClass + ' hover-bg-washed-red'
     )
+    console.log('unescape(playlist.title)', unescape(playlist.title))
     return (
       <div  className={selectedClass}>
-        <Link className="list-item link dim black" to={`/playlist/${playlist.slug}`}>
-          {playlist.user.full_name} / {playlist.title}
+        <Link 
+          className="list-item link dim black" 
+          to={`/playlist/${playlist.slug}`}
+        >
+          {playlist.user.full_name} / {unescape(playlist.title)}
         </Link>
       </div>
     )

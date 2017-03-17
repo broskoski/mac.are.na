@@ -2,6 +2,7 @@ import React from 'react'
 import { find, findIndex } from 'lodash'
 import { apiBase } from '../config'
 import { onlySongs } from '../lib/filter'
+
 import Header from '../components/header'
 import PlaylistDisplay from '../components/playlist_display'
 import PlaylistPlayer from '../components/playlist_player'
@@ -42,9 +43,10 @@ class Playlist extends React.Component {
       0 :
       selectedItemIndex + 1 
     )
+    console.log('newItemIndex', newItemIndex, this.state.items[newItemIndex])
     const newItem = this.state.items[newItemIndex]
     this.setState({
-      selectedItem: newItem
+      selectedID: newItem.id
     })
   }
 
@@ -56,7 +58,6 @@ class Playlist extends React.Component {
           key={this.state.items[i].id} 
           item={this.state.items[i]}
           isSelected={this.state.items[i].id === this.state.selectedID}
-          onTrackEnd={this.playNext}
           onPress={(id) => {
             this.setState({ selectedID: id }) 
           }}
@@ -72,7 +73,7 @@ class Playlist extends React.Component {
       <div className='w-100 min-vh-100 pa3 pa5-ns'>
         <Header />
         <PlaylistDisplay item={selectedItem} />
-        <PlaylistPlayer item={selectedItem} />
+        <PlaylistPlayer item={selectedItem} onTrackEnd={() => this.playNext()} />
         {items}
       </div>
     )

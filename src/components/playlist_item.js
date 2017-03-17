@@ -1,4 +1,5 @@
 import React from 'react'
+import { unescape } from 'lodash'
 
 class PlaylistItem extends React.Component {
   render () {
@@ -10,9 +11,13 @@ class PlaylistItem extends React.Component {
       itemClass + ' hover-bg-washed-red'
     )
     return (
-      <div style={{ cursor: "pointer" }} className={selectedClass} onClick={() => this.props.onPress(item.id)}>
+      <div 
+        style={{ cursor: "pointer" }}
+        className={selectedClass}
+        onClick={() => this.props.onPress(item.id)}
+      >
         <a className="list-item link dim black">
-          {item.title}
+          {unescape(item.title)}
         </a>
       </div>
     )

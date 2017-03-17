@@ -1,4 +1,5 @@
 import React from 'react'
+import { unescape } from 'lodash'
 
 class PlaylistDisplay extends React.Component {
   render () {
@@ -9,7 +10,7 @@ class PlaylistDisplay extends React.Component {
     return (
       <div className="pv3">
         <h4>
-          ► {item.title}
+          ► {unescape(item.title)}
         </h4>
       </div>
     )
