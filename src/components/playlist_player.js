@@ -25,6 +25,7 @@ class PlaylistPlayer extends React.Component {
         hidden={true}
         soundcloudConfig={soundcloud}
         onEnded={() => this.props.onTrackEnd()}
+        onError={() => this.props.onTrackEnd()}
       />
     )
   }
