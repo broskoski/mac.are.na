@@ -3,7 +3,7 @@ import { Link } from 'react-router'
 
 class Header extends React.Component {
   render() {
-    const path = this.props.path
+    const { pathTitle, pathUrl } = this.props
     return (
       <h1>
         <a href="https://www.are.na/mac-are-na/" target="_blank">
@@ -12,10 +12,10 @@ class Header extends React.Component {
         <Link className="link dim black" to={`/`}>
           mac.are.na 
         </Link>
-        { path &&
-          <Link className="link dim black" to={`/`}>
-            &nbsp;/ {path}
-          </Link>
+        { pathTitle &&
+          <a className="link dim black" href={pathUrl} target="_blank">
+            &nbsp;/ {pathTitle}
+          </a>
         }
       </h1>
     )

@@ -19,6 +19,11 @@ class Playlist extends React.Component {
       selectedID: null
     }
   }
+
+  getPlaylistLink(response) {
+    return `https://www.are.na/${response.user.slug}/${response.slug}`
+  }
+
   componentDidMount() {
     const component = this
     const playlistID = this.props.params.playlistID 
@@ -31,7 +36,11 @@ class Playlist extends React.Component {
       }).then(function(response) {
         const items = onlySongs(response.contents);
         console.log('response', response)
-        component.setState({ items, title: response.title });
+        component.setState({
+          items,
+          title: response.title,
+          url: component.getPlaylistLink(response)
+        });
       }).catch(function(ex) {
         console.log('parsing failed', ex);
       })
@@ -71,12 +80,10 @@ class Playlist extends React.Component {
     const selectedItem = find(this.state.items, (item) => {
       return item.id === this.state.selectedID
     })
-
-    console.log('this.state.title', this.state.title)
     
     return (
       <div className='w-100 min-vh-100 pa3 pa5-ns'>
-        <Header path={this.state.title} />
+        <Header pathTitle={this.state.title} pathUrl={this.state.url} />
         <PlaylistDisplay item={selectedItem} />
         <PlaylistPlayer item={selectedItem} onTrackEnd={() => this.playNext()} />
         {items}
