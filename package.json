@@ -23,7 +23,7 @@
     "pui-react-pagination": "^7.5.5",
     "react": "^15.3.2",
     "react-dom": "^15.3.2",
-    "react-player": "^0.14.3",
+    "react-player": "^1.1.1",
     "react-router": "^3.0.2",
     "react-scripts": "^0.9.5",
     "react-sound": "^0.5.2",
