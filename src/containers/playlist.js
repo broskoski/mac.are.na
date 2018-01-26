@@ -25,12 +25,13 @@ class Playlist extends React.Component {
     
     this.setState({ playlistID })
 
-    fetch(`${base}/channels/${playlistID}/contents`)
+    fetch(`${base}/channels/${playlistID}?per=100`)
       .then(function(response) {
         return response.json();
       }).then(function(response) {
         const items = onlySongs(response.contents);
-        component.setState({ items });
+        console.log('response', response)
+        component.setState({ items, title: response.title });
       }).catch(function(ex) {
         console.log('parsing failed', ex);
       })
@@ -70,10 +71,12 @@ class Playlist extends React.Component {
     const selectedItem = find(this.state.items, (item) => {
       return item.id === this.state.selectedID
     })
+
+    console.log('this.state.title', this.state.title)
     
     return (
       <div className='w-100 min-vh-100 pa3 pa5-ns'>
-        <Header />
+        <Header path={this.state.title} />
         <PlaylistDisplay item={selectedItem} />
         <PlaylistPlayer item={selectedItem} onTrackEnd={() => this.playNext()} />
         {items}

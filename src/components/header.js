@@ -3,14 +3,20 @@ import { Link } from 'react-router'
 
 class Header extends React.Component {
   render() {
+    const path = this.props.path
     return (
       <h1>
         <a href="https://www.are.na/mac-are-na/" target="_blank">
           <img className="logo dim black" src={require('../assets/logo.svg')} alt="logo" />
         </a>
         <Link className="link dim black" to={`/`}>
-          mac.are.na
+          mac.are.na 
         </Link>
+        { path &&
+          <Link className="link dim black" to={`/`}>
+            &nbsp;/ {path}
+          </Link>
+        }
       </h1>
     )
   }
