@@ -20,7 +20,16 @@ html {
 }
 
 .list-item {
-  padding: 0 0.5em;
+  padding: 0.5rem 0.5em;
+  display: block;
+  width: 100%;
+  text-align: left;
+  border: none;
+  border-top: 1px solid black;
+}
+
+.innerLink{
+  width: 100%;
 }
 
 /* button press */

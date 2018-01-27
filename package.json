@@ -19,6 +19,7 @@
   "author": "Charles Broskoski <cab@are.na>",
   "license": "MIT",
   "dependencies": {
+    "classnames": "^2.2.5",
     "lodash": "^4.17.4",
     "pui-react-pagination": "^7.5.5",
     "react": "^15.3.2",
@@ -34,7 +35,6 @@
     "whatwg-fetch": "^1.0.0"
   },
   "devDependencies": {
-    "image-webpack-loader": "^3.2.0",
-    "react": "^15.4.2"
+    "image-webpack-loader": "^3.2.0"
   }
 }

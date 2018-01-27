@@ -1,8 +1,10 @@
 import React from 'react'
-import {Pagination} from 'pui-react-pagination'
+import { Pagination } from 'pui-react-pagination'
 import { apiBase, playlistChannel } from '../config'
 import PlaylistLink from '../components/playlist_link'
 import Header from '../components/header'
+import Player from '../components/Player'
+import { classifyItem } from '../lib/classifier'
 
 const base = apiBase[process.env.NODE_ENV]
 
@@ -15,6 +17,10 @@ class Home extends React.Component {
       playlists_length: 4,
       per: 20,
       playlists: [],
+      isPlaying: false,
+      currentTrackURL: null,
+      currentOpenPlaylistID: null,
+      currentTrackPlaylistSlug: null,
     }
   }
 
@@ -37,7 +43,7 @@ class Home extends React.Component {
         const playlists = response.contents;
         component.setState({ playlists });
       }).catch(function(ex) {
-        console.log('parsing failed', ex);
+        console.error('parsing failed', ex);
       })
   }
 
@@ -71,38 +77,76 @@ class Home extends React.Component {
         return response.json();
       }).then(function(response) {
         const playlists = response.contents;
-        component.setState({ 
+        component.setState({
           playlists,
           activePage: page
         });
       }).catch(function(ex) {
-        console.log('parsing failed', ex);
+        console.error('parsing failed', ex);
       })
   }
 
-  render () {
-    let playlists = []
-    for (var i=0; i < this.state.playlists.length; i++) {
-      playlists.push(
-        <PlaylistLink
-          key={this.state.playlists[i].id} 
-          playlist={this.state.playlists[i]} 
-        />
-      );
+  handlePlayback = () => {
+    this.state.isPlaying ? this.pause() : this.play()
+  }
+
+  play = () => {
+    // more needs to happen here...
+    this.setState({
+      isPlaying: true,
+    })
+  }
+
+  pause = () => {
+    this.setState({ isPlaying: false })
+  }
+
+  setCurrentPlayingPlaylistSlug = (href) => {
+
+  }
+
+  handlePlaylistSelect = (id) => {
+    this.setState({ currentOpenPlaylistID: id })
+  }
+
+  setCurrentTrackURL = (item) => {
+    if (classifyItem(item) === 'mp3') {
+      return item.attachment.url
+    } else {
+      return item.source.url
     }
+  }
+
+  makePlaylistLinks = (playlists) => {
+    return playlists.map((playlist, index) => {
+      return (
+        <PlaylistLink
+          text={`${playlist.user.full_name} / ${decodeURIComponent(playlist.title)}`}
+          to={`/playlist/${playlist.slug}`}
+          key={playlist.id}
+          playlist={playlist}
+          handlePlaylistSelect={() => this.handlePlaylistSelect(playlist.id)}/>
+        )
+    })
+  }
+
+  render () {
     return (
       <div className='w-100 min-vh-100 pa3 pa5-ns'>
         <Header />
-        {playlists}
+        <Player
+          handlePlayback={this.handlePlayback}
+          isPlaying={this.state.isPlaying}
+          currentTrackURL={this.state.currentTrackURL}
+          currentTrackPlaylistSlug={this.state.currentTrackPlaylistSlug} />
+        { this.makePlaylistLinks(this.state.playlists) }
         <Pagination
           items={Math.ceil(this.state.playlists_length / this.state.per)}
           onSelect={(event, selectedEvent) => this.handleSelect(event, selectedEvent)}
-          activePage={this.state.activePage}
-           />
+          activePage={this.state.activePage} />
       </div>
     )
   }
 }
 
 export default Home
-

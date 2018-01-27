@@ -1,28 +1,20 @@
 import React from 'react'
 import { Link } from 'react-router'
-import { unescape } from 'lodash'
+import classnames from 'classnames'
 
-class PlaylistLink extends React.Component {
-  render () {
-    const playlist = this.props.playlist
-    const itemClass = "bb pv3 bg-animate"
-    const selectedClass = (
-      this.props.isSelected ?
-      itemClass + ' bg-light-pink ' :
-      itemClass + ' hover-bg-washed-red'
-    )
-    console.log('unescape(playlist.title)', unescape(playlist.title))
-    return (
-      <div  className={selectedClass}>
-        <Link 
-          className="list-item link dim black" 
-          to={`/playlist/${playlist.slug}`}
-        >
-          {playlist.user.full_name} / {unescape(playlist.title)}
-        </Link>
-      </div>
-    )
-  }
+const ListItemLink = ({ isSelected, handleSelection, text, to }) => {
+  const itemClasses = 'list-item bb pv3 bg-animate'
+  const isSelectedClassNames = classnames({
+    'bg-light-pink': isSelected,
+    'hover-bg-washed-red': !isSelected,
+  })
+
+  return (
+    <button className={`${itemClasses} ${isSelectedClassNames}`} onClick={handleSelection}>
+      <Link className={'innerLink'} to={to}>{text}</Link>
+    </button>
+  )
 }
 
-export default PlaylistLink
+
+export default ListItemLink
