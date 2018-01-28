@@ -9,13 +9,13 @@ import { Pagination } from 'pui-react-pagination'
 
 import ListItemLink from './components/ListItemLink'
 import Header from './components/Header'
-import Home from './containers/Home'
+import Playlists from './containers/Playlists'
 import Playlist from './containers/Playlist'
 import Player from './components/Player'
 
 import { classifyItem } from './lib/classifier'
 import { apiBase, playlistChannel } from './config'
-import tinyAPI from './lib/api'
+import { tinyAPI } from './lib/api'
 
 const base = apiBase[process.env.NODE_ENV]
 
@@ -25,7 +25,7 @@ class Main extends Component {
     super(props)
     this.state = {
       activePage: 1,
-      playlists_length: 4,
+      playlistListLength: 4,
       per: 20,
       playlists: [],
       isPlaying: false,
@@ -33,36 +33,26 @@ class Main extends Component {
       currentOpenPlaylistID: null,
       currentTrackPlaylistSlug: null,
     }
+    this.API = new tinyAPI()
   }
 
   componentWillMount() {
-    const component = this
-    fetch(`${base}/channels/${playlistChannel}/thumb`)
-      .then(function(response) {
-        return response.json();
-      }).then(function(response) {
-        const playlists_length = response.length;
-        component.setState({ playlists_length });
-      }).catch(function(ex) {
-        console.log('parsing failed', ex);
-      })
-
-    fetch(`${base}/channels/${playlistChannel}/contents?page=${this.state.activePage}&per=${this.state.per}`)
-      .then(function(response) {
-        return response.json();
-      }).then(function(response) {
-        const playlists = response.contents;
-        component.setState({ playlists });
-      }).catch(function(ex) {
-        console.error('parsing failed', ex);
+    const { activePage, per } = this.state
+    const lengthPromise = this.API.getPlaylistChannelLength()
+    const playlistListPromise = this.API.getPaginatedPlaylistList(activePage, per)
+    Promise.all([lengthPromise, playlistListPromise])
+      .then(([length, playlists]) => {
+        this.setState({
+          playlistListLength: length,
+          playlists,
+        })
       })
   }
 
   handleSelect(event, selectedEvent) {
-
     const eventKey = selectedEvent.eventKey;
     const activePage = this.state.activePage;
-    const maxPage = Math.ceil(this.state.playlists_length / this.state.per);
+    const maxPage = Math.ceil(this.state.playlistListLength / this.state.per);
 
     if(eventKey === 'next') {
       if(activePage !== maxPage) {
@@ -128,20 +118,8 @@ class Main extends Component {
     }
   }
 
-  makePlaylistLinks = (playlists) => {
-    return playlists.map((playlist, index) => {
-      return (
-        <ListItemLink
-          text={`${playlist.user.full_name} / ${decodeURIComponent(playlist.title)}`}
-          to={`/playlist/${playlist.slug}`}
-          key={playlist.id}
-          playlist={playlist}
-          handlePlaylistSelect={() => this.handlePlaylistSelect(playlist.id)}/>
-        )
-    })
-  }
-
   render () {
+    const listLength = Math.ceil(this.state.playlistListLength / this.state.per)
     return (
       <Router>
         <div id={'w-100 min-vh-100 pa3 pa5-ns'}>
@@ -152,8 +130,17 @@ class Main extends Component {
             currentTrackURL={this.state.currentTrackURL}
             currentTrackPlaylistSlug={this.state.currentTrackPlaylistSlug} />
           <Switch>
-            <PropsRoute exact path={'/'} component={Home} tinyAPI={tinyAPI} />
-            <PropsRoute path={'/playlist/:playlistID'} component={Playlist} tinyAPI={tinyAPI} />
+            <PropsRoute
+              exact path={'/'}
+              component={Playlists}
+              tinyAPI={tinyAPI}
+              listLength={listLength}
+              playlists={this.state.playlists}
+              activePage={this.state.activePage} />
+            <PropsRoute
+              path={'/playlist/:playlistID'}
+              component={Playlist}
+              tinyAPI={tinyAPI} />
           </Switch>
         </div>
       </Router>
@@ -161,6 +148,8 @@ class Main extends Component {
   }
 }
 
+// all this does is take props from <PropsRoute /> and passes them in a new
+// object to the wrapped component
 const renderMergedProps = (component, ...rest) => {
   const finalProps = Object.assign({}, ...rest)
   return (
@@ -168,6 +157,8 @@ const renderMergedProps = (component, ...rest) => {
   )
 }
 
+// this component serves as a wrapper that allows props to be passed into routes
+// this is why we can use one local state for most of the app
 const PropsRoute = ({ component, ...rest }) => {
   return (
     <Route {...rest} render={routeProps => {
@@ -176,16 +167,5 @@ const PropsRoute = ({ component, ...rest }) => {
   )
 }
 
-
-
-// const List = ({listItems}) => {
-//   return (
-//     { this.makePlaylistLinks(this.state.playlists) }
-//     <Pagination
-//       items={Math.ceil(this.state.playlists_length / this.state.per)}
-//       onSelect={(event, selectedEvent) => this.handleSelect(event, selectedEvent)}
-//       activePage={this.state.activePage} />
-//   )
-// }
 
 export default Main
