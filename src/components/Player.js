@@ -1,11 +1,10 @@
-import React from 'react'
+import React, { Component } from 'react'
 import ReactPlayer from 'react-player'
 
 import { soundcloud } from "../config"
 import { classifyItem } from '../lib/classifier'
 
-class Player extends React.Component {
-
+class Player extends Component {
   render () {
     const {
       isPlaying,

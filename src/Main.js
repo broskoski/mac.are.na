@@ -1,12 +1,25 @@
 import React, { Component } from 'react'
+import {
+  BrowserRouter as Router,
+  Route,
+  Link,
+  Switch,
+} from 'react-router-dom'
 import { Pagination } from 'pui-react-pagination'
-import { apiBase, playlistChannel } from '../config'
-import ListItemLink from '../components/ListItemLink'
-import { classifyItem } from '../lib/classifier'
+
+import ListItemLink from './components/ListItemLink'
+import Header from './components/Header'
+import Home from './containers/Home'
+import Playlist from './containers/Playlist'
+import Player from './components/Player'
+
+import { classifyItem } from './lib/classifier'
+import { apiBase, playlistChannel } from './config'
+import tinyAPI from './lib/api'
 
 const base = apiBase[process.env.NODE_ENV]
 
-class Home extends Component {
+class Main extends Component {
 
   constructor(props) {
     super(props)
@@ -84,6 +97,37 @@ class Home extends Component {
       })
   }
 
+  handlePlayback = () => {
+    this.state.isPlaying ? this.pause() : this.play()
+  }
+
+  play = () => {
+    // more needs to happen here...
+    this.setState({
+      isPlaying: true,
+    })
+  }
+
+  pause = () => {
+    this.setState({ isPlaying: false })
+  }
+
+  setCurrentPlayingPlaylistSlug = (href) => {
+
+  }
+
+  handlePlaylistSelect = (id) => {
+    this.setState({ currentOpenPlaylistID: id })
+  }
+
+  setCurrentTrackURL = (item) => {
+    if (classifyItem(item) === 'mp3') {
+      return item.attachment.url
+    } else {
+      return item.source.url
+    }
+  }
+
   makePlaylistLinks = (playlists) => {
     return playlists.map((playlist, index) => {
       return (
@@ -97,19 +141,51 @@ class Home extends Component {
     })
   }
 
-
   render () {
     return (
-      <div className='w-100 min-vh-100 pa3 pa5-ns'>
-        { this.makePlaylistLinks(this.state.playlists) }
-
-        <Pagination
-          items={Math.ceil(this.state.playlists_length / this.state.per)}
-          onSelect={(event, selectedEvent) => this.handleSelect(event, selectedEvent)}
-          activePage={this.state.activePage} />
-      </div>
+      <Router>
+        <div id={'w-100 min-vh-100 pa3 pa5-ns'}>
+          <Header />
+          <Player
+            handlePlayback={this.handlePlayback}
+            isPlaying={this.state.isPlaying}
+            currentTrackURL={this.state.currentTrackURL}
+            currentTrackPlaylistSlug={this.state.currentTrackPlaylistSlug} />
+          <Switch>
+            <PropsRoute exact path={'/'} component={Home} tinyAPI={tinyAPI} />
+            <PropsRoute path={'/playlist/:playlistID'} component={Playlist} tinyAPI={tinyAPI} />
+          </Switch>
+        </div>
+      </Router>
     )
   }
 }
 
-export default Home
+const renderMergedProps = (component, ...rest) => {
+  const finalProps = Object.assign({}, ...rest)
+  return (
+    React.createElement(component, finalProps)
+  )
+}
+
+const PropsRoute = ({ component, ...rest }) => {
+  return (
+    <Route {...rest} render={routeProps => {
+      return renderMergedProps(component, routeProps, rest)
+    }}/>
+  )
+}
+
+
+
+// const List = ({listItems}) => {
+//   return (
+//     { this.makePlaylistLinks(this.state.playlists) }
+//     <Pagination
+//       items={Math.ceil(this.state.playlists_length / this.state.per)}
+//       onSelect={(event, selectedEvent) => this.handleSelect(event, selectedEvent)}
+//       activePage={this.state.activePage} />
+//   )
+// }
+
+export default Main

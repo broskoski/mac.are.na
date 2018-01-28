@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import classnames from 'classnames'
 
 const ListItemLink = ({ isSelected, handleSelection, text, to }) => {
@@ -10,7 +10,7 @@ const ListItemLink = ({ isSelected, handleSelection, text, to }) => {
   })
 
   return (
-    <button className={`${itemClasses} ${isSelectedClassNames}`} onClick={handleSelection}>
+    <button key={`link-to-${to}`} className={`${itemClasses} ${isSelectedClassNames}`} onClick={handleSelection}>
       <Link className={'innerLink'} to={to}>{text}</Link>
     </button>
   )

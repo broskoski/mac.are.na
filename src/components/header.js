@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 
 class Header extends React.Component {
   render() {
@@ -10,7 +10,7 @@ class Header extends React.Component {
           <img className="logo dim black" src={require('../assets/logo.svg')} alt="logo" />
         </a>
         <Link className="link dim black" to={`/`}>
-          mac.are.na 
+          mac.are.na
         </Link>
         { pathTitle &&
           <a className="link dim black" href={pathUrl} target="_blank">
