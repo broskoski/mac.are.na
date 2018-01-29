@@ -20,7 +20,6 @@ import { tinyAPI } from './lib/api'
 const base = apiBase[process.env.NODE_ENV]
 
 class Main extends Component {
-
   constructor(props) {
     super(props)
     this.state = {
@@ -30,12 +29,15 @@ class Main extends Component {
       playlists: [],
       isPlaying: false,
       currentTrackURL: null,
-      currentOpenPlaylistID: null,
-      currentTrackPlaylistSlug: null,
+      indexOfCurrentTrack: 0,
+      currentOpenPlaylist: null,
+      currentTrackPlaylist: null,
+      maxItemsInCurrentPage: 0,
     }
     this.API = new tinyAPI()
   }
 
+  // get list of playlists and playlist list length
   componentWillMount() {
     const { activePage, per } = this.state
     const lengthPromise = this.API.getPlaylistChannelLength()
@@ -45,81 +47,120 @@ class Main extends Component {
         this.setState({
           playlistListLength: length,
           playlists,
+          maxItemsInCurrentPage: this.getMaxItemsInCurrentPage(length, this.state.per),
         })
       })
   }
 
-  handleSelect(event, selectedEvent) {
-    const eventKey = selectedEvent.eventKey;
-    const activePage = this.state.activePage;
-    const maxPage = Math.ceil(this.state.playlistListLength / this.state.per);
+  // i don't really get why this needs to happen, something to do with
+  // specifically how pagination works
+  getMaxItemsInCurrentPage = (length, per) => {
+    return Math.ceil(length / this.state.per)
+  }
 
+  // if we go forward or back in pagination, update the playlist page
+  // with new contents from an index in pagination
+  handlePaginatedPageNav(event, selectedEvent) {
+    const eventKey = selectedEvent.eventKey
+    const { activePage, playlistListLength, per} = this.state
+    const maxItemsInCurrentPage = this.getMaxItemsInCurrentPage(playlistListLength, per)
+    this.setState({ maxItemsInCurrentPage })
     if(eventKey === 'next') {
-      if(activePage !== maxPage) {
-        return this.updatePlaylist(activePage + 1);
+      if(activePage !== maxItemsInCurrentPage) {
+        return this.updatePlaylist(activePage + 1)
       } else {
-        return this.updatePlaylist(maxPage);
+        return this.updatePlaylist(maxItemsInCurrentPage)
       }
     }
     if(eventKey === 'prev') {
       if(activePage !== 1) {
-        return this.updatePlaylist(activePage - 1);
+        return this.updatePlaylist(activePage - 1)
       } else {
-        return this.updatePlaylist(1);
+        return this.updatePlaylist(1)
       }
     }
-    return this.updatePlaylist(selectedEvent.eventKey);
+    return this.updatePlaylist(eventKey)
   }
 
+
+  // if we go to a new page, tell the app about the playlists on the new page
   updatePlaylist(page) {
-    const component = this
-    fetch(`${base}/channels/${playlistChannel}/contents?page=${page}&per=${this.state.per}`)
-      .then(function(response) {
-        return response.json();
-      }).then(function(response) {
-        const playlists = response.contents;
-        component.setState({
-          playlists,
-          activePage: page
-        });
-      }).catch(function(ex) {
-        console.error('parsing failed', ex);
-      })
+    this.API.getPaginatedPlaylistList(page, this.state.per)
+      .then(playlists => this.setState({ playlists, activePage: page }) )
   }
 
+
+  // toggle function for playing and pausing with 1 element
   handlePlayback = () => {
     this.state.isPlaying ? this.pause() : this.play()
   }
 
-  play = () => {
-    // more needs to happen here...
+  // currently any time a track is selected, it will be played.
+  handleSongSelection = (item, indexOfCurrentTrack) => {
+    let currentTrackURL = ''
+    if (classifyItem(item) === 'mp3') {
+      currentTrackURL = item.attachment.url
+    } else {
+      currentTrackURL = item.source.url
+    }
+    this.playlistToCurrentTrackPlaylist()
+    this.setState({currentTrackURL, indexOfCurrentTrack})
+    this.play()
+  }
+
+
+  // if we open a new playlist and play a track from it, make sure the app
+  // knows about the new list
+  playlistToCurrentTrackPlaylist = () => {
     this.setState({
-      isPlaying: true,
+      currentTrackPlaylist: this.state.currentOpenPlaylist
     })
   }
 
+  // yep
+  play = () => {
+    this.setState({ isPlaying: true, })
+  }
+   // mhm
   pause = () => {
-    this.setState({ isPlaying: false })
+    this.setState({ isPlaying: false, })
   }
 
-  setCurrentPlayingPlaylistSlug = (href) => {
-
+  // if we play a new track, tell the app about it's playlist
+  setCurrentTrackPlaylist = (playlist) => {
+    this.setState({ currentTrackPlaylist: playlist })
   }
 
-  handlePlaylistSelect = (id) => {
-    this.setState({ currentOpenPlaylistID: id })
+  // if we select a playlist, get it's contents.
+  // then, set it as the current open playlist
+  returnSelectedPlaylist = (playlistSlug) => {
+    this.API.getPaginatedPlaylistContents(playlistSlug)
+      .then(playlist => {
+        this.setState({ currentOpenPlaylist: playlist })
+      })
   }
 
-  setCurrentTrackURL = (item) => {
-    if (classifyItem(item) === 'mp3') {
-      return item.attachment.url
-    } else {
-      return item.source.url
+  // update +1 track and index
+  goToNextTrack = () => {
+    const { indexOfCurrentTrack, currentTrackPlaylist } = this.state
+    if (indexOfCurrentTrack + 1 < currentTrackPlaylist.length) {
+      const nextIndex = indexOfCurrentTrack + 1
+      const nextTrack = currentTrackPlaylist[nextIndex]
+      this.handleSongSelection(nextTrack, nextIndex)
+    }
+  }
+
+  //  update -1 track and index
+  goToPreviousTrack = () => {
+    const { indexOfCurrentTrack, currentTrackPlaylist } = this.state
+    if (indexOfCurrentTrack > 0) {
+      const previousIndex = indexOfCurrentTrack - 1
+      const previousTrack = currentTrackPlaylist[previousIndex]
+      this.handleSongSelection(previousTrack, previousIndex)
     }
   }
 
   render () {
-    const listLength = Math.ceil(this.state.playlistListLength / this.state.per)
     return (
       <Router>
         <div id={'w-100 min-vh-100 pa3 pa5-ns'}>
@@ -128,19 +169,25 @@ class Main extends Component {
             handlePlayback={this.handlePlayback}
             isPlaying={this.state.isPlaying}
             currentTrackURL={this.state.currentTrackURL}
-            currentTrackPlaylistSlug={this.state.currentTrackPlaylistSlug} />
+            goToNextTrack={this.goToNextTrack}
+            goToPreviousTrack={this.goToPreviousTrack}
+            currentTrackPlaylist={this.state.currentTrackPlaylist} />
           <Switch>
             <PropsRoute
+              {...this.props}
               exact path={'/'}
               component={Playlists}
-              tinyAPI={tinyAPI}
-              listLength={listLength}
+              listLength={this.state.maxItemsInCurrentPage}
               playlists={this.state.playlists}
-              activePage={this.state.activePage} />
+              activePage={this.state.activePage}
+              handlePlaylistSelect={this.handlePlaylistSelect}
+              handlePaginatedPageNav={(event, selectedEvent) => this.handlePaginatedPageNav(event, selectedEvent)} />
             <PropsRoute
-              path={'/playlist/:playlistID'}
+              path={'/playlist/:playlistSlug'}
               component={Playlist}
-              tinyAPI={tinyAPI} />
+              currentOpenPlaylist={this.state.currentOpenPlaylist}
+              handleSongSelection={this.handleSongSelection}
+              returnSelectedPlaylist={this.returnSelectedPlaylist} />
           </Switch>
         </div>
       </Router>
@@ -148,10 +195,10 @@ class Main extends Component {
   }
 }
 
-// all this does is take props from <PropsRoute /> and passes them in a new
+// this takes props from <PropsRoute /> and passes them in a new
 // object to the wrapped component
-const renderMergedProps = (component, ...rest) => {
-  const finalProps = Object.assign({}, ...rest)
+const renderMergedProps = (component, ...mePropsies) => {
+  const finalProps = Object.assign({}, ...mePropsies)
   return (
     React.createElement(component, finalProps)
   )
@@ -159,10 +206,10 @@ const renderMergedProps = (component, ...rest) => {
 
 // this component serves as a wrapper that allows props to be passed into routes
 // this is why we can use one local state for most of the app
-const PropsRoute = ({ component, ...rest }) => {
+const PropsRoute = ({ component, ...mePropsies }) => {
   return (
-    <Route {...rest} render={routeProps => {
-      return renderMergedProps(component, routeProps, rest)
+    <Route {...mePropsies} render={routeProps => {
+      return renderMergedProps(component, routeProps, mePropsies)
     }}/>
   )
 }

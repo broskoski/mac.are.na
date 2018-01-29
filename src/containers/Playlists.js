@@ -7,27 +7,34 @@ import { classifyItem } from '../lib/classifier'
 const base = apiBase[process.env.NODE_ENV]
 
 
-const Playlists = ({ playlists, listLength, activePage }) => {
+const Playlists = ({
+  playlists,
+  listLength,
+  activePage,
+  handlePaginatedPageNav,
+  handlePlaylistSelect,
+}) => {
   return (
-    <div className='w-100 min-vh-100 pa3 pa5-ns'>
-      { makePlaylistLinks(playlists) }
+    <div>
+      { makePlaylistLinks(playlists, handlePlaylistSelect) }
       <Pagination
         items={listLength}
-        onSelect={(event, selectedEvent) => this.handleSelect(event, selectedEvent)}
+        onSelect={handlePaginatedPageNav}
         activePage={activePage} />
     </div>
   )
 }
 
-const makePlaylistLinks = (playlists) => {
+const makePlaylistLinks = (playlists, handlePlaylistSelect) => {
   return playlists.map((playlist, index) => {
+    const text = `${playlist.user.full_name} / ${decodeURIComponent(playlist.title)}`
     return (
       <ListItemLink
-        text={`${playlist.user.full_name} / ${decodeURIComponent(playlist.title)}`}
+        text={text}
         to={`/playlist/${playlist.slug}`}
         key={playlist.id}
         playlist={playlist}
-        handlePlaylistSelect={() => this.handlePlaylistSelect(playlist.id)}/>
+        handleSelection={() => handlePlaylistSelect(playlist)}/>
       )
   })
 }

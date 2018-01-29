@@ -9,7 +9,8 @@ class Player extends Component {
     const {
       isPlaying,
       handlePlayback,
-      onTrackEnd,
+      goToNextTrack,
+      goToPreviousTrack,
       currentTrackPlaylistSlug,
       currentTrackURL,
     } = this.props
@@ -17,14 +18,16 @@ class Player extends Component {
     const playbackSymbol = isPlaying ? '▶' : '▌▌'
     return (
       <nav>
+        <button onClick={() => goToPreviousTrack()}>{'Previous'}</button>
         <button onClick={() => handlePlayback()}>{playbackSymbol}</button>
+        <button onClick={() => goToNextTrack()}>{'Next'}</button>
         <ReactPlayer
           url={currentTrackURL}
-          playing
+          playing={isPlaying}
           hidden={true}
           soundcloudConfig={soundcloud}
-          onEnded={() => this.props.onTrackEnd()}
-          onError={() => this.props.onTrackEnd()}
+          onEnded={() => goToNextTrack()}
+          onError={() => goToNextTrack()}
         />
       </nav>
     )

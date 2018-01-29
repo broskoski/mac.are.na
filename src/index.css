@@ -4,10 +4,15 @@ body {
   font-family: 'Arial', sans-serif;
   -webkit-font-smoothing: antialiased;
   text-shadow: 1px 1px 1px rgba(0,0,0,0.004);
+  background-color: white;
+  min-height: 100vh;
 }
 
 html {
   box-sizing: border-box;
+  filter: invert(100%) hue-rotate(180deg);
+  -webkit-filter: invert(100%) hue-rotate(180deg);
+  background-color: white;
 }
 
 *, *:before, *:after {
@@ -29,10 +34,6 @@ html {
   border-top: 1px solid black;
 }
 
-.innerLink{
-  width: 100%;
-}
-
 /* button press */
 a:hover, a:active, a:focus {
   outline: medium none !important;
@@ -44,7 +45,7 @@ a:hover, a:active, a:focus {
   text-align: center;
 }
 .pagination li.active {
-  background-color: black;
+  /* background-color: black; */
 }
 
 .pagination li:hover a {

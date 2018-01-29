@@ -27,7 +27,7 @@ class tinyAPI {
 const parse = {
   playlistList: (a) => a.contents,
   playlist: (a) => a.contents,
-  playlistListLength: (a) => a.contents.length,
+  playlistListLength: (a) => a.length,
 }
 
 

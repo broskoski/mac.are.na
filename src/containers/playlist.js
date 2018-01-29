@@ -3,8 +3,7 @@ import { find, findIndex } from 'lodash'
 import { apiBase } from '../config'
 import { onlySongs } from '../lib/filter'
 
-import PlaylistDisplay from '../components/playlist_display'
-import PlaylistItem from '../components/playlist_item'
+import SongItem from '../components/SongItem'
 
 const base = apiBase[process.env.NODE_ENV]
 
@@ -23,25 +22,10 @@ class Playlist extends React.Component {
   }
 
   componentDidMount() {
-    const component = this
-    const playlistID = this.props.params.playlistID
-
-    this.setState({ playlistID })
-
-    fetch(`${base}/channels/${playlistID}?per=100`)
-      .then(function(response) {
-        return response.json();
-      }).then(function(response) {
-        const items = onlySongs(response.contents);
-        console.log('response', response)
-        component.setState({
-          items,
-          title: response.title,
-          url: component.getPlaylistLink(response)
-        });
-      }).catch(function(ex) {
-        console.log('parsing failed', ex);
-      })
+    // get slug from router params and return it to <Main />
+    const playlistSlug = this.props.match.params.playlistSlug
+    console.log(playlistSlug)
+    this.props.returnSelectedPlaylist(playlistSlug)
   }
 
   playNext() {
@@ -53,36 +37,29 @@ class Playlist extends React.Component {
       0 :
       selectedItemIndex + 1
     )
-    console.log('newItemIndex', newItemIndex, this.state.items[newItemIndex])
     const newItem = this.state.items[newItemIndex]
     this.setState({
       selectedID: newItem.id
     })
   }
 
-  render () {
-    let items = []
-    for (var i=0; i < this.state.items.length; i++) {
-      items.push(
-        <PlaylistItem
-          key={this.state.items[i].id}
-          item={this.state.items[i]}
-          isSelected={this.state.items[i].id === this.state.selectedID}
-          onPress={(id) => {
-            this.setState({ selectedID: id })
-          }}
-        />
-      );
+  makeSongList = (playlist) => {
+    if (playlist) {
+      return playlist.map((song, index) => {
+        return (
+          <SongItem
+            key={song.id}
+            song={song}
+            handleSelection={() => this.props.handleSongSelection(song, index)} />
+        )
+      })
     }
+  }
 
-    const selectedItem = find(this.state.items, (item) => {
-      return item.id === this.state.selectedID
-    })
-
+  render () {
     return (
       <div className='w-100 min-vh-100 pa3 pa5-ns'>
-        <PlaylistDisplay item={selectedItem} />
-        {items}
+        {this.makeSongList(this.props.currentOpenPlaylist)}
       </div>
     )
   }

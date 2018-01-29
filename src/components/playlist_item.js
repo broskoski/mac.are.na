@@ -11,7 +11,7 @@ class PlaylistItem extends React.Component {
       itemClass + ' hover-bg-washed-red'
     )
     return (
-      <div 
+      <div
         style={{ cursor: "pointer" }}
         className={selectedClass}
         onClick={() => this.props.onPress(item.id)}
