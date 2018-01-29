@@ -2,10 +2,7 @@ import React, { Component } from 'react'
 import { Pagination } from 'pui-react-pagination'
 import { apiBase, playlistChannel } from '../config'
 import ListItemLink from '../components/ListItemLink'
-import { classifyItem } from '../lib/classifier'
-
-const base = apiBase[process.env.NODE_ENV]
-
+import { classifyItem } from '../lib/helpers'
 
 const Playlists = ({
   playlists,

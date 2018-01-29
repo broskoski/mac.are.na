@@ -1,21 +1,10 @@
-import React from 'react'
+import React, { Component } from 'react'
 import { find, findIndex } from 'lodash'
-import { apiBase } from '../config'
-import { onlySongs } from '../lib/filter'
+import { onlySongs } from '../lib/helpers'
 
 import SongItem from '../components/SongItem'
 
-const base = apiBase[process.env.NODE_ENV]
-
-class Playlist extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      items: [],
-      playlistID: null,
-      selectedID: null
-    }
-  }
+class Playlist extends Component {
 
   getPlaylistLink(response) {
     return `https://www.are.na/${response.user.slug}/${response.slug}`
@@ -24,23 +13,7 @@ class Playlist extends React.Component {
   componentDidMount() {
     // get slug from router params and return it to <Main />
     const playlistSlug = this.props.match.params.playlistSlug
-    console.log(playlistSlug)
     this.props.returnSelectedPlaylist(playlistSlug)
-  }
-
-  playNext() {
-    const selectedItemIndex = findIndex(this.state.items, (item) => {
-      return item.id === this.state.selectedID
-    })
-    const newItemIndex = (
-      selectedItemIndex + 1 > this.state.items.length ?
-      0 :
-      selectedItemIndex + 1
-    )
-    const newItem = this.state.items[newItemIndex]
-    this.setState({
-      selectedID: newItem.id
-    })
   }
 
   makeSongList = (playlist) => {

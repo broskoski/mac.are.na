@@ -13,7 +13,7 @@ import Playlists from './containers/Playlists'
 import Playlist from './containers/Playlist'
 import Player from './components/Player'
 
-import { classifyItem } from './lib/classifier'
+import { classifyItem } from './lib/helpers'
 import { apiBase, playlistChannel } from './config'
 import { tinyAPI } from './lib/api'
 
@@ -33,6 +33,9 @@ class Main extends Component {
       currentOpenPlaylist: null,
       currentTrackPlaylist: null,
       maxItemsInCurrentPage: 0,
+      volume: 0.8,
+      trackProgress: 0,
+      trackDuration: 0,
     }
     this.API = new tinyAPI()
   }
@@ -54,6 +57,8 @@ class Main extends Component {
 
   // i don't really get why this needs to happen, something to do with
   // specifically how pagination works
+  // one issue right now is that the playlistListPromise returns # of all channels
+  // including private channels
   getMaxItemsInCurrentPage = (length, per) => {
     return Math.ceil(length / this.state.per)
   }
@@ -82,13 +87,11 @@ class Main extends Component {
     return this.updatePlaylist(eventKey)
   }
 
-
   // if we go to a new page, tell the app about the playlists on the new page
   updatePlaylist(page) {
     this.API.getPaginatedPlaylistList(page, this.state.per)
       .then(playlists => this.setState({ playlists, activePage: page }) )
   }
-
 
   // toggle function for playing and pausing with 1 element
   handlePlayback = () => {
@@ -107,7 +110,6 @@ class Main extends Component {
     this.setState({currentTrackURL, indexOfCurrentTrack})
     this.play()
   }
-
 
   // if we open a new playlist and play a track from it, make sure the app
   // knows about the new list
@@ -160,6 +162,32 @@ class Main extends Component {
     }
   }
 
+  handleOnReady = (e) => {
+    // console.log(e, 'ready')
+  }
+
+  handleOnStart = (e) => {
+    // console.log(e, 'start')
+  }
+
+  handleOnPlay = (e) => {
+    // console.log(e, 'play')
+  }
+
+  handleOnProgress = (e) => {
+    // { loaded, loadedSeconds, played, playedSeconds }
+    this.setState({ trackProgress: e.playedSeconds })
+  }
+
+  handleOnDuration = (e) => {
+    this.setState({ trackDuration: e })
+  }
+
+  handleOnBuffer = (e) => {
+    // console.log(e, 'buffering')
+  }
+
+
   render () {
     return (
       <Router>
@@ -171,7 +199,17 @@ class Main extends Component {
             currentTrackURL={this.state.currentTrackURL}
             goToNextTrack={this.goToNextTrack}
             goToPreviousTrack={this.goToPreviousTrack}
-            currentTrackPlaylist={this.state.currentTrackPlaylist} />
+            currentTrackPlaylist={this.state.currentTrackPlaylist}
+            volume={this.state.volume}
+            handleOnReady={this.handleOnReady}
+            handleOnStart={this.handleOnStart}
+            handleOnPlay={this.handleOnPlay}
+            handleOnProgress={this.handleOnProgress}
+            handleOnDuration={this.handleOnDuration}
+            handleOnBuffer={this.handleOnBuffer}
+            trackProgress={this.state.trackProgress}
+            trackDuration={this.state.trackDuration}
+           />
           <Switch>
             <PropsRoute
               {...this.props}

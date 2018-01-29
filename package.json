@@ -20,7 +20,7 @@
   "license": "MIT",
   "dependencies": {
     "classnames": "^2.2.5",
-    "lodash": "^4.17.4",
+    "moment": "^2.20.1",
     "pui-react-pagination": "^7.5.5",
     "react": "^15.3.2",
     "react-dom": "^15.3.2",
