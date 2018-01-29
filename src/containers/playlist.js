@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { find, findIndex } from 'lodash'
 import { onlySongs } from '../lib/helpers'
 
 import SongItem from '../components/SongItem'
@@ -18,7 +17,7 @@ class Playlist extends Component {
 
   makeSongList = (playlist) => {
     if (playlist) {
-      return playlist.map((song, index) => {
+      return playlist.contents.map((song, index) => {
         return (
           <SongItem
             key={song.id}

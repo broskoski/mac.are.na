@@ -26,7 +26,7 @@ class Player extends Component {
       trackDuration,
     } = this.props
 
-    const playbackSymbol = isPlaying ? '▌▌' : '▶'
+    const playbackSymbol = isPlaying ? '▌▌' : '▶️'
     const progress = moment.utc(trackProgress*1000).format('H:m:ss')
     const duration = moment.utc(trackDuration*1000).format('H:m:ss')
     const time =`${progress} / ${duration}`
@@ -35,7 +35,7 @@ class Player extends Component {
         <button onClick={() => goToPreviousTrack()}>{'Previous'}</button>
         <button onClick={() => handlePlayback()}>{playbackSymbol}</button>
         <button onClick={() => goToNextTrack()}>{'Next'}</button>
-        <div>{time}</div>
+        <div id={'nowPlaying'}>{time}</div>
         <ReactPlayer
           url={currentTrackURL}
           playing={isPlaying}
@@ -50,7 +50,6 @@ class Player extends Component {
           onBuffer={(e) => handleOnBuffer(e)}
           onEnded={() => goToNextTrack()}
           onError={() => goToNextTrack()}
-
         />
       </nav>
     )

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Pagination } from 'pui-react-pagination'
 import { apiBase, playlistChannel } from '../config'
-import ListItemLink from '../components/ListItemLink'
+import LinkItem from '../components/LinkItem'
 import { classifyItem } from '../lib/helpers'
 
 const Playlists = ({
@@ -11,22 +11,26 @@ const Playlists = ({
   handlePaginatedPageNav,
   handlePlaylistSelect,
 }) => {
-  return (
-    <div>
-      { makePlaylistLinks(playlists, handlePlaylistSelect) }
-      <Pagination
-        items={listLength}
-        onSelect={handlePaginatedPageNav}
-        activePage={activePage} />
-    </div>
-  )
+  if (playlists) {
+    return (
+      <div>
+        { makePlaylistLinks(playlists, handlePlaylistSelect) }
+        <Pagination
+          items={listLength}
+          onSelect={handlePaginatedPageNav}
+          activePage={activePage} />
+      </div>
+    )
+  } else {
+    return null
+  }
 }
 
 const makePlaylistLinks = (playlists, handlePlaylistSelect) => {
   return playlists.map((playlist, index) => {
     const text = `${playlist.user.full_name} / ${decodeURIComponent(playlist.title)}`
     return (
-      <ListItemLink
+      <LinkItem
         text={text}
         to={`/playlist/${playlist.slug}`}
         key={playlist.id}

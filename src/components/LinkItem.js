@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import classnames from 'classnames'
 
-const ListItemLink = ({ isSelected, handleSelection, text, to }) => {
+const LinkItem = ({ isSelected, handleSelection, text, to }) => {
   const itemClasses = 'list-item bb pv3 bg-animate'
   const isSelectedClassNames = classnames({
     'bg-light-pink': isSelected,
@@ -20,4 +20,4 @@ const ListItemLink = ({ isSelected, handleSelection, text, to }) => {
 }
 
 
-export default ListItemLink
+export default LinkItem

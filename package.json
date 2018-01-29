@@ -21,9 +21,9 @@
   "dependencies": {
     "classnames": "^2.2.5",
     "moment": "^2.20.1",
-    "pui-react-pagination": "^7.5.5",
-    "react": "^15.3.2",
-    "react-dom": "^15.3.2",
+    "pui-react-pagination": "^8.3.3",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
     "react-player": "^1.1.1",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",

@@ -7,7 +7,7 @@ import {
 } from 'react-router-dom'
 import { Pagination } from 'pui-react-pagination'
 
-import ListItemLink from './components/ListItemLink'
+import LinkItem from './components/LinkItem'
 import Header from './components/Header'
 import Playlists from './containers/Playlists'
 import Playlist from './containers/Playlist'
@@ -26,7 +26,7 @@ class Main extends Component {
       activePage: 1,
       playlistListLength: 4,
       per: 20,
-      playlists: [],
+      playlists: null,
       isPlaying: false,
       currentTrackURL: null,
       indexOfCurrentTrack: 0,
@@ -43,8 +43,8 @@ class Main extends Component {
   // get list of playlists and playlist list length
   componentWillMount() {
     const { activePage, per } = this.state
-    const lengthPromise = this.API.getPlaylistChannelLength()
-    const playlistListPromise = this.API.getPaginatedPlaylistList(activePage, per)
+    const lengthPromise = this.API.getBlockCount()
+    const playlistListPromise = this.API.getPaginatedChannelContents(activePage, per)
     Promise.all([lengthPromise, playlistListPromise])
       .then(([length, playlists]) => {
         this.setState({
@@ -70,15 +70,15 @@ class Main extends Component {
     const { activePage, playlistListLength, per} = this.state
     const maxItemsInCurrentPage = this.getMaxItemsInCurrentPage(playlistListLength, per)
     this.setState({ maxItemsInCurrentPage })
-    if(eventKey === 'next') {
-      if(activePage !== maxItemsInCurrentPage) {
+    if (eventKey === 'next') {
+      if (activePage !== maxItemsInCurrentPage) {
         return this.updatePlaylist(activePage + 1)
       } else {
         return this.updatePlaylist(maxItemsInCurrentPage)
       }
     }
-    if(eventKey === 'prev') {
-      if(activePage !== 1) {
+    if (eventKey === 'prev') {
+      if (activePage !== 1) {
         return this.updatePlaylist(activePage - 1)
       } else {
         return this.updatePlaylist(1)
@@ -89,7 +89,7 @@ class Main extends Component {
 
   // if we go to a new page, tell the app about the playlists on the new page
   updatePlaylist(page) {
-    this.API.getPaginatedPlaylistList(page, this.state.per)
+    this.API.getPaginatedChannelContents(page, this.state.per)
       .then(playlists => this.setState({ playlists, activePage: page }) )
   }
 
@@ -136,7 +136,7 @@ class Main extends Component {
   // if we select a playlist, get it's contents.
   // then, set it as the current open playlist
   returnSelectedPlaylist = (playlistSlug) => {
-    this.API.getPaginatedPlaylistContents(playlistSlug)
+    this.API.getFullChannel(playlistSlug)
       .then(playlist => {
         this.setState({ currentOpenPlaylist: playlist })
       })
@@ -192,7 +192,7 @@ class Main extends Component {
     return (
       <Router>
         <div id={'w-100 min-vh-100 pa3 pa5-ns'}>
-          <Header />
+          <Header currentOpenPlaylist={this.state.currentOpenPlaylist}/>
           <Player
             handlePlayback={this.handlePlayback}
             isPlaying={this.state.isPlaying}

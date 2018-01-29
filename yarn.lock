@@ -5284,7 +5284,7 @@ promise@^7.1.1:
   dependencies:
     asap "~2.0.3"
 
-prop-types@^15.5.10, prop-types@^15.5.3, prop-types@^15.5.4, prop-types@^15.5.6:
+prop-types@>=15.5.6, prop-types@^15.5.10, prop-types@^15.5.3, prop-types@^15.5.4, prop-types@^15.5.6, prop-types@^15.6.0:
   version "15.6.0"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.6.0.tgz#ceaf083022fc46b4a35f69e13ef75aed0d639856"
   dependencies:
@@ -5307,24 +5307,25 @@ pseudomap@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/pseudomap/-/pseudomap-1.0.2.tgz#f052a28da70e618917ef0a8ac34c1ae5a68286b3"
 
-pui-css-pagination@=7.5.5:
-  version "7.5.5"
-  resolved "https://registry.yarnpkg.com/pui-css-pagination/-/pui-css-pagination-7.5.5.tgz#188bf3c104d9f1bdb90c307a563c5189f8cd6577"
+pui-css-pagination@=8.3.3:
+  version "8.3.3"
+  resolved "https://registry.yarnpkg.com/pui-css-pagination/-/pui-css-pagination-8.3.3.tgz#b2a67371b03c2528b33f6b20ad15e4ede697426b"
 
-pui-react-helpers@=7.5.5:
-  version "7.5.5"
-  resolved "https://registry.yarnpkg.com/pui-react-helpers/-/pui-react-helpers-7.5.5.tgz#89c823613818ddf928c08fc2a90002c4a538bc49"
+pui-react-helpers@=8.3.3:
+  version "8.3.3"
+  resolved "https://registry.yarnpkg.com/pui-react-helpers/-/pui-react-helpers-8.3.3.tgz#88b4ebd4525753c9160496df47c545a17c3eab4f"
   dependencies:
     babel-runtime "^6.1.18"
     classnames "^2.1.2"
 
-pui-react-pagination@^7.5.5:
-  version "7.5.5"
-  resolved "https://registry.yarnpkg.com/pui-react-pagination/-/pui-react-pagination-7.5.5.tgz#e61684c34cfa892a0ee51d9408f186ab50eb728f"
+pui-react-pagination@^8.3.3:
+  version "8.3.3"
+  resolved "https://registry.yarnpkg.com/pui-react-pagination/-/pui-react-pagination-8.3.3.tgz#e946d6a3bbe8a394a805480aed9d3826b1ba7c7a"
   dependencies:
     babel-runtime "^6.1.18"
-    pui-css-pagination "=7.5.5"
-    pui-react-helpers "=7.5.5"
+    prop-types ">=15.5.6"
+    pui-css-pagination "=8.3.3"
+    pui-react-helpers "=8.3.3"
 
 punycode@1.3.2:
   version "1.3.2"
@@ -5424,14 +5425,14 @@ react-dev-utils@^0.5.2:
     sockjs-client "1.0.1"
     strip-ansi "3.0.1"
 
-react-dom@^15.3.2:
-  version "15.6.2"
-  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-15.6.2.tgz#41cfadf693b757faf2708443a1d1fd5a02bef730"
+react-dom@^16.2.0:
+  version "16.2.0"
+  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.2.0.tgz#69003178601c0ca19b709b33a83369fe6124c044"
   dependencies:
-    fbjs "^0.8.9"
+    fbjs "^0.8.16"
     loose-envify "^1.1.0"
-    object-assign "^4.1.0"
-    prop-types "^15.5.10"
+    object-assign "^4.1.1"
+    prop-types "^15.6.0"
 
 react-player@^1.1.1:
   version "1.1.1"
@@ -5524,7 +5525,7 @@ react-youtube@^7.3.0:
     prop-types "^15.5.3"
     youtube-player "^5.4.0"
 
-"react@>=0.13.3 <16.0.0", react@^15.3.2:
+"react@>=0.13.3 <16.0.0":
   version "15.6.2"
   resolved "https://registry.yarnpkg.com/react/-/react-15.6.2.tgz#dba0434ab439cfe82f108f0f511663908179aa72"
   dependencies:
@@ -5533,6 +5534,15 @@ react-youtube@^7.3.0:
     loose-envify "^1.1.0"
     object-assign "^4.1.0"
     prop-types "^15.5.10"
+
+react@^16.2.0:
+  version "16.2.0"
+  resolved "https://registry.yarnpkg.com/react/-/react-16.2.0.tgz#a31bd2dab89bff65d42134fa187f24d054c273ba"
+  dependencies:
+    fbjs "^0.8.16"
+    loose-envify "^1.1.0"
+    object-assign "^4.1.1"
+    prop-types "^15.6.0"
 
 read-all-stream@^3.0.0:
   version "3.1.0"

@@ -8,25 +8,25 @@ class tinyAPI {
       .catch(err => console.error('ruh roh,', err))
   }
 
-  getPlaylistChannelLength = () => {
+  getBlockCount = () => {
     return this.get(`${BASE}/channels/${playlistChannel}/thumb`)
       .then(data => parse.playlistListLength(data))
   }
 
-  getPaginatedPlaylistList = (pageIndex, pagination) => {
-    return this.get(`${BASE}/channels/${playlistChannel}/contents?page=${pageIndex}&per=${pagination}`)
+  getPaginatedChannelContents = (pageIndex, per) => {
+    return this.get(`${BASE}/channels/${playlistChannel}/contents?page=${pageIndex}&per=${per}`)
       .then(data => parse.playlistList(data) )
   }
 
-  getPaginatedPlaylistContents = (playlistID, pagination) => {
-    return this.get(`${BASE}/channels/${playlistID}?per=${pagination}`)
+  getFullChannel = (playlistID, pagination) => {
+    return this.get(`${BASE}/channels/${playlistID}`)
       .then(data => parse.playlist(data) )
   }
 }
 
 const parse = {
   playlistList: (a) => a.contents,
-  playlist: (a) => a.contents,
+  playlist: (a) => a,
   playlistListLength: (a) => a.length,
 }
 
