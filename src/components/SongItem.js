@@ -9,14 +9,19 @@ const SongItem = ({ isSelected, handleSelection, song }) => {
     'bg-light-pink': isSelected,
     'hover-bg-washed-red': !isSelected,
   })
-  return (
-    <button
-      key={`button-play-${song.id}`}
-      className={`${itemClasses} ${isSelectedClassNames}`}
-      onClick={handleSelection}>
-        {decode(song.title)}
-      </button>
-  )
+  if (song.title) {
+    return (
+      <button
+        key={`button-play-${song.id}`}
+        className={`${itemClasses} ${isSelectedClassNames}`}
+        onClick={handleSelection}>
+          {decode(song.title)}
+        </button>
+    )
+  } else {
+    return <div className={'list-item'}>{'Invalid Track :('}</div>
+  }
+
 }
 
 

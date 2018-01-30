@@ -12,7 +12,7 @@ class Playlist extends Component {
 
   makeSongList = (playlist) => {
     if (playlist) {
-      return playlist.contents.map((song, index) => {
+      return onlySongs(playlist.contents).map((song, index) => {
         return (
           <SongItem
             key={song.id}

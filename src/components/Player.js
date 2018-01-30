@@ -79,7 +79,7 @@ const ArenaLogo = () => {
   return <p id={'nowPlaying'}>{'~'}</p>
 }
 
-// lol i am sorry for this
+// lol i am sorry for this sinful component
 const NowPlaying = ({
   time,
   currentTrackInfo,

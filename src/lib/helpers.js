@@ -9,7 +9,7 @@ function makeHash() {
 function onlySongs (contents) {
   return contents.filter(item => {
     const type = classifyItem(item)
-    return  (type === 'mp3' || type === 'soundcloud' || type === 'youtube')
+    return type === 'mp3' || type === 'soundcloud' || type === 'youtube'
   })
 }
 
