@@ -13,7 +13,7 @@ import Playlists from './containers/Playlists'
 import Playlist from './containers/Playlist'
 import Player from './components/Player'
 
-import { classifyItem } from './lib/helpers'
+import { classifyItem, makeHash } from './lib/helpers'
 import { apiBase, playlistChannel } from './config'
 import { tinyAPI } from './lib/api'
 
@@ -108,28 +108,33 @@ class Main extends Component {
 
   // currently any time a track is selected, it will be played.
   handleSongSelection = (item, indexOfCurrentTrack) => {
-    let currentTrackURL = ''
-    if (classifyItem(item) === 'mp3') {
-      currentTrackURL = item.attachment.url
-    } else {
-      currentTrackURL = item.source.url
-    }
-    this.playlistToCurrentTrackPlaylist()
-    console.log(item)
+    const { currentOpenPlaylist, currentTrackPlaylist } = this.state
+
     this.setState({
-      currentTrackURL,
+      currentTrackURL: this.returnBlockURL(item),
       indexOfCurrentTrack,
-      currentTrackInfo: item
+      currentTrackInfo: item,
+      trackIsFromCurrentPlaylist: true,
+      currentTrackPlaylist: this.state.currentOpenPlaylist
     })
+
     this.play()
   }
 
-  // if we open a new playlist and play a track from it, make sure the app
-  // knows about the new list
-  playlistToCurrentTrackPlaylist = () => {
-    this.setState({
-      currentTrackPlaylist: this.state.currentOpenPlaylist
-    })
+  returnBlockURL = (item) => {
+    if (classifyItem(item) === 'mp3') {
+      return item.attachment.url
+    } else {
+      return item.source.url
+    }
+  }
+
+  isTrackIsFromCurrentPlaylist = (pl1, pl2) => {
+    if (pl1 && pl2) {
+      return pl1.id === pl2.id ? true : false
+    } else {
+      return true
+    }
   }
 
   // yep
@@ -141,17 +146,16 @@ class Main extends Component {
     this.setState({ isPlaying: false, })
   }
 
-  // if we play a new track, tell the app about it's playlist
-  setCurrentTrackPlaylist = (playlist) => {
-    this.setState({ currentTrackPlaylist: playlist })
-  }
-
   // if we select a playlist, get it's contents.
   // then, set it as the current open playlist
   returnSelectedPlaylist = (playlistSlug) => {
     this.API.getFullChannel(playlistSlug)
       .then(playlist => {
-        this.setState({ currentOpenPlaylist: playlist })
+        const { currentTrackPlaylist } = this.state
+        this.setState({
+          currentOpenPlaylist: playlist,
+          trackIsFromCurrentPlaylist: this.isTrackIsFromCurrentPlaylist(currentTrackPlaylist, playlist)
+        })
       })
   }
 
@@ -160,7 +164,7 @@ class Main extends Component {
     const { indexOfCurrentTrack, currentTrackPlaylist } = this.state
     if (indexOfCurrentTrack + 1 < currentTrackPlaylist.length) {
       const nextIndex = indexOfCurrentTrack + 1
-      const nextTrack = currentTrackPlaylist[nextIndex]
+      const nextTrack = currentTrackPlaylist.contents[nextIndex]
       this.handleSongSelection(nextTrack, nextIndex)
     }
   }
@@ -170,7 +174,7 @@ class Main extends Component {
     const { indexOfCurrentTrack, currentTrackPlaylist } = this.state
     if (indexOfCurrentTrack > 0) {
       const previousIndex = indexOfCurrentTrack - 1
-      const previousTrack = currentTrackPlaylist[previousIndex]
+      const previousTrack = currentTrackPlaylist.contents[previousIndex]
       this.handleSongSelection(previousTrack, previousIndex)
     }
   }
@@ -200,15 +204,6 @@ class Main extends Component {
     // console.log(e, 'buffering')
   }
 
-  getCurrentTrackInfo = (currentTrackPlaylist, indexOfCurrentTrack) => {
-    if (currentTrackPlaylist) {
-      const track = currentTrackPlaylist.contents[indexOfCurrentTrack]
-      return track
-    } else {
-      return null
-    }
-  }
-
 
   render () {
     return (
@@ -232,6 +227,8 @@ class Main extends Component {
             trackProgress={this.state.trackProgress}
             trackDuration={this.state.trackDuration}
             currentTrackInfo={this.state.currentTrackInfo}
+            currentTrackPlaylist={this.state.currentTrackPlaylist}
+            trackIsFromCurrentPlaylist={this.state.trackIsFromCurrentPlaylist}
            />
           <Switch>
             <PropsRoute
@@ -269,7 +266,7 @@ const renderMergedProps = (component, ...mePropsies) => {
 // this is why we can use one local state for most of the app
 const PropsRoute = ({ component, ...mePropsies }) => {
   return (
-    <Route {...mePropsies} render={routeProps => {
+    <Route key={mePropsies.location.key} {...mePropsies} render={routeProps => {
       return renderMergedProps(component, routeProps, mePropsies)
     }}/>
   )

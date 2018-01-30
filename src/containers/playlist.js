@@ -4,11 +4,6 @@ import { onlySongs } from '../lib/helpers'
 import SongItem from '../components/SongItem'
 
 class Playlist extends Component {
-
-  getPlaylistLink(response) {
-    return `https://www.are.na/${response.user.slug}/${response.slug}`
-  }
-
   componentDidMount() {
     // get slug from router params and return it to <Main />
     const playlistSlug = this.props.match.params.playlistSlug

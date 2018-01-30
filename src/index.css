@@ -42,11 +42,15 @@ nav button {
   display: flex;
   justify-content: center;
   align-items: center;
+  transition: border-color 300ms;
 }
 
-nav button:hover{
-  border: 0.075em solid black;
+nav button:hover {
+  border-color: black;
+}
 
+button {
+  outline: none;
 }
 
 #nowPlaying {
@@ -57,9 +61,26 @@ nav button:hover{
   border: 1px solid #eee;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   padding: 0 1rem;
   border-radius: 0.125em;
+}
 
+#nowPlaying-title {
+  display: flex;
+  height: 100%;
+}
+
+#nowPlaying-title a {
+  /* text-decoration: underline !important; */
+  color: black;
+  opacity: 0.5;
+  margin-left: 0.25rem;
+  transition: opacity 400ms;
+
+}
+#nowPlaying-title a:hover {
+  opacity: 1;
 }
 
 .logo {

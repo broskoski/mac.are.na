@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import classnames from 'classnames'
+import { decode } from 'he'
 
 const SongItem = ({ isSelected, handleSelection, song }) => {
   const itemClasses = 'list-item bb pv3 bg-animate'
@@ -13,7 +14,7 @@ const SongItem = ({ isSelected, handleSelection, song }) => {
       key={`button-play-${song.id}`}
       className={`${itemClasses} ${isSelectedClassNames}`}
       onClick={handleSelection}>
-        {decodeURIComponent(song.title)}
+        {decode(song.title)}
       </button>
   )
 }
