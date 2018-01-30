@@ -41,7 +41,7 @@ class Main extends Component {
     this.API = new tinyAPI()
   }
 
-  // get list of playlists and playlist list length
+  // get list of playlists and playlist list length. also attach invert event
   componentWillMount() {
     window.addEventListener('keydown', (e) => this.handleInvert(e))
 
@@ -58,6 +58,7 @@ class Main extends Component {
       })
   }
 
+  // mhm
   handleInvert = (e) => {
     if (e.shiftKey && e.ctrlKey && e.code === 'KeyI') {
       document.body.classList.toggle('invert')
@@ -67,7 +68,7 @@ class Main extends Component {
   // i don't really get why this needs to happen, something to do with
   // specifically how pagination works
   // one issue right now is that the playlistListPromise returns # of all channels
-  // including private channels
+  // including private channels ( i think )
   getMaxItemsInCurrentPage = (length, per) => {
     return Math.ceil(length / this.state.per)
   }
@@ -132,8 +133,8 @@ class Main extends Component {
     }
   }
 
-  // determines if the currently playing track is from the currently displayed
-  // playlist
+  // determines if the currently playing/paused track is from the currently
+  // displayed playlist
   isTrackIsFromCurrentPlaylist = (pl1, pl2) => {
     if (pl1 && pl2) {
       return pl1.id === pl2.id ? true : false
@@ -197,7 +198,6 @@ class Main extends Component {
   }
 
   handleOnProgress = (e) => {
-    // { loaded, loadedSeconds, played, playedSeconds }
     this.setState({ trackProgress: e.playedSeconds })
   }
 
@@ -211,7 +211,6 @@ class Main extends Component {
 
 
   render () {
-
     return (
       <Router>
         <div className={'w-100 min-vh-100 pa3 pa5-ns'}>
@@ -240,7 +239,6 @@ class Main extends Component {
            />
           <Switch>
             <PropsRoute
-              {...this.props}
               exact path={'/'}
               component={Playlists}
               listLength={this.state.maxItemsInCurrentPage}
@@ -261,6 +259,7 @@ class Main extends Component {
   }
 }
 
+// we need router info from <Router /> in header but header is not a route
 const HeaderWithRouter = withRouter(props => <Header {...props}/>)
 
 // this takes props from <PropsRoute /> and passes them in a new

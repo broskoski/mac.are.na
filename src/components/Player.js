@@ -42,8 +42,9 @@ class Player extends Component {
 
     const handleNowPlaying = currentTrackPlaylist
       ? <NowPlaying
-        currentTrackPlaylist={currentTrackPlaylist}
-        currentTrackInfo={currentTrackInfo}
+        playListName={currentTrackPlaylist.title}
+        slug={currentTrackPlaylist.slug}
+        title={currentTrackInfo.title}
         trackIsFromCurrentPlaylist={trackIsFromCurrentPlaylist}
         time={time} />
       : <ArenaLogo />
@@ -76,23 +77,24 @@ class Player extends Component {
 
 
 const ArenaLogo = () => {
-  return <p id={'nowPlaying'}>{'~'}</p>
+  return <div id={'nowPlaying-title'}><p>{':~)'}</p></div>
 }
 
 // lol i am sorry for this sinful component
 const NowPlaying = ({
   time,
-  currentTrackInfo,
+  slug,
+  title,
+  playListName,
   trackIsFromCurrentPlaylist,
-  currentTrackPlaylist,
 }) => {
   return [
       <TitleText
         key={'tt'}
-        title={decode(currentTrackInfo.title)}
+        title={decode(title)}
         trackIsFromCurrentPlaylist={trackIsFromCurrentPlaylist}
-        playlistSlug={currentTrackPlaylist.slug}
-        playListName={decode(currentTrackPlaylist.title)} />,
+        playlistSlug={slug}
+        playListName={decode(playListName)} />,
       <p key={'p'}>{time}</p>
     ]
 }
