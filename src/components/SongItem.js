@@ -9,6 +9,7 @@ const SongItem = ({ isSelected, handleSelection, song }) => {
     'bg-light-pink': isSelected,
     'hover-bg-washed-red': !isSelected,
   })
+
   if (song.title) {
     return (
       <button

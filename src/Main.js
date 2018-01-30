@@ -4,6 +4,7 @@ import {
   Route,
   Link,
   Switch,
+  withRouter,
 } from 'react-router-dom'
 import { Pagination } from 'pui-react-pagination'
 
@@ -206,10 +207,13 @@ class Main extends Component {
 
 
   render () {
+
     return (
       <Router>
         <div className={'w-100 min-vh-100 pa3 pa5-ns'}>
-          <Header currentOpenPlaylist={this.state.currentOpenPlaylist}/>
+          <HeaderWithProps
+            currentRoute={'/'}
+            currentOpenPlaylist={this.state.currentOpenPlaylist} />
           <Player
             handlePlayback={this.handlePlayback}
             isPlaying={this.state.isPlaying}
@@ -252,6 +256,9 @@ class Main extends Component {
     )
   }
 }
+
+const HeaderWithProps = withRouter(props => <Header {...props}/>)
+
 
 // this takes props from <PropsRoute /> and passes them in a new
 // object to the wrapped component
