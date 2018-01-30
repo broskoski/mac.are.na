@@ -122,6 +122,8 @@ class Main extends Component {
     this.play()
   }
 
+
+  // different blocks have diff ways of storing src
   returnBlockURL = (item) => {
     if (classifyItem(item) === 'mp3') {
       return item.attachment.url
@@ -130,6 +132,8 @@ class Main extends Component {
     }
   }
 
+  // determines if the currently playing track is from the currently displayed
+  // playlist
   isTrackIsFromCurrentPlaylist = (pl1, pl2) => {
     if (pl1 && pl2) {
       return pl1.id === pl2.id ? true : false
@@ -138,11 +142,11 @@ class Main extends Component {
     }
   }
 
-  // yep
+
   play = () => {
     this.setState({ isPlaying: true, })
   }
-   // mhm
+
   pause = () => {
     this.setState({ isPlaying: false, })
   }
@@ -211,7 +215,7 @@ class Main extends Component {
     return (
       <Router>
         <div className={'w-100 min-vh-100 pa3 pa5-ns'}>
-          <HeaderWithProps
+          <HeaderWithRouter
             currentRoute={'/'}
             currentOpenPlaylist={this.state.currentOpenPlaylist} />
           <Player
@@ -257,8 +261,7 @@ class Main extends Component {
   }
 }
 
-const HeaderWithProps = withRouter(props => <Header {...props}/>)
-
+const HeaderWithRouter = withRouter(props => <Header {...props}/>)
 
 // this takes props from <PropsRoute /> and passes them in a new
 // object to the wrapped component
