@@ -28,7 +28,7 @@ const Playlists = ({
 
 const makePlaylistLinks = (playlists, handlePlaylistSelect) => {
   return playlists.map((playlist, index) => {
-    const text = `${playlist.user.full_name} / ${decodeURIComponent(playlist.title)}`
+    const text = `${decodeURIComponent(playlist.user.full_name)} / ${decodeURIComponent(playlist.title)}`
     return (
       <LinkItem
         text={text}

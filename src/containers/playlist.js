@@ -30,7 +30,7 @@ class Playlist extends Component {
 
   render () {
     return (
-      <div className='w-100 min-vh-100 pa3 pa5-ns'>
+      <div className='w-100 min-vh-100'>
         {this.makeSongList(this.props.currentOpenPlaylist)}
       </div>
     )

@@ -8,13 +8,12 @@ const SongItem = ({ isSelected, handleSelection, song }) => {
     'bg-light-pink': isSelected,
     'hover-bg-washed-red': !isSelected,
   })
-
   return (
     <button
       key={`button-play-${song.id}`}
       className={`${itemClasses} ${isSelectedClassNames}`}
       onClick={handleSelection}>
-        {song.title}
+        {decodeURIComponent(song.title)}
       </button>
   )
 }

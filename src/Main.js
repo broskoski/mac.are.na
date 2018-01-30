@@ -42,6 +42,8 @@ class Main extends Component {
 
   // get list of playlists and playlist list length
   componentWillMount() {
+    window.addEventListener('keydown', (e) => this.handleInvert(e))
+
     const { activePage, per } = this.state
     const lengthPromise = this.API.getBlockCount()
     const playlistListPromise = this.API.getPaginatedChannelContents(activePage, per)
@@ -53,6 +55,12 @@ class Main extends Component {
           maxItemsInCurrentPage: this.getMaxItemsInCurrentPage(length, this.state.per),
         })
       })
+  }
+
+  handleInvert = (e) => {
+    if (e.shiftKey && e.ctrlKey && e.code === 'KeyI') {
+      document.body.classList.toggle('invert')
+    }
   }
 
   // i don't really get why this needs to happen, something to do with
@@ -107,7 +115,12 @@ class Main extends Component {
       currentTrackURL = item.source.url
     }
     this.playlistToCurrentTrackPlaylist()
-    this.setState({currentTrackURL, indexOfCurrentTrack})
+    console.log(item)
+    this.setState({
+      currentTrackURL,
+      indexOfCurrentTrack,
+      currentTrackInfo: item
+    })
     this.play()
   }
 
@@ -187,11 +200,20 @@ class Main extends Component {
     // console.log(e, 'buffering')
   }
 
+  getCurrentTrackInfo = (currentTrackPlaylist, indexOfCurrentTrack) => {
+    if (currentTrackPlaylist) {
+      const track = currentTrackPlaylist.contents[indexOfCurrentTrack]
+      return track
+    } else {
+      return null
+    }
+  }
+
 
   render () {
     return (
       <Router>
-        <div id={'w-100 min-vh-100 pa3 pa5-ns'}>
+        <div className={'w-100 min-vh-100 pa3 pa5-ns'}>
           <Header currentOpenPlaylist={this.state.currentOpenPlaylist}/>
           <Player
             handlePlayback={this.handlePlayback}
@@ -209,6 +231,7 @@ class Main extends Component {
             handleOnBuffer={this.handleOnBuffer}
             trackProgress={this.state.trackProgress}
             trackDuration={this.state.trackDuration}
+            currentTrackInfo={this.state.currentTrackInfo}
            />
           <Switch>
             <PropsRoute

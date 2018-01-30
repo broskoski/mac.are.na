@@ -3,6 +3,10 @@ import ReactPlayer from 'react-player'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
 
+import forwardSVG from '../assets/forward.svg'
+import playSVG from '../assets/play.svg'
+import reverseSVG from '../assets/reverse.svg'
+import pauseSVG from '../assets/pause.svg'
 import { soundcloud } from "../config"
 import { classifyItem } from '../lib/helpers'
 
@@ -24,18 +28,23 @@ class Player extends Component {
       volume,
       trackProgress,
       trackDuration,
+      currentTrackInfo,
     } = this.props
-
-    const playbackSymbol = isPlaying ? '▌▌' : '▶️'
+    const playbackSymbol = isPlaying ? <img src={pauseSVG} /> : <img src={playSVG} />
     const progress = moment.utc(trackProgress*1000).format('H:m:ss')
     const duration = moment.utc(trackDuration*1000).format('H:m:ss')
     const time =`${progress} / ${duration}`
+    const nowPlaying = currentTrackInfo
+      ? `Now Playing: ${decodeURIComponent(currentTrackInfo.title)}` : ''
     return (
       <nav>
-        <button onClick={() => goToPreviousTrack()}>{'Previous'}</button>
+        <button onClick={() => goToPreviousTrack()}><img src={reverseSVG} /></button>
         <button onClick={() => handlePlayback()}>{playbackSymbol}</button>
-        <button onClick={() => goToNextTrack()}>{'Next'}</button>
-        <div id={'nowPlaying'}>{time}</div>
+        <button onClick={() => goToNextTrack()}><img src={forwardSVG} /></button>
+        <div id={'nowPlaying'}>
+          <p>{nowPlaying}</p>
+          <p>{time}</p>
+        </div>
         <ReactPlayer
           url={currentTrackURL}
           playing={isPlaying}

@@ -1,0 +1,17 @@
+<svg width="60" height="60" viewBox="0 0 60 60" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<title>play</title>
+<desc>Created using Figma</desc>
+<g id="Canvas" transform="translate(415 312)">
+<clipPath id="clip-0" clip-rule="evenodd">
+<path d="M -415 -312L -355 -312L -355 -252L -415 -252L -415 -312Z" fill="#FFFFFF"/>
+</clipPath>
+<g id="play" clip-path="url(#clip-0)">
+<g id="Polygon">
+<use xlink:href="#path0_fill" transform="matrix(6.12323e-17 1 -1 6.12323e-17 -372 -297)" fill="#585858"/>
+</g>
+</g>
+</g>
+<defs>
+<path id="path0_fill" d="M 15 0L 27.9904 22.5L 2.00962 22.5L 15 0Z"/>
+</defs>
+</svg>

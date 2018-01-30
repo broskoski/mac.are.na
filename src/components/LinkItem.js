@@ -14,7 +14,7 @@ const LinkItem = ({ isSelected, handleSelection, text, to }) => {
       key={`link-to-${to}`}
       className={`${itemClasses} ${isSelectedClassNames}`}
       to={to}>
-        {text}
+        {decodeURIComponent(text)}
       </Link>
   )
 }
