@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import classnames from 'classnames'
 import { onlySongs } from '../lib/helpers'
 
 import SongItem from '../components/SongItem'
@@ -24,11 +25,17 @@ class Playlist extends Component {
   }
 
   render () {
-    return (
-      <div className='w-100 min-vh-100'>
-        {this.makeSongList(this.props.currentOpenPlaylist)}
-      </div>
-    )
+    const { currentOpenPlaylist, isCurrentPlaylistLoaded} = this.props
+    if (isCurrentPlaylistLoaded) {
+      return (
+        <div className='w-100 min-vh-100'>
+          {this.makeSongList(currentOpenPlaylist)}
+        </div>
+      )
+    } else {
+      return <div/>
+    }
+
   }
 }
 

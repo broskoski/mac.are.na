@@ -37,6 +37,7 @@ class Main extends Component {
       volume: 0.8,
       trackProgress: 0,
       trackDuration: 0,
+      isCurrentPlaylistLoaded: false,
     }
     this.API = new tinyAPI()
   }
@@ -46,9 +47,11 @@ class Main extends Component {
     window.addEventListener('keydown', (e) => this.handleInvert(e))
 
     const { activePage, per } = this.state
-    const lengthPromise = this.API.getBlockCount()
-    const playlistListPromise = this.API.getPaginatedChannelContents(activePage, per)
-    Promise.all([lengthPromise, playlistListPromise])
+
+    Promise.all([
+      this.API.getBlockCount(),
+      this.API.getPaginatedChannelContents(activePage, per),
+    ])
       .then(([length, playlists]) => {
         this.setState({
           playlistListLength: length,
@@ -155,11 +158,13 @@ class Main extends Component {
   // if we select a playlist, get it's contents.
   // then, set it as the current open playlist
   returnSelectedPlaylist = (playlistSlug) => {
+    this.setState({isCurrentPlaylistLoaded: false})
     this.API.getFullChannel(playlistSlug)
       .then(playlist => {
         const { currentTrackPlaylist } = this.state
         this.setState({
           currentOpenPlaylist: playlist,
+          isCurrentPlaylistLoaded: true,
           trackIsFromCurrentPlaylist: this.isTrackIsFromCurrentPlaylist(currentTrackPlaylist, playlist)
         })
       })
@@ -249,6 +254,7 @@ class Main extends Component {
             <PropsRoute
               path={'/playlist/:playlistSlug'}
               component={Playlist}
+              isCurrentPlaylistLoaded={this.state.isCurrentPlaylistLoaded}
               currentOpenPlaylist={this.state.currentOpenPlaylist}
               handleSongSelection={this.handleSongSelection}
               returnSelectedPlaylist={this.returnSelectedPlaylist} />
