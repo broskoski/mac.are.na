@@ -243,7 +243,9 @@ class Main extends Component {
         <div className={'w-100 min-vh-100 pa3 pa5-ns'}>
           <HeaderWithRouter
             currentRoute={'/'}
-            currentOpenPlaylist={this.state.currentOpenPlaylist} />
+            currentOpenPlaylist={this.state.currentOpenPlaylist}
+            isCurrentPlaylistLoaded={this.state.isCurrentPlaylistLoaded}
+          />
           <Player
             ref={this.ref}
             handlePlayback={this.handlePlayback}

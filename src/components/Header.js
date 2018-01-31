@@ -5,8 +5,8 @@ import { decode } from 'he'
 
 class Header extends Component {
   handleHeaderText = () => {
-    const { currentOpenPlaylist } = this.props
-    if (currentOpenPlaylist) {
+    const { currentOpenPlaylist, isCurrentPlaylistLoaded } = this.props
+    if (currentOpenPlaylist && isCurrentPlaylistLoaded) {
       if (this.props.location.pathname !== '/') {
         return decode(` / ${currentOpenPlaylist.title}`)
       }
