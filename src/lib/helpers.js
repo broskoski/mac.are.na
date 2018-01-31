@@ -53,10 +53,20 @@ function scrubTitle(title) {
   return title
 }
 
+function getStatus(item) {
+  switch (item.status){
+    case "public": return "public"
+    case "closed": return "closed"
+    default: return "public"
+  }
+}
+
+
 export {
   sanitizeURL,
   classifyItemURL,
   makeHash,
   validatePlayability,
   scrubTitle,
+  getStatus,
 }

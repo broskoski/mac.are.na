@@ -52,15 +52,52 @@ nav button:hover {
 button {
   outline: none;
   background-color: white;
-
 }
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+fieldset {
+  min-width: 0;
+  padding: 0;
+  margin: 0;
+  border: 0;
+}
+
+.Input {
+  display: block;
+  width: 100%;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  padding: 0.75em 1em;
+  border-radius: 0.125em;
+  color: #585858;
+  /* background-color: #f7f7f7; */
+  border: 1px solid #f0f0f0;
+  font-size: 1rem;
+  /* border: none; */
+  float: left;
+}
+
+.Input:focus {
+  background-color: #f7f7f7;
+  color: rgb(88, 88, 88);
+}
+
+.Input:hover {
+  background-color: #f7f7f7;
+  color: rgb(88, 88, 88);
+}
+
 
 #nowPlaying {
   margin: 5px;
   height: 3rem;
   flex: 1;
-  background-color: #eee;
-  border: 1px solid #eee;
+  background-color: #f0f0f0;
+  border: 1px solid #f0f0f0;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -105,7 +142,6 @@ button {
   align-items: center;
   justify-content: center;
   padding: 0rem 1rem;
-  overflow-x: hidden;
 }
 
 #nowPlaying-right .tile-wrap {
@@ -135,12 +171,12 @@ button {
   width: 100%;
   text-align: left;
   border: none;
-  border-top: 1px solid black;
+  border-top: 1px solid #f0f0f0;
   color: black;
 }
 
 .list-item.rejected {
-  background-color: #eee;
+  background-color: #fafafa;
   color: grey;
   pointer-events: none;
 }
@@ -173,7 +209,7 @@ a:hover, a:active, a:focus {
 
 /* top li border */
 .bb {
-  border-top: solid 1px black;
+  /* border-top: solid 1px black; */
 }
 /* .w-100 > .bb ~ .bb {
   border-top: none;
@@ -212,4 +248,37 @@ a:hover, a:active, a:focus {
   background-color: white;
   border: none;
   margin: 0rem 1rem;
+}
+
+
+.loader {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: transparent;
+  margin: 0 auto;
+}
+
+.loader svg rect {
+    fill: rgba(255,255,255,0);
+    stroke: #050505;
+    stroke-dasharray: 80;
+    stroke-dashoffset: 500;
+    animation: dash 1.5s steps(16, end) infinite;
+}
+
+@keyframes dash {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.public{
+  color: #17ac10;
+}
+
+.closed{
+  color:#4b3d67;
 }

@@ -5,6 +5,7 @@ import {
   Switch,
   withRouter,
 } from 'react-router-dom'
+import { decode } from 'he'
 
 import Header from './components/Header'
 import Playlists from './containers/Playlists'
@@ -26,13 +27,13 @@ class Main extends Component {
     super(props)
     this.state = {
       activePage: 1,
-      playlistListLength: 4,
+      playlistListLength: 0,
       per: 20,
-      playlists: null,
+      playlistChannel: null,
+      searchList: null,
       isPlaying: false,
       currentTrackURL: null,
       indexOfCurrentTrack: 0,
-      paginatedPageOfCurrentTrackPlaylist: 0,
       currentOpenPlaylist: null,
       currentTrackPlaylist: null,
       maxItemsInCurrentPage: 0,
@@ -43,6 +44,7 @@ class Main extends Component {
       playerStatus: playerStatus.idle,
       currentTrackInfo: null,
       trackIsFromCurrentPlaylist: true,
+      searchQuery: '',
       currentRoute: '/',
     }
     this.API = new tinyAPI()
@@ -52,20 +54,37 @@ class Main extends Component {
   // get list of playlists and playlist list length. also attach invert event
   componentWillMount() {
     window.addEventListener('keydown', (e) => this.handleInvert(e))
-
-    const { activePage, per } = this.state
-
     Promise.all([
       this.API.getBlockCount(),
-      this.API.getPaginatedChannelContents(activePage, per),
+      this.API.getChannelContents(),
     ])
-      .then(([length, playlists]) => {
+      .then(([length, playlistChannel]) => {
+        const resortedPlaylists = {
+          ...playlistChannel,
+          contents: playlistChannel.contents.reverse()
+        }
         this.setState({
           playlistListLength: length,
-          playlists,
-          maxItemsInCurrentPage: this.getMaxItemsInCurrentPage(length, this.state.per),
+          playlistChannel: resortedPlaylists,
+          searchList: playlistChannel,
         })
       })
+  }
+
+  togglePlaylistOrder = (resortedPlaylists) => {
+    this.setState({ resortedPlaylists: resortedPlaylists.reverse() })
+  }
+
+  applySearch = (predicate) => {
+    const updatedList = this.state.playlistChannel.contents.filter(item => {
+      const text = decode(`${item.user.full_name} / ${item.title}`)
+      return text.toLowerCase().search(predicate) !== -1
+    })
+    this.setState({ searchList: { ...this.state.playlistChannel, contents: updatedList } })
+  }
+
+  setQueryInState = (event) => {
+    this.setState({ searchQuery: event.target.value })
   }
 
   // mhm
@@ -81,36 +100,6 @@ class Main extends Component {
   // including private channels ( i think )
   getMaxItemsInCurrentPage = (length, per) => {
     return Math.ceil(length / this.state.per)
-  }
-
-  // if we go forward or back in pagination, update the playlist page
-  // with new contents from an index in pagination
-  handlePaginatedPageNav(event, selectedEvent) {
-    const eventKey = selectedEvent.eventKey
-    const { activePage, playlistListLength, per} = this.state
-    const maxItemsInCurrentPage = this.getMaxItemsInCurrentPage(playlistListLength, per)
-    this.setState({ maxItemsInCurrentPage })
-    if (eventKey === 'next') {
-      if (activePage !== maxItemsInCurrentPage) {
-        return this.updatePlaylist(activePage + 1)
-      } else {
-        return this.updatePlaylist(maxItemsInCurrentPage)
-      }
-    }
-    if (eventKey === 'prev') {
-      if (activePage !== 1) {
-        return this.updatePlaylist(activePage - 1)
-      } else {
-        return this.updatePlaylist(1)
-      }
-    }
-    return this.updatePlaylist(eventKey)
-  }
-
-  // if we go to a new page, tell the app about the playlists on the new page
-  updatePlaylist(page) {
-    this.API.getPaginatedChannelContents(page, this.state.per)
-      .then(playlists => this.setState({ playlists, activePage: page }) )
   }
 
   // toggle function for playing and pausing with 1 UI element. Plays 1st track
@@ -152,7 +141,6 @@ class Main extends Component {
       return true
     }
   }
-
 
   play = () => {
     this.setState({ isPlaying: true, })
@@ -274,11 +262,16 @@ class Main extends Component {
               exact path={'/'}
               component={Playlists}
               listLength={this.state.maxItemsInCurrentPage}
-              playlists={this.state.playlists}
+              playlistChannel={this.state.playlistChannel}
+              searchList={this.state.searchList}
+              applySearch={this.applySearch}
               activePage={this.state.activePage}
               handlePlaylistSelect={this.handlePlaylistSelect}
               returnFullRoute={this.returnFullRoute}
-              handlePaginatedPageNav={(event, selectedEvent) => this.handlePaginatedPageNav(event, selectedEvent)} />
+              searchQuery={this.state.searchQuery}
+              setQueryInState={this.setQueryInState}
+              // handlePaginatedPageNav={(event, selectedEvent) => this.handlePaginatedPageNav(event, selectedEvent)} />
+              />
             <PropsRoute
               path={'/playlist/:playlistSlug'}
               component={Playlist}

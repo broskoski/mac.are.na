@@ -18,16 +18,30 @@ class Playlist extends Component {
       handleSongSelection,
       currentTrackInfo,
     } = this.props
+
+    let status = "public"
+    switch (playlist.status) {
+      case "public":
+        status = "public"
+        break;
+      case "closed":
+        status = "closed"
+      break;
+      default:
+        status = "public"
+    }
+
     return playlist.contents.filter(item => validatePlayability(item, true))
       .map((song, index) => {
-        return (
-          <SongItem
-            key={song.id}
-            song={song}
-            isSelected={trackIsFromCurrentPlaylist && indexOfCurrentTrack === index && currentTrackInfo}
-            handleSelection={() => handleSongSelection(song, index)} />
-        )
-      })
+      return (
+        <SongItem
+          key={song.id}
+          song={song}
+          status={status}
+          isSelected={trackIsFromCurrentPlaylist && indexOfCurrentTrack === index && currentTrackInfo}
+          handleSelection={() => handleSongSelection(song, index)} />
+      )
+    })
   }
 
   makeSongRejectList = (playlist) => {
