@@ -3,6 +3,9 @@
 [Are.na channel -> playlist]
 
 ## Installation
+1. Copy `.env.sample` to `.env`
+2. Replace `REACT_APP_SOUNDCLOUD_CLIENT_ID` with your Soundcloud secret
+3. Run:
 ```
 yarn install
 yarn start
