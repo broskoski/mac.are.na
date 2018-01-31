@@ -17,6 +17,9 @@
     "mp3"
   ],
   "author": "Charles Broskoski <cab@are.na>",
+  "contributors": [
+    "Gavin Atkinson"
+  ],
   "license": "MIT",
   "dependencies": {
     "classnames": "^2.2.5",
