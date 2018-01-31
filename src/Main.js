@@ -50,6 +50,7 @@ class Main extends Component {
       playerStatus: playerStatus.idle,
       currentTrackInfo: null,
       trackIsFromCurrentPlaylist: true,
+      currentRoute: '/',
     }
     this.API = new tinyAPI()
   }
@@ -118,9 +119,21 @@ class Main extends Component {
       .then(playlists => this.setState({ playlists, activePage: page }) )
   }
 
-  // toggle function for playing and pausing with 1 element
+  // toggle function for playing and pausing with 1 UI element. Plays 1st track
+  // of playlist if pressed and nothing has been played yet
   handlePlayback = () => {
-    this.state.isPlaying ? this.pause() : this.play()
+    const {
+      currentRoute,
+      currentOpenPlaylist,
+      isPlaying,
+      currentTrackURL
+    } = this.state
+    if (currentRoute === '/playlist/:playlistSlug' && !currentTrackURL) {
+      const item = currentOpenPlaylist.contents[0]
+      this.handleSongSelection(item, 0)
+    } else if (currentRoute === '/playlist/:playlistSlug' || currentTrackURL) {
+      isPlaying ? this.pause() : this.play()
+    }
   }
 
   // currently any time a track is selected, it will be played.
@@ -133,7 +146,6 @@ class Main extends Component {
       trackIsFromCurrentPlaylist: true,
       currentTrackPlaylist: this.state.currentOpenPlaylist
     })
-
     this.play()
   }
 
@@ -190,6 +202,10 @@ class Main extends Component {
       const previousTrack = currentTrackPlaylist.contents[previousIndex]
       this.handleSongSelection(previousTrack, previousIndex)
     }
+  }
+
+  returnFullRoute = (currentRoute) => {
+    this.setState({currentRoute})
   }
 
   handleOnReady = (e) => {
@@ -250,6 +266,7 @@ class Main extends Component {
             currentTrackPlaylist={this.state.currentTrackPlaylist}
             trackIsFromCurrentPlaylist={this.state.trackIsFromCurrentPlaylist}
             playerStatus={this.state.playerStatus}
+            currentRoute={this.state.currentRoute}
            />
           <Switch>
             <PropsRoute
@@ -259,6 +276,7 @@ class Main extends Component {
               playlists={this.state.playlists}
               activePage={this.state.activePage}
               handlePlaylistSelect={this.handlePlaylistSelect}
+              returnFullRoute={this.returnFullRoute}
               handlePaginatedPageNav={(event, selectedEvent) => this.handlePaginatedPageNav(event, selectedEvent)} />
             <PropsRoute
               path={'/playlist/:playlistSlug'}
@@ -270,6 +288,7 @@ class Main extends Component {
               trackIsFromCurrentPlaylist={this.state.trackIsFromCurrentPlaylist}
               indexOfCurrentTrack={this.state.indexOfCurrentTrack}
               returnSelectedPlaylist={this.returnSelectedPlaylist}
+              returnFullRoute={this.returnFullRoute}
               currentTrackInfo={this.state.currentTrackInfo} />
           </Switch>
         </div>

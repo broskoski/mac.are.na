@@ -35,6 +35,7 @@ class Player extends Component {
       trackIsFromCurrentPlaylist,
       currentTrackPlaylist,
       playerStatus,
+      currentRoute,
     } = this.props
     const playbackSymbol = isPlaying ? <img src={pauseSVG} /> : <img src={playSVG} />
 
@@ -69,7 +70,8 @@ class Player extends Component {
             <TrackTitle
               trackInfo={currentTrackInfo}
               currentTrackPlaylist={currentTrackPlaylist}
-              trackIsFromCurrentPlaylist={trackIsFromCurrentPlaylist} />
+              trackIsFromCurrentPlaylist={trackIsFromCurrentPlaylist}
+              currentRoute={currentRoute} />
           </div>
           <div id={'nowPlaying-right'}>
             <SourceLink trackInfo={currentTrackInfo} />
@@ -112,10 +114,15 @@ const Dot = ({playerStatus}) => {
   )
 }
 
-const TrackTitle = ({ trackInfo, currentTrackPlaylist, trackIsFromCurrentPlaylist }) => {
+const TrackTitle = ({
+  trackInfo,
+  currentTrackPlaylist,
+  trackIsFromCurrentPlaylist,
+  currentRoute,
+}) => {
   if (trackInfo) {
     const title = decode(trackInfo.title)
-    if (!trackIsFromCurrentPlaylist) {
+    if (!trackIsFromCurrentPlaylist || currentRoute === '/') {
       const playlistSlug = currentTrackPlaylist.slug
       const playListTitle = decode(currentTrackPlaylist.title)
       return (

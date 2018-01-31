@@ -9,6 +9,7 @@ class Playlist extends Component {
     // get slug from router params and return it to <Main />
     const playlistSlug = this.props.match.params.playlistSlug
     this.props.returnSelectedPlaylist(playlistSlug)
+    this.props.returnFullRoute(this.props.computedMatch.path)
   }
 
   makeSongList = (playlist) => {
