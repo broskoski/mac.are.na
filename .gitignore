@@ -23,4 +23,4 @@ Thumbs.db
 node_modules/
 
 # Secrets
-.env.local
+.env
