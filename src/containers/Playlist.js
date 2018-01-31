@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
-import { onlySongs } from '../lib/helpers'
+import { onlySongs, validatePlayability } from '../lib/helpers'
 
-import SongItem from '../components/SongItem'
+import { SongItem, SongItemReject } from '../components/SongItem'
 
 class Playlist extends Component {
   componentDidMount() {
@@ -12,14 +12,14 @@ class Playlist extends Component {
   }
 
   makeSongList = (playlist) => {
-    if (playlist) {
     const {
       trackIsFromCurrentPlaylist,
       indexOfCurrentTrack,
       handleSongSelection,
       currentTrackInfo,
     } = this.props
-      return onlySongs(playlist.contents).map((song, index) => {
+    return playlist.contents.filter(item => validatePlayability(item, true))
+      .map((song, index) => {
         return (
           <SongItem
             key={song.id}
@@ -28,15 +28,23 @@ class Playlist extends Component {
             handleSelection={() => handleSongSelection(song, index)} />
         )
       })
-    }
   }
+
+  makeSongRejectList = (playlist) => {
+    return playlist.contents.filter(item => validatePlayability(item, false))
+      .map((song, index) => {
+        return <SongItemReject key={song.id} song={song} />
+      })
+  }
+
 
   render () {
     const { currentOpenPlaylist, isCurrentPlaylistLoaded} = this.props
-    if (isCurrentPlaylistLoaded) {
+    if (isCurrentPlaylistLoaded && currentOpenPlaylist) {
       return (
         <div className='w-100 min-vh-100'>
-          {this.makeSongList(currentOpenPlaylist)}
+          { this.makeSongList(currentOpenPlaylist) }
+          { this.makeSongRejectList(currentOpenPlaylist)}
         </div>
       )
     } else {

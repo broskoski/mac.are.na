@@ -1,6 +1,7 @@
 import React from 'react'
 import classnames from 'classnames'
 import { decode } from 'he'
+import { scrubTitle } from '../lib/helpers'
 
 const SongItem = ({ isSelected, handleSelection, song }) => {
   const itemClasses = 'list-item bb pv3 bg-animate'
@@ -8,21 +9,31 @@ const SongItem = ({ isSelected, handleSelection, song }) => {
     'bg-light-pink': isSelected,
     'hover-bg-washed-red': !isSelected,
   })
-
-  if (song.title) {
+  const title = scrubTitle(song.title)
     return (
       <button
         key={`button-play-${song.id}`}
         className={`${itemClasses} ${isSelectedClassNames}`}
         onClick={handleSelection}>
-          {decode(song.title)}
+          {decode(title)}
         </button>
-    )
-  } else {
-    return <div className={'list-item'}>{'Invalid Track :('}</div>
-  }
+  )
+}
 
+const SongItemReject = ({ isSelected, handleSelection, song }) => {
+  const itemClasses = 'list-item rejected bb pv3'
+  const title = scrubTitle(song.title)
+    return (
+      <div
+        key={`button-reject-${song.id}`}
+        className={`${itemClasses}`}>
+          {`${decode(title)}`}
+      </div>
+    )
 }
 
 
-export default SongItem
+export {
+  SongItem,
+  SongItemReject,
+}

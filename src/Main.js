@@ -11,7 +11,7 @@ import Playlists from './containers/Playlists'
 import Playlist from './containers/Playlist'
 import Player from './components/Player'
 
-import { returnBlockURL } from './lib/helpers'
+import { classifyItemURL } from './lib/helpers'
 import { tinyAPI } from './lib/api'
 
 const playerStatus = {
@@ -32,7 +32,6 @@ class Main extends Component {
       isPlaying: false,
       currentTrackURL: null,
       indexOfCurrentTrack: 0,
-      indexOfCurrentTrackPlaylist: 0,
       paginatedPageOfCurrentTrackPlaylist: 0,
       currentOpenPlaylist: null,
       currentTrackPlaylist: null,
@@ -134,7 +133,7 @@ class Main extends Component {
   // currently any time a track is selected, it will be played.
   handleSongSelection = (item, indexOfCurrentTrack) => {
     this.setState({
-      currentTrackURL: returnBlockURL(item),
+      currentTrackURL: classifyItemURL(item),
       indexOfCurrentTrack,
       currentTrackInfo: item,
       trackIsFromCurrentPlaylist: true,

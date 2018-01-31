@@ -139,6 +139,12 @@ button {
   color: black;
 }
 
+.list-item.rejected {
+  background-color: #eee;
+  color: grey;
+  pointer-events: none;
+}
+
 .list-item:hover {
   cursor: pointer;
 }
