@@ -38,10 +38,22 @@ class Playlists extends Component {
 
   makePlaylistLinks = (playlists, handlePlaylistSelect) => {
     return playlists.map((playlist, index) => {
+      let status = "public"
+      switch (playlist.status){
+        case "public":
+          status = "public"
+          break;
+        case "closed":
+          status = "closed"
+        break;
+        default:
+          status = "public"
+      }
       const text = `${decode(playlist.user.full_name)} / ${decode(playlist.title)}`
       return (
         <LinkItem
           text={text}
+          status={status}
           to={`/playlist/${playlist.slug}`}
           key={playlist.id}
           playlist={playlist}
@@ -63,7 +75,7 @@ class Playlists extends Component {
           <div className="filterList">
             <form>
               <fieldset className="form-group">
-                <input className="Input" type="text" placeholder="Search" onChange={this.filterList}>
+                <input className="Input" type="text" placeholder="Search Channels" onChange={this.filterList}>
                 </input>
               </fieldset>
             </form>

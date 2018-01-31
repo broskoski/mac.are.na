@@ -74,9 +74,21 @@ fieldset {
   padding: 0.75em 1em;
   border-radius: 0.125em;
   color: #585858;
-  background-color: #f7f7f7;
+  /* background-color: #f7f7f7; */
+  border: 1px solid #f0f0f0;
   font-size: 1rem;
-  border: none;
+  /* border: none; */
+  float: left;
+}
+
+.Input:focus {
+  background-color: #f7f7f7;
+  color: rgb(88, 88, 88);
+}
+
+.Input:hover {
+  background-color: #f7f7f7;
+  color: rgb(88, 88, 88);
 }
 
 
@@ -159,7 +171,7 @@ fieldset {
   width: 100%;
   text-align: left;
   border: none;
-  border-top: 1px solid black;
+  border-top: 1px solid #f0f0f0;
   color: black;
 }
 
@@ -191,7 +203,7 @@ a:hover, a:active, a:focus {
 
 /* top li border */
 .bb {
-  border-top: solid 1px black;
+  /* border-top: solid 1px black; */
 }
 /* .w-100 > .bb ~ .bb {
   border-top: none;
@@ -255,4 +267,12 @@ a:hover, a:active, a:focus {
   to {
     stroke-dashoffset: 0;
   }
+}
+
+.public{
+  color: #17ac10;
+}
+
+.closed{
+  color:#4b3d67;
 }

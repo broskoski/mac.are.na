@@ -13,17 +13,31 @@ class Playlist extends Component {
 
   makeSongList = (playlist) => {
     if (playlist) {
-    const {
-      trackIsFromCurrentPlaylist,
-      indexOfCurrentTrack,
-      handleSongSelection,
-      currentTrackInfo,
-    } = this.props
+      const {
+        trackIsFromCurrentPlaylist,
+        indexOfCurrentTrack,
+        handleSongSelection,
+        currentTrackInfo,
+      } = this.props
+
+      let status = "public"
+      switch (playlist.status){
+        case "public":
+          status = "public"
+          break;
+        case "closed":
+          status = "closed"
+        break;
+        default:
+          status = "public"
+      }
+
       return onlySongs(playlist.contents).map((song, index) => {
         return (
           <SongItem
             key={song.id}
             song={song}
+            status={status}
             isSelected={trackIsFromCurrentPlaylist && indexOfCurrentTrack === index && currentTrackInfo}
             handleSelection={() => handleSongSelection(song, index)} />
         )
@@ -35,7 +49,7 @@ class Playlist extends Component {
     const { currentOpenPlaylist, isCurrentPlaylistLoaded} = this.props
     if (isCurrentPlaylistLoaded) {
       return (
-        <div className='w-100 min-vh-100'>
+        <div className={'w-100 min-vh-100 '}>
           {this.makeSongList(currentOpenPlaylist)}
         </div>
       )
