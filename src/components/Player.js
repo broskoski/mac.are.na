@@ -13,6 +13,15 @@ import { returnBlockURL } from '../lib/helpers'
 
 // this is such a weirdo component
 class Player extends Component {
+
+  componentDidMount = () => {
+    this.props.returnRef(this.player)
+  }
+
+  ref = player => {
+    this.player = player
+   }
+
   render () {
     const {
       isPlaying,
@@ -80,6 +89,7 @@ class Player extends Component {
         </div>
 
         <ReactPlayer
+          ref={this.ref}
           url={currentTrackURL}
           playing={isPlaying}
           hidden={true}

@@ -53,6 +53,7 @@ class Main extends Component {
       currentRoute: '/',
     }
     this.API = new tinyAPI()
+    this.playerRef = null
   }
 
   // get list of playlists and playlist list length. also attach invert event
@@ -201,6 +202,8 @@ class Main extends Component {
       const previousIndex = indexOfCurrentTrack - 1
       const previousTrack = currentTrackPlaylist.contents[previousIndex]
       this.handleSongSelection(previousTrack, previousIndex)
+    } else if (indexOfCurrentTrack == 0) {
+      this.playerRef.seekTo(0)
     }
   }
 
@@ -237,6 +240,9 @@ class Main extends Component {
     this.goToNextTrack()
   }
 
+  returnRef = (ref) => {
+    this.playerRef = ref
+  }
 
   render () {
     return (
@@ -246,6 +252,7 @@ class Main extends Component {
             currentRoute={'/'}
             currentOpenPlaylist={this.state.currentOpenPlaylist} />
           <Player
+            ref={this.ref}
             handlePlayback={this.handlePlayback}
             isPlaying={this.state.isPlaying}
             currentTrackURL={this.state.currentTrackURL}
@@ -267,6 +274,7 @@ class Main extends Component {
             trackIsFromCurrentPlaylist={this.state.trackIsFromCurrentPlaylist}
             playerStatus={this.state.playerStatus}
             currentRoute={this.state.currentRoute}
+            returnRef={this.returnRef}
            />
           <Switch>
             <PropsRoute
