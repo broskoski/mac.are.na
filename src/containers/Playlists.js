@@ -54,14 +54,15 @@ class Playlists extends Component {
       searchQuery,
     } = this.props
     if (playlistChannel) {
-      let renderList = []
 
+      let renderList = []
       if (searchQuery !== '') {
         const filteredPlaylistContents = this.filterByQuery(playlistChannel.contents, searchQuery)
         renderList = this.makePlaylistLinks(filteredPlaylistContents, handlePlaylistSelect)
       } else {
         renderList = this.makePlaylistLinks(playlistChannel.contents, handlePlaylistSelect)
       }
+
       return (
         <div>
           <div className="filterList">
