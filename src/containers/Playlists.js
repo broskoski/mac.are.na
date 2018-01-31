@@ -4,22 +4,15 @@ import { decode } from 'he'
 import { getStatus } from '../lib/helpers'
 
 import LinkItem from '../components/LinkItem'
+import LoadState from '../components/LoadState'
 
 class Playlists extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      playlists: [],
-      initialPlaylists: [],
-      reversedOrder: true,
-    }
-  }
-
   componentDidMount() {
     // make app aware of current route
     this.props.returnFullRoute(this.props.computedMatch.path)
   }
 
+  // take an array of playlists and make a list of link components
   makePlaylistLinks = (playlists, handlePlaylistSelect) => {
     return playlists.map((playlist, index) => {
       const text = decode(`${playlist.user.full_name} / ${playlist.title}`)
@@ -35,6 +28,7 @@ class Playlists extends Component {
     })
   }
 
+  // filter by single search predicate
   filterByQuery = (list, predicate) => {
     return list.filter((playlist, index) => {
       const text = decode(`${playlist.user.full_name} / ${playlist.title}`)
@@ -81,17 +75,13 @@ class Playlists extends Component {
       )
     } else {
       return (
-        <div id="loader-container" className="abs-fill">
-          <div className="loader">
-            <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
-              <rect x="0" y="0" width="40" height="40" strokeWidth="4" shapeRendering="crispEdges"></rect>
-            </svg>
-          </div>
-        </div>
+        <LoadState />
       )
     }
   }
 }
+
+
 
 
 
