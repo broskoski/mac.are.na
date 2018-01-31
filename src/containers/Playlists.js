@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Pagination } from 'pui-react-pagination'
-import { apiBase, playlistChannel } from '../config'
+import { decode } from 'he'
+
 import LinkItem from '../components/LinkItem'
 import { classifyItem } from '../lib/helpers'
 
@@ -28,7 +29,7 @@ const Playlists = ({
 
 const makePlaylistLinks = (playlists, handlePlaylistSelect) => {
   return playlists.map((playlist, index) => {
-    const text = `${decodeURIComponent(playlist.user.full_name)} / ${decodeURIComponent(playlist.title)}`
+    const text = `${decode(playlist.user.full_name)} / ${decode(playlist.title)}`
     return (
       <LinkItem
         text={text}

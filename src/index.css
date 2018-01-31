@@ -3,7 +3,7 @@ body {
   padding: 0;
   font-family: 'Arial', sans-serif;
   -webkit-font-smoothing: antialiased;
-  /* text-shadow: 1px 1px 1px rgba(0,0,0,0.004); */
+  text-shadow: 1px 1px 1px rgba(0,0,0,0.004);
   background-color: white;
 }
 
@@ -13,8 +13,8 @@ html {
 }
 
 .invert {
-  filter: invert(100%);
-  -webkit-filter: invert(100%);
+  filter: invert(100%) hue-rotate(180deg);
+  -webkit-filter: invert(100%) hue-rotate(180deg);
 }
 
 *, *:before, *:after {
@@ -51,6 +51,8 @@ nav button:hover {
 
 button {
   outline: none;
+  background-color: white;
+
 }
 
 #nowPlaying {
@@ -62,25 +64,64 @@ button {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 1rem;
+  /* padding: 0 1rem; */
   border-radius: 0.125em;
 }
 
-#nowPlaying-title {
-  display: flex;
-  height: 100%;
-}
-
-#nowPlaying-title a {
+#nowPlaying a {
   /* text-decoration: underline !important; */
   color: black;
   opacity: 0.5;
   margin-left: 0.25rem;
   transition: opacity 400ms;
-
 }
-#nowPlaying-title a:hover {
+
+#nowPlaying a:hover {
   opacity: 1;
+}
+
+#nowPlaying-left{
+  display: flex;
+  align-items: center;
+}
+
+#nowPlaying-right{
+  display: flex;
+  align-items: center;
+}
+
+.tile-wrap {
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0rem 1rem;
+  border-right: 1px solid white;
+}
+
+.tile-wrap-full {
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0rem 1rem;
+  max-width: 550px;
+  overflow-x:hidden;
+}
+
+#nowPlaying-right .tile-wrap {
+  border-left: 1px solid white;
+  border-right: 0px solid white;
+}
+
+
+.tile-wrap-square {
+  height: 3rem;
+  width: 3rem;
+  border-right: 1px solid white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .logo {
@@ -132,3 +173,38 @@ a:hover, a:active, a:focus {
 /* .w-100 > .bb ~ .bb {
   border-top: none;
 } */
+
+.dot{
+  width: 10px;
+  height: 10px;
+  display: block;
+  content: '';
+  background-color: white;
+  transition: background-color 300ms;
+  border-radius: 999px;
+  /* margin-right: 1rem; */
+}
+
+.playerIdle {
+  background-color: #c6c6c6;
+}
+
+.playerPlaying {
+  background-color: #17ac10;
+}
+
+.playerBuffering {
+  background-color: #f2ba3d;
+}
+
+.playerErrored {
+  background-color: #e24d4d;
+}
+
+.vr{
+  width: 1px;
+  height: 60px;
+  background-color: white;
+  border: none;
+  margin: 0rem 1rem;
+}

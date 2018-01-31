@@ -14,11 +14,18 @@ import Playlists from './containers/Playlists'
 import Playlist from './containers/Playlist'
 import Player from './components/Player'
 
-import { classifyItem, makeHash } from './lib/helpers'
+import { classifyItem, returnBlockURL } from './lib/helpers'
 import { apiBase, playlistChannel } from './config'
 import { tinyAPI } from './lib/api'
 
 const base = apiBase[process.env.NODE_ENV]
+
+const playerStatus = {
+  idle: 'IDLE',
+  buffering: 'BUFFERING',
+  playing: 'PLAYING',
+  errored: 'ERRORED'
+}
 
 class Main extends Component {
   constructor(props) {
@@ -31,6 +38,8 @@ class Main extends Component {
       isPlaying: false,
       currentTrackURL: null,
       indexOfCurrentTrack: 0,
+      indexOfCurrentTrackPlaylist: 0,
+      paginatedPageOfCurrentTrackPlaylist: 0,
       currentOpenPlaylist: null,
       currentTrackPlaylist: null,
       maxItemsInCurrentPage: 0,
@@ -38,6 +47,9 @@ class Main extends Component {
       trackProgress: 0,
       trackDuration: 0,
       isCurrentPlaylistLoaded: false,
+      playerStatus: playerStatus.idle,
+      currentTrackInfo: null,
+      trackIsFromCurrentPlaylist: true,
     }
     this.API = new tinyAPI()
   }
@@ -114,9 +126,8 @@ class Main extends Component {
   // currently any time a track is selected, it will be played.
   handleSongSelection = (item, indexOfCurrentTrack) => {
     const { currentOpenPlaylist, currentTrackPlaylist } = this.state
-
     this.setState({
-      currentTrackURL: this.returnBlockURL(item),
+      currentTrackURL: returnBlockURL(item),
       indexOfCurrentTrack,
       currentTrackInfo: item,
       trackIsFromCurrentPlaylist: true,
@@ -126,15 +137,6 @@ class Main extends Component {
     this.play()
   }
 
-
-  // different blocks have diff ways of storing src
-  returnBlockURL = (item) => {
-    if (classifyItem(item) === 'mp3') {
-      return item.attachment.url
-    } else {
-      return item.source.url
-    }
-  }
 
   // determines if the currently playing/paused track is from the currently
   // displayed playlist
@@ -152,7 +154,7 @@ class Main extends Component {
   }
 
   pause = () => {
-    this.setState({ isPlaying: false, })
+    this.setState({ isPlaying: false, playerStatus: playerStatus.idle })
   }
 
   // if we select a playlist, get it's contents.
@@ -199,7 +201,7 @@ class Main extends Component {
   }
 
   handleOnPlay = (e) => {
-    // console.log(e, 'play')
+    this.setState({playerStatus: playerStatus.playing })
   }
 
   handleOnProgress = (e) => {
@@ -211,7 +213,12 @@ class Main extends Component {
   }
 
   handleOnBuffer = (e) => {
-    // console.log(e, 'buffering')
+    this.setState({playerStatus: playerStatus.buffering })
+  }
+
+  handleOnError = (e) => {
+    this.setState({playerStatus: playerStatus.errored })
+    this.goToNextTrack()
   }
 
 
@@ -236,11 +243,13 @@ class Main extends Component {
             handleOnProgress={this.handleOnProgress}
             handleOnDuration={this.handleOnDuration}
             handleOnBuffer={this.handleOnBuffer}
+            handleOnError={this.handleOnError}
             trackProgress={this.state.trackProgress}
             trackDuration={this.state.trackDuration}
             currentTrackInfo={this.state.currentTrackInfo}
             currentTrackPlaylist={this.state.currentTrackPlaylist}
             trackIsFromCurrentPlaylist={this.state.trackIsFromCurrentPlaylist}
+            playerStatus={this.state.playerStatus}
            />
           <Switch>
             <PropsRoute
@@ -254,10 +263,14 @@ class Main extends Component {
             <PropsRoute
               path={'/playlist/:playlistSlug'}
               component={Playlist}
+              isPlaying={this.state.isPlaying}
               isCurrentPlaylistLoaded={this.state.isCurrentPlaylistLoaded}
               currentOpenPlaylist={this.state.currentOpenPlaylist}
               handleSongSelection={this.handleSongSelection}
-              returnSelectedPlaylist={this.returnSelectedPlaylist} />
+              trackIsFromCurrentPlaylist={this.state.trackIsFromCurrentPlaylist}
+              indexOfCurrentTrack={this.state.indexOfCurrentTrack}
+              returnSelectedPlaylist={this.returnSelectedPlaylist}
+              currentTrackInfo={this.state.currentTrackInfo} />
           </Switch>
         </div>
       </Router>

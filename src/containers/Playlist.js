@@ -13,12 +13,20 @@ class Playlist extends Component {
 
   makeSongList = (playlist) => {
     if (playlist) {
+    const {
+      trackIsFromCurrentPlaylist,
+      indexOfCurrentTrack,
+      isPlaying,
+      handleSongSelection,
+      currentTrackInfo,
+    } = this.props
       return onlySongs(playlist.contents).map((song, index) => {
         return (
           <SongItem
             key={song.id}
             song={song}
-            handleSelection={() => this.props.handleSongSelection(song, index)} />
+            isSelected={trackIsFromCurrentPlaylist && indexOfCurrentTrack === index && currentTrackInfo}
+            handleSelection={() => handleSongSelection(song, index)} />
         )
       })
     }

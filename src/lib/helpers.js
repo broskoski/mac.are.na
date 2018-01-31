@@ -30,9 +30,19 @@ function classifyItem(item) {
   return 'notSupported'
 }
 
+// different blocks have diff ways of storing src
+function returnBlockURL(item) {
+  if (classifyItem(item) === 'mp3') {
+    return item.attachment.url
+  } else {
+    return item.source.url
+  }
+}
+
 export {
   onlySongs,
   getYoutubeId,
   classifyItem,
   makeHash,
+  returnBlockURL,
 }
