@@ -19,33 +19,46 @@ function sanitizeURL (url) {
   return url
 }
 
-// sort valid are.na schema class and return source URL. If no valid URL, return false
-function classifyItemURL(item) {
+// makes a message
+function mm(url, message, item) {
+  return { url: url, message: message, item: item }
+}
+
+// our default messages
+const message = {
+  missing: 'Missing URL 😮',
+  class: 'Unplayable block type 😥',
+  noPlay: 'Cannot play items from this source 😞',
+  valid: 'Valid',
+}
+
+// get URL from different types of blocks
+function getURL(item) {
   let result
   switch(item.class) {
-    case 'Attachment':
-      result = item.attachment.url ? item.attachment.url : false
-      break
-    case 'Media':
-      result = item.source.url ? sanitizeURL(item.source.url) : false
-      break
-    default: result = false
+    case 'Attachment': return item.attachment.url
+    case 'Media': return item.source.url
+    default: return false
   }
-  return result
 }
 
-// determine if URL can be played by react-player. You can set the returnMatch
-// arg to return falsies or truthies to display rejects in a separate list
-function validatePlayability(item, predicate) {
-  const url = classifyItemURL(item)
-  if (url && predicate === true) {
-    return ReactPlayer.canPlay(url)
-  } else if (predicate === false){
-    return !ReactPlayer.canPlay(url) || !url
-  }
-  return false
+// this returns a message with information about validation.
+// invalid URLs will always have false as it's url key so it can be used with
+// array.filter or others
+function validateWithMessage(item) {
+  let url = getURL(item)
+  // catch any glaring issues
+  if (url === null) { return mm(false, message.missing, item) }
+  if (url === false) { return mm(false, message.class, item) }
+  // sanitize URL (only youtube right now)
+  url = sanitizeURL(url)
+  // check if reactplayer can play
+  if (ReactPlayer.canPlay(url)) { return mm(url, message.valid, item) }
+  // if nothing has gone well for this URL we just tell it not to play
+  return mm(false, message.noPlay, item)
 }
 
+// Valid blocks don't need titles so we add one if it is missing
 function scrubTitle(title) {
   if (title === null || title === '') {
     return 'Untitled in Are.na'
@@ -53,6 +66,7 @@ function scrubTitle(title) {
   return title
 }
 
+// get block status
 function getStatus(item) {
   switch (item.status){
     case "public": return "public"
@@ -64,9 +78,9 @@ function getStatus(item) {
 
 export {
   sanitizeURL,
-  classifyItemURL,
   makeHash,
-  validatePlayability,
+  getURL,
+  validateWithMessage,
   scrubTitle,
   getStatus,
 }

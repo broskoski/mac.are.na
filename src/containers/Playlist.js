@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { onlySongs, validatePlayability } from '../lib/helpers'
+import { getStatus, validateWithMessage } from '../lib/helpers'
 import LoadState from '../components/LoadState'
 
 import { SongItem, SongItemReject } from '../components/SongItem'
@@ -12,7 +12,7 @@ class Playlist extends Component {
     this.props.returnFullRoute(this.props.computedMatch.path)
   }
 
-  makeSongList = (playlist) => {
+  makeSongList = (validatedPlaylist) => {
     const {
       trackIsFromCurrentPlaylist,
       indexOfCurrentTrack,
@@ -20,46 +20,33 @@ class Playlist extends Component {
       currentTrackInfo,
     } = this.props
 
-    let status = "public"
-    switch (playlist.status) {
-      case "public":
-        status = "public"
-        break;
-      case "closed":
-        status = "closed"
-      break;
-      default:
-        status = "public"
-    }
-
-    return playlist.contents.filter(item => validatePlayability(item, true))
-      .map((song, index) => {
+    return validatedPlaylist.filter(message => message.url).map((message, index) => {
       return (
         <SongItem
-          key={song.id}
-          song={song}
-          status={status}
+          key={message.item.id}
+          song={message.item}
+          status={getStatus(message.item)}
           isSelected={trackIsFromCurrentPlaylist && indexOfCurrentTrack === index && currentTrackInfo}
-          handleSelection={() => handleSongSelection(song, index)} />
+          handleSelection={() => handleSongSelection(message.item, index)} />
       )
     })
   }
 
-  makeSongRejectList = (playlist) => {
-    return playlist.contents.filter(item => validatePlayability(item, false))
-      .map((song, index) => {
-        return <SongItemReject key={song.id} song={song} />
-      })
+  makeSongRejectList = (validatedPlaylist) => {
+    return validatedPlaylist.filter(message => !message.url).map(message => {
+      return <SongItemReject message={message.message} key={message.item.id} song={message.item} />
+    })
   }
 
 
   render () {
     const { currentOpenPlaylist, isCurrentPlaylistLoaded} = this.props
     if (isCurrentPlaylistLoaded && currentOpenPlaylist) {
+      const withValidation = currentOpenPlaylist.contents.map(item => validateWithMessage(item))
       return (
         <div className='w-100 min-vh-100'>
-          { this.makeSongList(currentOpenPlaylist) }
-          { this.makeSongRejectList(currentOpenPlaylist)}
+          { this.makeSongList(withValidation) }
+          { this.makeSongRejectList(withValidation)}
         </div>
       )
     } else {

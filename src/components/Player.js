@@ -9,7 +9,7 @@ import forwardSVG from '../assets/forward.svg'
 import playSVG from '../assets/play.svg'
 import reverseSVG from '../assets/reverse.svg'
 import pauseSVG from '../assets/pause.svg'
-import { classifyItemURL } from '../lib/helpers'
+import { getURL } from '../lib/helpers'
 
 // this is such a weirdo component
 class Player extends Component {
@@ -165,7 +165,7 @@ const TrackTitle = ({
 
 const SourceLink = ({ trackInfo }) => {
   if (trackInfo) {
-    const source = classifyItemURL(trackInfo)
+    const source = getURL(trackInfo)
     return (
       <div className={'tile-wrap'}>
         <a target={'_blank'} href={`${source}`}>{'Source'}</a>

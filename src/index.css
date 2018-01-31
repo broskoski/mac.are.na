@@ -206,6 +206,11 @@ a:hover, a:active, a:focus {
   color: grey;
 }
 
+.flexBetween {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
 
 /* top li border */
 .bb {

@@ -20,14 +20,17 @@ const SongItem = ({status, isSelected, handleSelection, song }) => {
   )
 }
 
-const SongItemReject = ({ isSelected, handleSelection, song }) => {
+const SongItemReject = ({ isSelected, handleSelection, song, message }) => {
   const itemClasses = 'list-item rejected bb pv3'
   const title = scrubTitle(song.title)
     return (
       <div
         key={`button-reject-${song.id}`}
         className={`${itemClasses}`}>
-          {`${decode(title)}`}
+          <div className={'flexBetween'}>
+            <div>{`${decode(title)}`}</div>
+            <div>{`${message}`}</div>
+          </div>
       </div>
     )
 }

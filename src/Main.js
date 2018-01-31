@@ -12,7 +12,7 @@ import Playlists from './containers/Playlists'
 import Playlist from './containers/Playlist'
 import Player from './components/Player'
 
-import { classifyItemURL } from './lib/helpers'
+import { getURL } from './lib/helpers'
 import { tinyAPI } from './lib/api'
 
 const playerStatus = {
@@ -122,7 +122,7 @@ class Main extends Component {
   // currently any time a track is selected, it will be played.
   handleSongSelection = (item, indexOfCurrentTrack) => {
     this.setState({
-      currentTrackURL: classifyItemURL(item),
+      currentTrackURL: getURL(item),
       indexOfCurrentTrack,
       currentTrackInfo: item,
       trackIsFromCurrentPlaylist: true,
@@ -130,7 +130,6 @@ class Main extends Component {
     })
     this.play()
   }
-
 
   // determines if the currently playing/paused track is from the currently
   // displayed playlist
@@ -234,13 +233,11 @@ class Main extends Component {
             isCurrentPlaylistLoaded={this.state.isCurrentPlaylistLoaded}
           />
           <Player
+            { ...this.state }
             ref={this.ref}
             handlePlayback={this.handlePlayback}
-            isPlaying={this.state.isPlaying}
-            currentTrackURL={this.state.currentTrackURL}
             goToNextTrack={this.goToNextTrack}
             goToPreviousTrack={this.goToPreviousTrack}
-            volume={this.state.volume}
             handleOnReady={this.handleOnReady}
             handleOnStart={this.handleOnStart}
             handleOnPlay={this.handleOnPlay}
@@ -248,42 +245,26 @@ class Main extends Component {
             handleOnDuration={this.handleOnDuration}
             handleOnBuffer={this.handleOnBuffer}
             handleOnError={this.handleOnError}
-            trackProgress={this.state.trackProgress}
-            trackDuration={this.state.trackDuration}
-            currentTrackInfo={this.state.currentTrackInfo}
-            currentTrackPlaylist={this.state.currentTrackPlaylist}
-            trackIsFromCurrentPlaylist={this.state.trackIsFromCurrentPlaylist}
-            playerStatus={this.state.playerStatus}
-            currentRoute={this.state.currentRoute}
             returnRef={this.returnRef}
            />
           <Switch>
             <PropsRoute
+              { ...this.state }
               exact path={'/'}
               component={Playlists}
-              listLength={this.state.maxItemsInCurrentPage}
-              playlistChannel={this.state.playlistChannel}
-              searchList={this.state.searchList}
               applySearch={this.applySearch}
-              activePage={this.state.activePage}
               handlePlaylistSelect={this.handlePlaylistSelect}
               returnFullRoute={this.returnFullRoute}
-              searchQuery={this.state.searchQuery}
               setQueryInState={this.setQueryInState}
-              // handlePaginatedPageNav={(event, selectedEvent) => this.handlePaginatedPageNav(event, selectedEvent)} />
-              />
+            />
             <PropsRoute
+              { ...this.state }
               path={'/playlist/:playlistSlug'}
               component={Playlist}
-              isPlaying={this.state.isPlaying}
-              isCurrentPlaylistLoaded={this.state.isCurrentPlaylistLoaded}
-              currentOpenPlaylist={this.state.currentOpenPlaylist}
               handleSongSelection={this.handleSongSelection}
-              trackIsFromCurrentPlaylist={this.state.trackIsFromCurrentPlaylist}
-              indexOfCurrentTrack={this.state.indexOfCurrentTrack}
               returnSelectedPlaylist={this.returnSelectedPlaylist}
               returnFullRoute={this.returnFullRoute}
-              currentTrackInfo={this.state.currentTrackInfo} />
+            />
           </Switch>
         </div>
       </Router>
