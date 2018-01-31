@@ -20,7 +20,8 @@ class tinyAPI {
   }
 
   getPaginatedChannelContents = (pageIndex, per) => {
-    return this.get(`${BASE}/channels/${playlistChannel}/contents?page=${pageIndex}&per=${per}`)
+    // return this.get(`${BASE}/channels/${playlistChannel}/contents?page=${pageIndex}&per=${per}`)
+    return this.get(`${BASE}/channels/${playlistChannel}/contents?page=${pageIndex}`)
       .then(data => parse.playlistList(data) )
   }
 
