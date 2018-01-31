@@ -1,20 +1,18 @@
 # mac.are.na
 
-[WIP Are.na channel -> playlist]
+[Are.na channel -> playlist]
 
 ## Installation
 ```
-npm install
-```
-```
-npm start
+yarn install
+yarn start
 ```
 
 ## Todo
-- [ ] Play / Pause buttons
-- [ ] Next / Prev buttons
-- [ ] Go to next track on finish
-- [ ] Play youtubes, mp3s
-- [ ] Skip missing tracks
-- [ ] Pagination on root playlist
+- [x] Play / Pause buttons
+- [x] Next / Prev buttons
+- [x] Go to next track on finish
+- [x] Play youtubes, mp3s
+- [x] Skip missing tracks
+- [x] Pagination on root playlist
 - [ ] Pagination on long channels 
