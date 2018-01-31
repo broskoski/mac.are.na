@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { onlySongs, validatePlayability } from '../lib/helpers'
+import LoadState from '../components/LoadState'
 
 import { SongItem, SongItemReject } from '../components/SongItem'
 
@@ -62,7 +63,7 @@ class Playlist extends Component {
         </div>
       )
     } else {
-      return <div/>
+      return <LoadState />
     }
 
   }
