@@ -8,21 +8,30 @@ function makeHash() {
   return text
 }
 
-function getYoutubeId (url) {
-  const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/
-  const match = url.match(regExp)
-  return (match && match[7].length === 11) ? match[7] : false
+// right now this only sanitizes youtube, but eventual it could support more srcs
+function sanitizeURL (url) {
+  // returns 2 match groups : URL with youtube.com and ID [0], and only ID [1]
+  const youtubeRegex = /(youtu(?:\.be|be\.com)\/(?:.*v(?:\/|=)|(?:.*\/)?)([\w'-]+))/gi
+  const result = url.match(youtubeRegex)
+  if (result) {
+    return result[0]
+  }
+  return url
 }
 
 // sort valid are.na schema class and return source URL. If no valid URL, return false
 function classifyItemURL(item) {
+  let result
   switch(item.class) {
     case 'Attachment':
-      return item.attachment.url ? item.attachment.url : false
+      result = item.attachment.url ? item.attachment.url : false
+      break
     case 'Media':
-      return item.source.url ? item.source.url : false
-    default: return false
+      result = item.source.url ? sanitizeURL(item.source.url) : false
+      break
+    default: result = false
   }
+  return result
 }
 
 // determine if URL can be played by react-player. You can set the returnMatch
@@ -45,7 +54,7 @@ function scrubTitle(title) {
 }
 
 export {
-  getYoutubeId,
+  sanitizeURL,
   classifyItemURL,
   makeHash,
   validatePlayability,
