@@ -2,23 +2,17 @@ import React, { Component } from 'react'
 import {
   BrowserRouter as Router,
   Route,
-  Link,
   Switch,
   withRouter,
 } from 'react-router-dom'
-import { Pagination } from 'pui-react-pagination'
 
-import LinkItem from './components/LinkItem'
 import Header from './components/Header'
 import Playlists from './containers/Playlists'
 import Playlist from './containers/Playlist'
 import Player from './components/Player'
 
-import { classifyItem, returnBlockURL } from './lib/helpers'
-import { apiBase, playlistChannel } from './config'
+import { returnBlockURL } from './lib/helpers'
 import { tinyAPI } from './lib/api'
-
-const base = apiBase[process.env.NODE_ENV]
 
 const playerStatus = {
   idle: 'IDLE',
@@ -139,7 +133,6 @@ class Main extends Component {
 
   // currently any time a track is selected, it will be played.
   handleSongSelection = (item, indexOfCurrentTrack) => {
-    const { currentOpenPlaylist, currentTrackPlaylist } = this.state
     this.setState({
       currentTrackURL: returnBlockURL(item),
       indexOfCurrentTrack,
@@ -202,7 +195,7 @@ class Main extends Component {
       const previousIndex = indexOfCurrentTrack - 1
       const previousTrack = currentTrackPlaylist.contents[previousIndex]
       this.handleSongSelection(previousTrack, previousIndex)
-    } else if (indexOfCurrentTrack == 0) {
+    } else if (indexOfCurrentTrack === 0) {
       this.playerRef.seekTo(0)
     }
   }
@@ -258,7 +251,6 @@ class Main extends Component {
             currentTrackURL={this.state.currentTrackURL}
             goToNextTrack={this.goToNextTrack}
             goToPreviousTrack={this.goToPreviousTrack}
-            currentTrackPlaylist={this.state.currentTrackPlaylist}
             volume={this.state.volume}
             handleOnReady={this.handleOnReady}
             handleOnStart={this.handleOnStart}

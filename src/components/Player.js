@@ -13,14 +13,13 @@ import { returnBlockURL } from '../lib/helpers'
 
 // this is such a weirdo component
 class Player extends Component {
-
   componentDidMount = () => {
     this.props.returnRef(this.player)
   }
 
   ref = player => {
     this.player = player
-   }
+  }
 
   render () {
     const {
@@ -28,7 +27,6 @@ class Player extends Component {
       handlePlayback,
       goToNextTrack,
       goToPreviousTrack,
-      currentTrackPlaylistSlug,
       currentTrackURL,
       handleOnReady,
       handleOnStart,
@@ -46,19 +44,15 @@ class Player extends Component {
       playerStatus,
       currentRoute,
     } = this.props
-    const playbackSymbol = isPlaying ? <img src={pauseSVG} /> : <img src={playSVG} />
 
-    let progress = 0
-    let duration = 0
+    const playbackSymbol = isPlaying
+      ? <img alt={'pause'} src={pauseSVG} />
+      : <img alt={'play'} src={playSVG} />
 
-    if (trackDuration > 3600) {
-      progress = moment.utc(trackProgress * 1000).format('H:m:ss')
-      duration = moment.utc(trackDuration * 1000).format('H:m:ss')
-    } else {
-      progress = moment.utc(trackProgress * 1000).format('m:ss')
-      duration = moment.utc(trackDuration * 1000).format('m:ss')
+    const timeFormat = trackDuration > 3600 ? 'H:m:ss' : 'm:ss'
+    const progress = moment.utc(trackProgress * 1000).format(timeFormat)
+    const duration = moment.utc(trackDuration * 1000).format(timeFormat)
 
-    }
     const time =`${progress} / ${duration}`
 
     const config = {
@@ -67,11 +61,21 @@ class Player extends Component {
       }
     }
 
+    // lmao jfc
+    const style = {
+      position: 'fixed',
+      visibility: 'hidden',
+      transform: 'translate(-10000px)',
+      width: '1px',
+      height: '1px',
+      overflow: 'hidden',
+    }
+
     return (
       <nav>
-        <button onClick={() => goToPreviousTrack()}><img src={reverseSVG} /></button>
+        <button onClick={() => goToPreviousTrack()}><img alt={'rev'} src={reverseSVG} /></button>
         <button onClick={() => handlePlayback()}>{playbackSymbol}</button>
-        <button onClick={() => goToNextTrack()}><img src={forwardSVG} /></button>
+        <button onClick={() => goToNextTrack()}><img alt={'fwd'} src={forwardSVG} /></button>
 
         <div id={'nowPlaying'}>
           <div id={'nowPlaying-left'}>
@@ -92,7 +96,9 @@ class Player extends Component {
           ref={this.ref}
           url={currentTrackURL}
           playing={isPlaying}
-          hidden={true}
+          autoPlay={false}
+          hidden={false}
+          style={style}
           volume={volume} // 0 to 1
           config={config}
           onReady={(e) => handleOnReady(e)}

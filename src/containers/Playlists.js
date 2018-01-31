@@ -3,7 +3,6 @@ import { Pagination } from 'pui-react-pagination'
 import { decode } from 'he'
 
 import LinkItem from '../components/LinkItem'
-import { classifyItem } from '../lib/helpers'
 
 class Playlists extends Component {
   componentDidMount() {

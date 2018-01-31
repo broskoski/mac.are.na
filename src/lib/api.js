@@ -1,6 +1,12 @@
 import { apiBase, playlistChannel } from '../config'
 const BASE = apiBase[process.env.NODE_ENV]
 
+const parse = {
+  playlistList: (a) => a.contents,
+  playlist: (a) => a,
+  playlistListLength: (a) => a.length,
+}
+
 class tinyAPI {
   get = (endpoint) => {
     return fetch(endpoint)
@@ -23,13 +29,6 @@ class tinyAPI {
       .then(data => parse.playlist(data) )
   }
 }
-
-const parse = {
-  playlistList: (a) => a.contents,
-  playlist: (a) => a,
-  playlistListLength: (a) => a.length,
-}
-
 
 module.exports = {
   tinyAPI,

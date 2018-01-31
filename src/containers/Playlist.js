@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import classnames from 'classnames'
 import { onlySongs } from '../lib/helpers'
 
 import SongItem from '../components/SongItem'
@@ -17,7 +16,6 @@ class Playlist extends Component {
     const {
       trackIsFromCurrentPlaylist,
       indexOfCurrentTrack,
-      isPlaying,
       handleSongSelection,
       currentTrackInfo,
     } = this.props
