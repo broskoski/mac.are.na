@@ -1,3 +1,5 @@
+import ReactPlayer from 'react-player'
+
 function makeHash() {
   let text = "";
   let possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
@@ -6,43 +8,79 @@ function makeHash() {
   return text
 }
 
-function onlySongs (contents) {
-  return contents.filter(item => {
-    const type = classifyItem(item)
-    return type === 'mp3' || type === 'soundcloud' || type === 'youtube'
-  })
+// right now this only sanitizes youtube, but eventual it could support more srcs
+function sanitizeURL (url) {
+  // returns 2 match groups : URL with youtube.com and ID [0], and only ID [1]
+  const youtubeRegex = /(youtu(?:\.be|be\.com)\/(?:.*v(?:\/|=)|(?:.*\/)?)([\w'-]+))/gi
+  const result = url.match(youtubeRegex)
+  if (result) {
+    return result[0]
+  }
+  return url
 }
 
-function getYoutubeId (url) {
-  const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/
-  const match = url.match(regExp)
-  return (match && match[7].length === 11) ? match[7] : false
+// makes a message
+function mm(url, message, item) {
+  return { url: url, message: message, item: item }
 }
 
-function classifyItem(item) {
-  const isAttachment = item.class === 'Attachment'
-  const isMedia = item.class === "Media"
-
-  if (isAttachment && item.attachment.extension === "mp3") return "mp3"
-  if (isMedia && item.source.url.indexOf('soundcloud') > 0) return "soundcloud"
-  if (isMedia && item.source.url.indexOf('youtube') > 0) return "youtube"
-
-  return 'notSupported'
+// our default messages
+const message = {
+  missing: 'Missing URL 😮',
+  class: 'Unplayable block type 😥',
+  noPlay: 'Cannot play items from this source 😞',
+  valid: 'Valid',
 }
 
-// different blocks have diff ways of storing src
-function returnBlockURL(item) {
-  if (classifyItem(item) === 'mp3') {
-    return item.attachment.url
-  } else {
-    return item.source.url
+// get URL from different types of blocks
+function getURL(item) {
+  let result
+  switch(item.class) {
+    case 'Attachment': return item.attachment.url
+    case 'Media': return item.source.url
+    default: return false
   }
 }
 
+// this returns a message with information about validation.
+// invalid URLs will always have false as it's url key so it can be used with
+// array.filter or others
+function validateWithMessage(item) {
+  let url = getURL(item)
+  // catch any glaring issues
+  if (url === null) { return mm(false, message.missing, item) }
+  if (url === false) { return mm(false, message.class, item) }
+  // sanitize URL (only youtube right now)
+  url = sanitizeURL(url)
+  // check if reactplayer can play
+  if (ReactPlayer.canPlay(url)) { return mm(url, message.valid, item) }
+  // if nothing has gone well for this URL we just tell it not to play
+  return mm(false, message.noPlay, item)
+}
+
+// Valid blocks don't need titles so we add one if it is missing
+function scrubTitle(title) {
+  if (title === null || title === '') {
+    return 'Untitled in Are.na'
+  }
+  return title
+}
+
+// get block status
+function getStatus(item) {
+  switch (item.status){
+    case "public": return "public"
+    case "closed": return "closed"
+    default: return "public"
+  }
+}
+
+
 export {
-  onlySongs,
-  getYoutubeId,
-  classifyItem,
+  sanitizeURL,
   makeHash,
-  returnBlockURL,
+  getURL,
+  validateWithMessage,
+  scrubTitle,
+  getStatus,
 }

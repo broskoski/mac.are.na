@@ -22,6 +22,30 @@ html {
   text-decoration: none !important;
 }
 
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+header a {
+  /* width: 30px;
+  height: 30px; */
+  margin: 0;
+  padding: 0;
+  color: black;
+  transition: opacity 350ms;
+}
+
+header a:hover{
+  opacity: 0.66;
+}
+
+.toArena img, a.toArena {
+  width: 30px;
+  height: 30px;
+}
+
 nav {
   display: flex;
   margin-bottom: 4em;
@@ -96,8 +120,8 @@ fieldset {
   margin: 5px;
   height: 3rem;
   flex: 1;
-  background-color: #eee;
-  border: 1px solid #eee;
+  background-color: #f0f0f0;
+  border: 1px solid #f0f0f0;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -175,6 +199,16 @@ fieldset {
   color: black;
 }
 
+.list-item:first-of-type{
+  border-top: none;
+}
+
+.list-item.rejected {
+  background-color: #fafafa;
+  color: grey;
+  pointer-events: none;
+}
+
 .list-item:hover {
   cursor: pointer;
 }
@@ -200,6 +234,15 @@ a:hover, a:active, a:focus {
   color: grey;
 }
 
+.flexBetween {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.inlineBlock {
+  display: inline-block;
+}
 
 /* top li border */
 .bb {
