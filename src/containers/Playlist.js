@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
-import { onlySongs } from '../lib/helpers'
+import { getStatus, validateWithMessage } from '../lib/helpers'
+import LoadState from '../components/LoadState'
 
-import SongItem from '../components/SongItem'
+import { SongItem, SongItemReject } from '../components/SongItem'
 
 class Playlist extends Component {
   componentDidMount() {
@@ -11,50 +12,44 @@ class Playlist extends Component {
     this.props.returnFullRoute(this.props.computedMatch.path)
   }
 
-  makeSongList = (playlist) => {
-    if (playlist) {
-      const {
-        trackIsFromCurrentPlaylist,
-        indexOfCurrentTrack,
-        handleSongSelection,
-        currentTrackInfo,
-      } = this.props
+  makeSongList = (validatedPlaylist) => {
+    const {
+      trackIsFromCurrentPlaylist,
+      indexOfCurrentTrack,
+      handleSongSelection,
+      currentTrackInfo,
+    } = this.props
 
-      let status = "public"
-      switch (playlist.status){
-        case "public":
-          status = "public"
-          break;
-        case "closed":
-          status = "closed"
-        break;
-        default:
-          status = "public"
-      }
-
-      return onlySongs(playlist.contents).map((song, index) => {
-        return (
-          <SongItem
-            key={song.id}
-            song={song}
-            status={status}
-            isSelected={trackIsFromCurrentPlaylist && indexOfCurrentTrack === index && currentTrackInfo}
-            handleSelection={() => handleSongSelection(song, index)} />
-        )
-      })
-    }
+    return validatedPlaylist.filter(message => message.url).map((message, index) => {
+      return (
+        <SongItem
+          key={message.item.id}
+          song={message.item}
+          isSelected={trackIsFromCurrentPlaylist && indexOfCurrentTrack === index && currentTrackInfo}
+          handleSelection={() => handleSongSelection(message.item, index)} />
+      )
+    })
   }
+
+  makeSongRejectList = (validatedPlaylist) => {
+    return validatedPlaylist.filter(message => !message.url).map(message => {
+      return <SongItemReject message={message.message} key={message.item.id} song={message.item} />
+    })
+  }
+
 
   render () {
     const { currentOpenPlaylist, isCurrentPlaylistLoaded} = this.props
-    if (isCurrentPlaylistLoaded) {
+    if (isCurrentPlaylistLoaded && currentOpenPlaylist) {
+      const withValidation = currentOpenPlaylist.contents.map(item => validateWithMessage(item))
       return (
-        <div className={'w-100 min-vh-100 '}>
-          {this.makeSongList(currentOpenPlaylist)}
+        <div className='w-100 min-vh-100'>
+          { this.makeSongList(withValidation) }
+          { this.makeSongRejectList(withValidation)}
         </div>
       )
     } else {
-      return <div/>
+      return <LoadState />
     }
 
   }

@@ -5,13 +5,14 @@ import {
   Switch,
   withRouter,
 } from 'react-router-dom'
+import { decode } from 'he'
 
 import Header from './components/Header'
 import Playlists from './containers/Playlists'
 import Playlist from './containers/Playlist'
 import Player from './components/Player'
 
-import { returnBlockURL } from './lib/helpers'
+import { getURL } from './lib/helpers'
 import { tinyAPI } from './lib/api'
 
 const playerStatus = {
@@ -26,14 +27,13 @@ class Main extends Component {
     super(props)
     this.state = {
       activePage: 1,
-      playlistListLength: 4,
+      playlistListLength: 0,
       per: 20,
-      playlists: null,
+      playlistChannel: null,
+      searchList: null,
       isPlaying: false,
       currentTrackURL: null,
       indexOfCurrentTrack: 0,
-      indexOfCurrentTrackPlaylist: 0,
-      paginatedPageOfCurrentTrackPlaylist: 0,
       currentOpenPlaylist: null,
       currentTrackPlaylist: null,
       maxItemsInCurrentPage: 0,
@@ -44,6 +44,7 @@ class Main extends Component {
       playerStatus: playerStatus.idle,
       currentTrackInfo: null,
       trackIsFromCurrentPlaylist: true,
+      searchQuery: '',
       currentRoute: '/',
     }
     this.API = new tinyAPI()
@@ -53,20 +54,37 @@ class Main extends Component {
   // get list of playlists and playlist list length. also attach invert event
   componentWillMount() {
     window.addEventListener('keydown', (e) => this.handleInvert(e))
-
-    const { activePage, per } = this.state
-
     Promise.all([
       this.API.getBlockCount(),
-      this.API.getPaginatedChannelContents(activePage, per),
+      this.API.getChannelContents(),
     ])
-      .then(([length, playlists]) => {
+      .then(([length, playlistChannel]) => {
+        const resortedPlaylists = {
+          ...playlistChannel,
+          contents: playlistChannel.contents.reverse()
+        }
         this.setState({
           playlistListLength: length,
-          playlists,
-          maxItemsInCurrentPage: this.getMaxItemsInCurrentPage(length, this.state.per),
+          playlistChannel: resortedPlaylists,
+          searchList: playlistChannel,
         })
       })
+  }
+
+  togglePlaylistOrder = (resortedPlaylists) => {
+    this.setState({ resortedPlaylists: resortedPlaylists.reverse() })
+  }
+
+  applySearch = (predicate) => {
+    const updatedList = this.state.playlistChannel.contents.filter(item => {
+      const text = decode(`${item.user.full_name} / ${item.title}`)
+      return text.toLowerCase().search(predicate) !== -1
+    })
+    this.setState({ searchList: { ...this.state.playlistChannel, contents: updatedList } })
+  }
+
+  setQueryInState = (event) => {
+    this.setState({ searchQuery: event.target.value })
   }
 
   // mhm
@@ -82,36 +100,6 @@ class Main extends Component {
   // including private channels ( i think )
   getMaxItemsInCurrentPage = (length, per) => {
     return Math.ceil(length / this.state.per)
-  }
-
-  // if we go forward or back in pagination, update the playlist page
-  // with new contents from an index in pagination
-  handlePaginatedPageNav(event, selectedEvent) {
-    const eventKey = selectedEvent.eventKey
-    const { activePage, playlistListLength, per} = this.state
-    const maxItemsInCurrentPage = this.getMaxItemsInCurrentPage(playlistListLength, per)
-    this.setState({ maxItemsInCurrentPage })
-    if (eventKey === 'next') {
-      if (activePage !== maxItemsInCurrentPage) {
-        return this.updatePlaylist(activePage + 1)
-      } else {
-        return this.updatePlaylist(maxItemsInCurrentPage)
-      }
-    }
-    if (eventKey === 'prev') {
-      if (activePage !== 1) {
-        return this.updatePlaylist(activePage - 1)
-      } else {
-        return this.updatePlaylist(1)
-      }
-    }
-    return this.updatePlaylist(eventKey)
-  }
-
-  // if we go to a new page, tell the app about the playlists on the new page
-  updatePlaylist(page) {
-    this.API.getPaginatedChannelContents(page, this.state.per)
-      .then(playlists => this.setState({ playlists, activePage: page }) )
   }
 
   // toggle function for playing and pausing with 1 UI element. Plays 1st track
@@ -134,7 +122,7 @@ class Main extends Component {
   // currently any time a track is selected, it will be played.
   handleSongSelection = (item, indexOfCurrentTrack) => {
     this.setState({
-      currentTrackURL: returnBlockURL(item),
+      currentTrackURL: getURL(item),
       indexOfCurrentTrack,
       currentTrackInfo: item,
       trackIsFromCurrentPlaylist: true,
@@ -142,7 +130,6 @@ class Main extends Component {
     })
     this.play()
   }
-
 
   // determines if the currently playing/paused track is from the currently
   // displayed playlist
@@ -153,7 +140,6 @@ class Main extends Component {
       return true
     }
   }
-
 
   play = () => {
     this.setState({ isPlaying: true, })
@@ -247,13 +233,11 @@ class Main extends Component {
             isCurrentPlaylistLoaded={this.state.isCurrentPlaylistLoaded}
           />
           <Player
+            { ...this.state }
             ref={this.ref}
             handlePlayback={this.handlePlayback}
-            isPlaying={this.state.isPlaying}
-            currentTrackURL={this.state.currentTrackURL}
             goToNextTrack={this.goToNextTrack}
             goToPreviousTrack={this.goToPreviousTrack}
-            volume={this.state.volume}
             handleOnReady={this.handleOnReady}
             handleOnStart={this.handleOnStart}
             handleOnPlay={this.handleOnPlay}
@@ -261,37 +245,26 @@ class Main extends Component {
             handleOnDuration={this.handleOnDuration}
             handleOnBuffer={this.handleOnBuffer}
             handleOnError={this.handleOnError}
-            trackProgress={this.state.trackProgress}
-            trackDuration={this.state.trackDuration}
-            currentTrackInfo={this.state.currentTrackInfo}
-            currentTrackPlaylist={this.state.currentTrackPlaylist}
-            trackIsFromCurrentPlaylist={this.state.trackIsFromCurrentPlaylist}
-            playerStatus={this.state.playerStatus}
-            currentRoute={this.state.currentRoute}
             returnRef={this.returnRef}
            />
           <Switch>
             <PropsRoute
+              { ...this.state }
               exact path={'/'}
               component={Playlists}
-              listLength={this.state.maxItemsInCurrentPage}
-              playlists={this.state.playlists}
-              activePage={this.state.activePage}
+              applySearch={this.applySearch}
               handlePlaylistSelect={this.handlePlaylistSelect}
               returnFullRoute={this.returnFullRoute}
-              handlePaginatedPageNav={(event, selectedEvent) => this.handlePaginatedPageNav(event, selectedEvent)} />
+              setQueryInState={this.setQueryInState}
+            />
             <PropsRoute
+              { ...this.state }
               path={'/playlist/:playlistSlug'}
               component={Playlist}
-              isPlaying={this.state.isPlaying}
-              isCurrentPlaylistLoaded={this.state.isCurrentPlaylistLoaded}
-              currentOpenPlaylist={this.state.currentOpenPlaylist}
               handleSongSelection={this.handleSongSelection}
-              trackIsFromCurrentPlaylist={this.state.trackIsFromCurrentPlaylist}
-              indexOfCurrentTrack={this.state.indexOfCurrentTrack}
               returnSelectedPlaylist={this.returnSelectedPlaylist}
               returnFullRoute={this.returnFullRoute}
-              currentTrackInfo={this.state.currentTrackInfo} />
+            />
           </Switch>
         </div>
       </Router>

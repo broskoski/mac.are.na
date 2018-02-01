@@ -2,7 +2,7 @@ import { apiBase, playlistChannel } from '../config'
 const BASE = apiBase[process.env.NODE_ENV]
 
 const parse = {
-  playlistList: (a) => a.contents,
+  playlistChannel: (a) => a,
   playlist: (a) => a,
   playlistListLength: (a) => a.length,
 }
@@ -19,10 +19,15 @@ class tinyAPI {
       .then(data => parse.playlistListLength(data))
   }
 
+  //this may be broken
   getPaginatedChannelContents = (pageIndex, per) => {
-    // return this.get(`${BASE}/channels/${playlistChannel}/contents?page=${pageIndex}&per=${per}`)
-    return this.get(`${BASE}/channels/${playlistChannel}/contents?page=${pageIndex}`)
-      .then(data => parse.playlistList(data) )
+    return this.get(`${BASE}/channels/${playlistChannel}/contents?page=${pageIndex}&per=${per}`)
+      .then(data => parse.playlistChannel(data) )
+  }
+
+  getChannelContents = () => {
+    return this.get(`${BASE}/channels/${playlistChannel}/contents`)
+      .then(data => parse.playlistChannel(data) )
   }
 
   getFullChannel = (playlistID, pagination) => {
