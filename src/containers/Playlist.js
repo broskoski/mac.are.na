@@ -25,7 +25,6 @@ class Playlist extends Component {
         <SongItem
           key={message.item.id}
           song={message.item}
-          status={getStatus(message.item)}
           isSelected={trackIsFromCurrentPlaylist && indexOfCurrentTrack === index && currentTrackInfo}
           handleSelection={() => handleSongSelection(message.item, index)} />
       )

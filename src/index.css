@@ -22,6 +22,30 @@ html {
   text-decoration: none !important;
 }
 
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+header a {
+  /* width: 30px;
+  height: 30px; */
+  margin: 0;
+  padding: 0;
+  color: black;
+  transition: opacity 350ms;
+}
+
+header a:hover{
+  opacity: 0.66;
+}
+
+.toArena img, a.toArena {
+  width: 30px;
+  height: 30px;
+}
+
 nav {
   display: flex;
   margin-bottom: 4em;
@@ -175,6 +199,10 @@ fieldset {
   color: black;
 }
 
+.list-item:first-of-type{
+  border-top: none;
+}
+
 .list-item.rejected {
   background-color: #fafafa;
   color: grey;
@@ -210,6 +238,10 @@ a:hover, a:active, a:focus {
   display: flex;
   justify-content: space-between;
   width: 100%;
+}
+
+.inlineBlock {
+  display: inline-block;
 }
 
 /* top li border */
