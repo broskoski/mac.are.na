@@ -4,7 +4,7 @@ import { decode } from 'he'
 import { scrubTitle } from '../lib/helpers'
 
 const SongItem = ({status, isSelected, handleSelection, song }) => {
-  const itemClasses = 'list-item bb pv3 bg-animate'
+  const itemClasses = 'list-item'
   const isSelectedClassNames = classnames({
     'bg-near-white': isSelected,
     'hover-bg-near-white': !isSelected,
@@ -15,21 +15,21 @@ const SongItem = ({status, isSelected, handleSelection, song }) => {
         key={`button-play-${song.id}`}
         className={`${itemClasses} ${isSelectedClassNames} ${status}`}
         onClick={handleSelection}>
-          {decode(title)}
+          <div><p>{decode(title)}</p></div>
         </button>
   )
 }
 
 const SongItemReject = ({ isSelected, handleSelection, song, message }) => {
-  const itemClasses = 'list-item rejected bb pv3'
+  const itemClasses = 'list-item rejected'
   const title = scrubTitle(song.title)
     return (
       <div
         key={`button-reject-${song.id}`}
         className={`${itemClasses}`}>
           <div className={'flexBetween'}>
-            <div>{`${decode(title)}`}</div>
-            <div>{`${message}`}</div>
+            <p>{`${decode(title)}`}</p>
+            <p>{`${message}`}</p>
           </div>
       </div>
     )

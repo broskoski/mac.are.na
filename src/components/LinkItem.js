@@ -4,7 +4,7 @@ import classnames from 'classnames'
 import { decode } from 'he'
 
 const LinkItem = ({status, isSelected, handleSelection, text, to }) => {
-  const itemClasses = 'list-item bb pv3 bg-animate'
+  const itemClasses = 'list-item'
   const isSelectedClassNames = classnames({
     'bg-near-white': isSelected,
     'hover-bg-near-white': !isSelected,
@@ -15,7 +15,7 @@ const LinkItem = ({status, isSelected, handleSelection, text, to }) => {
       key={`link-to-${to}`}
       className={`${itemClasses} ${isSelectedClassNames} ${status}`}
       to={to}>
-        {decode(text)}
+        <p>{decode(text)}</p>
       </Link>
   )
 }
