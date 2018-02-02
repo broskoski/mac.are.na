@@ -108,7 +108,7 @@ class Player extends Component {
           onDuration={(e) => handleOnDuration(e)}
           onBuffer={(e) => handleOnBuffer(e)}
           onEnded={() => goToNextTrack()}
-          onError={() => handleOnError()} />
+          onError={(e) => handleOnError(e)} />
       </nav>
     )
   }

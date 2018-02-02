@@ -122,7 +122,7 @@ class Main extends Component {
   // currently any time a track is selected, it will be played.
   handleSongSelection = (item, indexOfCurrentTrack) => {
     this.setState({
-      currentTrackURL: getURL(item),
+      currentTrackURL: item.macarenaURL,
       indexOfCurrentTrack,
       currentTrackInfo: item,
       trackIsFromCurrentPlaylist: true,
@@ -215,6 +215,7 @@ class Main extends Component {
   }
 
   handleOnError = (e) => {
+    console.info('ruh roh, ', e)
     this.setState({playerStatus: playerStatus.errored })
     this.goToNextTrack()
   }

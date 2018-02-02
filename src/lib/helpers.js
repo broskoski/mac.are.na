@@ -12,19 +12,21 @@ function makeHash() {
 function sanitizeURL (url) {
   // ECMA 2018
   // const youtubeRegex = /(?<fullURL>youtu(?:\.be|be\.com)\/(?<youtubeID>?:.*v(?:\/|=)|(?:.*\/)?)([\w'-]+))/gi
+  // in the future we can just return youtubeResult.fullURL which is pretty cool
 
   // returns 2 match groups : URL with youtube.com and ID [0], and only ID [1]
   const youtubeRegex = /(youtu(?:\.be|be\.com)\/(?:.*v(?:\/|=)|(?:.*\/)?)([\w'-]+))/gi
-  const result = url.match(youtubeRegex)
-  if (result) {
-    return result[0]
+  const youtubeResult = url.match(youtubeRegex)
+  console.log(url, youtubeResult)
+  if (youtubeResult) {
+    return youtubeResult[0]
   }
   return url
 }
 
 // makes a message
-function mm(url, message, item) {
-  return { url: url, message: message, item: item }
+function mm(URLValidity, message, item) {
+  return { url: URLValidity, message: message, item: item }
 }
 
 // our default messages
@@ -53,10 +55,12 @@ function validateWithMessage(item) {
   // catch any glaring issues
   if (url === null) { return mm(false, message.missing, item) }
   if (url === false) { return mm(false, message.class, item) }
-  // sanitize URL (only youtube right now)
-  url = sanitizeURL(url)
+  // sanitize our URL with regex
+  const sanitizedURL = sanitizeURL(url)
+  // copy the item and update it's URL with the sanitized one
+  const sanitizedItem = Object.assign({}, {...item}, { macarenaURL: sanitizedURL })
   // check if reactplayer can play
-  if (ReactPlayer.canPlay(url)) { return mm(url, message.valid, item) }
+  if (ReactPlayer.canPlay(sanitizedURL)) { return mm(true, message.valid, sanitizedItem) }
   // if nothing has gone well for this URL we just tell it not to play
   return mm(false, message.noPlay, item)
 }
