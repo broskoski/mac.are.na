@@ -10,6 +10,9 @@ function makeHash() {
 
 // right now this only sanitizes youtube, but eventual it could support more srcs
 function sanitizeURL (url) {
+  // ECMA 2018
+  // const youtubeRegex = /(?<fullURL>youtu(?:\.be|be\.com)\/(?<youtubeID>?:.*v(?:\/|=)|(?:.*\/)?)([\w'-]+))/gi
+
   // returns 2 match groups : URL with youtube.com and ID [0], and only ID [1]
   const youtubeRegex = /(youtu(?:\.be|be\.com)\/(?:.*v(?:\/|=)|(?:.*\/)?)([\w'-]+))/gi
   const result = url.match(youtubeRegex)
