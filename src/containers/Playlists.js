@@ -38,9 +38,6 @@ class Playlists extends Component {
 
   render() {
     const {
-      listLength,
-      activePage,
-      handlePaginatedPageNav,
       handlePlaylistSelect,
       playlistChannel,
       setQueryInState,

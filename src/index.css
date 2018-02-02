@@ -1,3 +1,13 @@
+*, *:before, *:after {
+  box-sizing: inherit;
+  text-decoration: none !important;
+}
+
+html {
+  box-sizing: border-box;
+  background-color: white;
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -7,19 +17,19 @@ body {
   background-color: white;
 }
 
-html {
-  box-sizing: border-box;
-  background-color: white;
-}
-
 .invert {
   filter: invert(100%) hue-rotate(180deg);
   -webkit-filter: invert(100%) hue-rotate(180deg);
 }
 
-*, *:before, *:after {
-  box-sizing: inherit;
-  text-decoration: none !important;
+main {
+  padding: 4rem;
+  width: 100%;
+}
+
+button {
+  outline: none;
+  background-color: white;
 }
 
 header {
@@ -29,8 +39,6 @@ header {
 }
 
 header a {
-  /* width: 30px;
-  height: 30px; */
   margin: 0;
   padding: 0;
   color: black;
@@ -71,11 +79,6 @@ nav button {
 
 nav button:hover {
   border-color: black;
-}
-
-button {
-  outline: none;
-  background-color: white;
 }
 
 .form-group {
@@ -244,14 +247,6 @@ a:hover, a:active, a:focus {
   display: inline-block;
 }
 
-/* top li border */
-.bb {
-  /* border-top: solid 1px black; */
-}
-/* .w-100 > .bb ~ .bb {
-  border-top: none;
-} */
-
 .dot{
   width: 10px;
   height: 10px;
@@ -260,7 +255,6 @@ a:hover, a:active, a:focus {
   background-color: white;
   transition: background-color 300ms;
   border-radius: 999px;
-  /* margin-right: 1rem; */
 }
 
 .playerIdle {

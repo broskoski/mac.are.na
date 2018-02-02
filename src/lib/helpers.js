@@ -17,7 +17,6 @@ function sanitizeURL (url) {
   // returns 2 match groups : URL with youtube.com and ID [0], and only ID [1]
   const youtubeRegex = /(youtu(?:\.be|be\.com)\/(?:.*v(?:\/|=)|(?:.*\/)?)([\w'-]+))/gi
   const youtubeResult = url.match(youtubeRegex)
-  console.log(url, youtubeResult)
   if (youtubeResult) {
     return youtubeResult[0]
   }
@@ -39,7 +38,6 @@ const message = {
 
 // get URL from different types of blocks
 function getURL(item) {
-  let result
   switch(item.class) {
     case 'Attachment': return item.attachment.url
     case 'Media': return item.source.url

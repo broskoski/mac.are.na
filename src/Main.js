@@ -12,7 +12,6 @@ import Playlists from './containers/Playlists'
 import Playlist from './containers/Playlist'
 import Player from './components/Player'
 
-import { getURL } from './lib/helpers'
 import { tinyAPI } from './lib/api'
 
 const playerStatus = {
@@ -227,7 +226,7 @@ class Main extends Component {
   render () {
     return (
       <Router>
-        <div className={'w-100 min-vh-100 pa3 pa5-ns'}>
+        <main>
           <HeaderWithRouter
             currentRoute={'/'}
             currentOpenPlaylist={this.state.currentOpenPlaylist}
@@ -267,7 +266,7 @@ class Main extends Component {
               returnFullRoute={this.returnFullRoute}
             />
           </Switch>
-        </div>
+        </main>
       </Router>
     )
   }

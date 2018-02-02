@@ -52,7 +52,6 @@ class Player extends Component {
     const timeFormat = trackDuration > 3600 ? 'H:m:ss' : 'm:ss'
     const progress = moment.utc(trackProgress * 1000).format(timeFormat)
     const duration = moment.utc(trackDuration * 1000).format(timeFormat)
-
     const time =`${progress} / ${duration}`
 
     const config = {
@@ -62,6 +61,7 @@ class Player extends Component {
     }
 
     // lmao jfc
+    // in safari, iframes needs to be at lease 1px x 1px to play.
     const style = {
       position: 'fixed',
       visibility: 'hidden',
