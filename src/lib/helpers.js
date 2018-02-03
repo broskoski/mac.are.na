@@ -22,9 +22,12 @@ function sanitizeURL (url) {
   return url
 }
 
-// makes a message
-function mm(URLValidity, message, item) {
-  return { url: URLValidity, message: message, item: item }
+// inserts a valdity message into a copy of the block
+function mm(isValid, message, item) {
+  return {
+    ...item,
+    macarenaURLValidity: { isValid, message, }
+  }
 }
 
 // our default messages
@@ -157,20 +160,12 @@ function comparator(a, b, param) {
   }
 }
 
-function sortChannelContents(channel, param, order) {
-  const channelCopy = { ...channel }
-  const contents = channelCopy.contents
-  const sortedArr = contents.sort((a, b) => comparator(a, b, param))
-  if (order === sortKeys.asc) {
-    return {
-      ...channelCopy,
-      contents: [...sortedArr.reverse()]
-    }
+function sortChannelContents(channelContents, param, order) {
+  const sortedArr = channelContents.sort((a, b) => comparator(a, b, param))
+  if (order === sortKeys.desc) {
+    return sortedArr
   } else {
-    return {
-      ...channelCopy,
-      contents: [...sortedArr]
-    }
+    return sortedArr.reverse()
   }
 }
 

@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
-import { validateWithMessage } from '../lib/helpers'
+import { validateWithMessage, sortChannelContents } from '../lib/helpers'
 import LoadState from '../components/LoadState'
 
 import { SongItem, SongItemReject } from '../components/SongItem'
+import Sortainer from '../components/Sortainer'
 
 class Playlist extends Component {
   componentDidMount() {
@@ -20,32 +21,48 @@ class Playlist extends Component {
       currentTrackInfo,
     } = this.props
 
-    return validatedPlaylist.filter(message => message.url).map((message, index) => {
-      return (
-        <SongItem
-          key={message.item.id}
-          song={message.item}
-          isSelected={trackIsFromCurrentPlaylist && indexOfCurrentTrack === index && currentTrackInfo}
-          handleSelection={() => handleSongSelection(message.item, index)} />
-      )
-    })
+    return validatedPlaylist.filter(item => item.macarenaURLValidity.isValid)
+      .map((item, index) => {
+        return (
+          <SongItem
+            key={item.id}
+            song={item}
+            isSelected={trackIsFromCurrentPlaylist && indexOfCurrentTrack === index && currentTrackInfo}
+            handleSelection={() => handleSongSelection(item, index)} />
+        )
+      })
   }
 
   makeSongRejectList = (validatedPlaylist) => {
-    return validatedPlaylist.filter(message => !message.url).map(message => {
-      return <SongItemReject message={message.message} key={message.item.id} song={message.item} />
-    })
+    return validatedPlaylist.filter(item => !item.macarenaURLValidity.isValid)
+      .map(item => {
+        return <SongItemReject message={item.macarenaURLValidity.message} key={item.id} song={item} />
+      })
   }
 
-
   render () {
-    const { currentOpenPlaylist, isCurrentPlaylistLoaded} = this.props
+    const {
+      currentOpenPlaylist,
+      isCurrentPlaylistLoaded,
+      handlePlaylistSelect,
+      playlistSort,
+      setSort,
+    } = this.props
+
     if (isCurrentPlaylistLoaded && currentOpenPlaylist) {
       const withValidation = currentOpenPlaylist.contents.map(item => validateWithMessage(item))
+
+      const { orderKey, paramKey } = playlistSort
+      const sortedList = sortChannelContents(withValidation, paramKey, orderKey)
+
+      const renderList = this.makeSongList(sortedList, handlePlaylistSelect)
+      const rejectList = this.makeSongRejectList(withValidation)
+
       return (
         <div className='w-100 min-vh-100'>
-          { this.makeSongList(withValidation) }
-          { this.makeSongRejectList(withValidation)}
+          <Sortainer stateKey={'playlist'} setSort={setSort} sortState={playlistSort} />
+          { renderList }
+          { rejectList }
         </div>
       )
     } else {

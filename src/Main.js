@@ -70,10 +70,9 @@ class Main extends Component {
       this.API.getChannelContents(),
     ])
       .then(([length, playlistChannel]) => {
-        const sorted = sortChannelContents(playlistChannel, sortKeys.created_at, sortKeys.asc)
         this.setState({
           playlistListLength: length,
-          playlistChannel: sorted,
+          playlistChannel: playlistChannel,
         })
       })
   }
@@ -157,9 +156,8 @@ class Main extends Component {
     this.API.getFullChannel(playlistSlug)
       .then(playlist => {
         const { currentTrackPlaylist } = this.state
-        const sorted = sortChannelContents(playlist, sortKeys.created_at, sortKeys.asc)
         this.setState({
-          currentOpenPlaylist: sorted,
+          currentOpenPlaylist: playlist,
           isCurrentPlaylistLoaded: true,
           trackIsFromCurrentPlaylist: this.isTrackIsFromCurrentPlaylist(currentTrackPlaylist, playlist),
         })
@@ -216,8 +214,8 @@ class Main extends Component {
     this.setState({playerStatus: playerStates.buffering })
   }
 
-  handleOnError = (e) => {
-    console.info('ruh roh, ', e)
+  handleOnError = (event) => {
+    console.warn('ruh roh, ', event)
     this.setState({playerStatus: playerStates.errored })
     this.goToNextTrack()
   }
@@ -232,7 +230,7 @@ class Main extends Component {
     } else if (stateKey === 'playlist') {
       this.setState({ playlistSort: {orderKey, paramKey} })
     } else {
-      console.error('Invalid stateKey arg at setSort')
+      console.warn('Invalid stateKey arg at setSort')
     }
   }
 
@@ -248,6 +246,7 @@ class Main extends Component {
           <Player
             { ...this.state }
             ref={this.ref}
+            returnRef={this.returnRef}
             handlePlayback={this.handlePlayback}
             goToNextTrack={this.goToNextTrack}
             goToPreviousTrack={this.goToPreviousTrack}
@@ -258,7 +257,6 @@ class Main extends Component {
             handleOnDuration={this.handleOnDuration}
             handleOnBuffer={this.handleOnBuffer}
             handleOnError={this.handleOnError}
-            returnRef={this.returnRef}
            />
           <Switch>
             <PropsRoute

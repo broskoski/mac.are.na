@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import { decode } from 'he'
-import { getStatus } from '../lib/helpers'
+import { getStatus, sortChannelContents } from '../lib/helpers'
 
 import LinkItem from '../components/LinkItem'
 import LoadState from '../components/LoadState'
+import Sortainer from '../components/Sortainer'
 
 class Playlists extends Component {
   componentDidMount() {
@@ -42,16 +43,19 @@ class Playlists extends Component {
       playlistChannel,
       setQueryInState,
       searchQuery,
+      setSort,
+      playlistChannelSort,
     } = this.props
     if (playlistChannel) {
 
-      let renderList = []
-      if (searchQuery !== '') {
-        const filteredPlaylistContents = this.filterByQuery(playlistChannel.contents, searchQuery)
-        renderList = this.makePlaylistLinks(filteredPlaylistContents, handlePlaylistSelect)
-      } else {
-        renderList = this.makePlaylistLinks(playlistChannel.contents, handlePlaylistSelect)
-      }
+      const filteredList = searchQuery !== ''
+        ? this.filterByQuery(playlistChannel.contents, searchQuery)
+        : playlistChannel.contents
+
+      const { orderKey, paramKey } = playlistChannelSort
+      const sortedList = sortChannelContents(filteredList, paramKey, orderKey)
+
+      const renderList = this.makePlaylistLinks(sortedList, handlePlaylistSelect)
 
       return (
         <div>
@@ -65,6 +69,7 @@ class Playlists extends Component {
                   onChange={(e) => setQueryInState(e)} />
               </fieldset>
             </form>
+            <Sortainer stateKey={'playlist'} setSort={setSort} sortState={playlistChannelSort} />
           </div>
           { renderList }
         </div>
