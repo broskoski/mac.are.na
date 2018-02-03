@@ -1,18 +1,17 @@
 import ReactPlayer from 'react-player'
 
 function makeHash() {
-  let text = "";
-  let possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+  let text = '';
+  let possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
   for (var i = 0; i < 5; i++)
     text += possible.charAt(Math.floor(Math.random() * possible.length))
   return text
 }
 
-// right now this only sanitizes youtube, but eventual it could support more srcs
+// only sanitizes youtube, but could support more srcs
 function sanitizeURL (url) {
-  // ECMA 2018
+  // in the future (ECMA 2018) we can just return youtubeResult.fullURL which is pretty cool
   // const youtubeRegex = /(?<fullURL>youtu(?:\.be|be\.com)\/(?<youtubeID>?:.*v(?:\/|=)|(?:.*\/)?)([\w'-]+))/gi
-  // in the future we can just return youtubeResult.fullURL which is pretty cool
 
   // returns 2 match groups : URL with youtube.com and ID [0], and only ID [1]
   const youtubeRegex = /(youtu(?:\.be|be\.com)\/(?:.*v(?:\/|=)|(?:.*\/)?)([\w'-]+))/gi
@@ -74,10 +73,40 @@ function scrubTitle(title) {
 // get block status
 function getStatus(item) {
   switch (item.status){
-    case "public": return "public"
-    case "closed": return "closed"
-    default: return "public"
+    case 'public': return 'public'
+    case 'closed': return 'closed'
+    default: return 'public'
   }
+}
+
+const playerStates = {
+  idle: 'IDLE',
+  buffering: 'BUFFERING',
+  playing: 'PLAYING',
+  errored: 'ERRORED'
+}
+
+// some boilerplate cookie making / getting functions
+function setCookie(cname, cvalue, exdays) {
+  const d = new Date()
+  d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000))
+  const expires = 'expires='+d.toUTCString()
+  document.cookie = cname + '=' + cvalue + ';' + expires + ';path=/'
+}
+
+function getCookie(cname) {
+  const name = cname + '='
+  const ca = document.cookie.split(';')
+  for (var i = 0; i < ca.length; i++) {
+    let c = ca[i]
+    while (c.charAt(0) === ' ') {
+        c = c.substring(1)
+    }
+    if (c.indexOf(name) === 0) {
+        return c.substring(name.length, c.length)
+    }
+  }
+  return false
 }
 
 
@@ -88,4 +117,7 @@ export {
   validateWithMessage,
   scrubTitle,
   getStatus,
+  playerStates,
+  setCookie,
+  getCookie,
 }

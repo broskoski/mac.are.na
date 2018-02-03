@@ -15,6 +15,7 @@ body {
   -webkit-font-smoothing: antialiased;
   text-shadow: 1px 1px 1px rgba(0,0,0,0.004);
   background-color: white;
+  min-height: 100vh;
 }
 
 .invert {
@@ -50,10 +51,16 @@ header a:hover{
   opacity: 1;
 }
 
-.toArena img, a.toArena {
+a.toArena {
   width: 30px;
   height: 30px;
 }
+
+a.toArena img {
+  width: 100%;
+  height: auto;
+}
+
 
 nav {
   display: flex;
@@ -168,6 +175,10 @@ fieldset {
   align-items: center;
 }
 
+.track-time{
+  width: 130px;
+}
+
 .tile-wrap {
   height: 3rem;
   display: flex;
@@ -236,6 +247,10 @@ fieldset {
 .list-item p {
   margin: 0;
   line-height: 1.25rem;
+}
+
+.bg-selected{
+  background-color: #f0f0f0;
 }
 
 /* button press */

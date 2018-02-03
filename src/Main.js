@@ -13,13 +13,7 @@ import Playlist from './containers/Playlist'
 import Player from './components/Player'
 
 import { tinyAPI } from './lib/api'
-
-const playerStatus = {
-  idle: 'IDLE',
-  buffering: 'BUFFERING',
-  playing: 'PLAYING',
-  errored: 'ERRORED'
-}
+import { playerStates, getCookie, setCookie } from './lib/helpers'
 
 class Main extends Component {
   constructor(props) {
@@ -40,7 +34,7 @@ class Main extends Component {
       trackProgress: 0,
       trackDuration: 0,
       isCurrentPlaylistLoaded: false,
-      playerStatus: playerStatus.idle,
+      playerStatus: playerStates.idle,
       currentTrackInfo: null,
       trackIsFromCurrentPlaylist: true,
       searchQuery: '',
@@ -50,8 +44,18 @@ class Main extends Component {
     this.playerRef = null
   }
 
+  initializeCookies = () => {
+    // FYI cookie returns string
+    if (getCookie('isInverted') === 'true') {
+      this.invert()
+    } else {
+      this.unInvert()
+    }
+  }
+
   // get list of playlists and playlist list length. also attach invert event
   componentWillMount() {
+    this.initializeCookies()
     window.addEventListener('keydown', (e) => this.handleInvert(e))
     Promise.all([
       this.API.getBlockCount(),
@@ -89,16 +93,22 @@ class Main extends Component {
   // mhm
   handleInvert = (e) => {
     if (e.shiftKey && e.ctrlKey && e.code === 'KeyI') {
-      document.body.classList.toggle('invert')
+      if (document.body.classList.contains('invert')) {
+        this.unInvert()
+      } else {
+        this.invert()
+      }
     }
   }
 
-  // i don't really get why this needs to happen, something to do with
-  // specifically how pagination works
-  // one issue right now is that the playlistListPromise returns # of all channels
-  // including private channels ( i think )
-  getMaxItemsInCurrentPage = (length, per) => {
-    return Math.ceil(length / this.state.per)
+  invert = () => {
+    document.body.classList.add('invert')
+    setCookie('isInverted', true, 365)
+  }
+
+  unInvert = () => {
+    document.body.classList.remove('invert')
+    setCookie('isInverted', false, 365)
   }
 
   // toggle function for playing and pausing with 1 UI element. Plays 1st track
@@ -145,7 +155,7 @@ class Main extends Component {
   }
 
   pause = () => {
-    this.setState({ isPlaying: false, playerStatus: playerStatus.idle })
+    this.setState({ isPlaying: false, playerStatus: playerStates.idle })
   }
 
   // if we select a playlist, get it's contents.
@@ -198,7 +208,7 @@ class Main extends Component {
   }
 
   handleOnPlay = (e) => {
-    this.setState({playerStatus: playerStatus.playing })
+    this.setState({playerStatus: playerStates.playing })
   }
 
   handleOnProgress = (e) => {
@@ -210,12 +220,12 @@ class Main extends Component {
   }
 
   handleOnBuffer = (e) => {
-    this.setState({playerStatus: playerStatus.buffering })
+    this.setState({playerStatus: playerStates.buffering })
   }
 
   handleOnError = (e) => {
     console.info('ruh roh, ', e)
-    this.setState({playerStatus: playerStatus.errored })
+    this.setState({playerStatus: playerStates.errored })
     this.goToNextTrack()
   }
 

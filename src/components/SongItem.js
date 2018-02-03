@@ -6,8 +6,8 @@ import { scrubTitle } from '../lib/helpers'
 const SongItem = ({status, isSelected, handleSelection, song }) => {
   const itemClasses = 'list-item'
   const isSelectedClassNames = classnames({
-    'bg-near-white': isSelected,
-    'hover-bg-near-white': !isSelected,
+    'bg-selected': isSelected,
+    '': !isSelected,
   })
   const title = scrubTitle(song.title)
     return (

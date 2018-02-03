@@ -23,7 +23,7 @@ class Header extends Component {
     const { currentOpenPlaylist, isCurrentPlaylistLoaded } = this.props
     if (currentOpenPlaylist && isCurrentPlaylistLoaded && this.props.location.pathname !== '/') {
       return (
-        <a target={'_blank'} href={`https://www.are.na/${currentOpenPlaylist.user.slug}/${currentOpenPlaylist.slug}`}>
+        <a className={'toArena'} target={'_blank'} href={`https://www.are.na/${currentOpenPlaylist.user.slug}/${currentOpenPlaylist.slug}`}>
           <img alt={'Find on are.na'} src={arrow} />
         </a>
       )
