@@ -100,13 +100,78 @@ function getCookie(cname) {
   for (var i = 0; i < ca.length; i++) {
     let c = ca[i]
     while (c.charAt(0) === ' ') {
-        c = c.substring(1)
+      c = c.substring(1)
     }
     if (c.indexOf(name) === 0) {
-        return c.substring(name.length, c.length)
+      return c.substring(name.length, c.length)
     }
   }
   return false
+}
+
+// immutable array.reverse in shallow object copy
+function reverseChannelContents(channel) {
+  return {
+    ...channel,
+    contents: [...channel.contents.reverse()]
+  }
+}
+
+const sortKeys = {
+  desc: 'DESC',
+  asc: 'ASC',
+  num: 'NUM',
+  title: 'TITLE',
+  updated_at: 'UPDATED_AT',
+  created_at: 'CREATED_AT'
+}
+
+function alphaComparator(a, b) {
+  const nameA = a.name.toLowerCase()
+  const nameB = b.name.toLowerCase()
+  if (nameA < nameB) { return -1 }
+  if (nameA > nameB) { return 1 }
+  return 0
+}
+
+function numComparator(a, b) {
+  if (a < b) { return -1 }
+  if (a > b) { return 1 }
+  return 0
+}
+
+function timeComparator(a, b) {
+  const dateA = new Date(a)
+  const dateB = new Date(b)
+  if (dateA < dateB) { return -1 }
+  if (dateA > dateB) { return 1 }
+  return 0
+}
+
+function comparator(a, b, param) {
+  switch(param) {
+    case sortKeys.title: return alphaComparator(a, b)
+    case sortKeys.created_at: return timeComparator(a, b)
+    case sortKeys.updated_at: return timeComparator(a, b)
+    default: return 0
+  }
+}
+
+function sortChannelContents(channel, param, order) {
+  const channelCopy = { ...channel }
+  const contents = channelCopy.contents
+  const sortedArr = contents.sort((a, b) => comparator(a, b, param))
+  if (order === sortKeys.asc) {
+    return {
+      ...channelCopy,
+      contents: [...sortedArr.reverse()]
+    }
+  } else {
+    return {
+      ...channelCopy,
+      contents: [...sortedArr]
+    }
+  }
 }
 
 
@@ -120,4 +185,7 @@ export {
   playerStates,
   setCookie,
   getCookie,
+  reverseChannelContents,
+  sortKeys,
+  sortChannelContents,
 }

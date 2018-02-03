@@ -13,7 +13,14 @@ import Playlist from './containers/Playlist'
 import Player from './components/Player'
 
 import { tinyAPI } from './lib/api'
-import { playerStates, getCookie, setCookie } from './lib/helpers'
+import {
+  playerStates,
+  getCookie,
+  setCookie,
+  reverseChannelContents,
+  sortKeys,
+  sortChannelContents,
+} from './lib/helpers'
 
 class Main extends Component {
   constructor(props) {
@@ -23,7 +30,6 @@ class Main extends Component {
       playlistListLength: 0,
       per: 20,
       playlistChannel: null,
-      searchList: null,
       isPlaying: false,
       currentTrackURL: null,
       indexOfCurrentTrack: 0,
@@ -39,6 +45,8 @@ class Main extends Component {
       trackIsFromCurrentPlaylist: true,
       searchQuery: '',
       currentRoute: '/',
+      playlistChannelSort: { orderKey: sortKeys.asc, paramKey: sortKeys.created_at },
+      playlistSort: { orderKey: sortKeys.asc, paramKey: sortKeys.created_at },
     }
     this.API = new tinyAPI()
     this.playerRef = null
@@ -62,28 +70,12 @@ class Main extends Component {
       this.API.getChannelContents(),
     ])
       .then(([length, playlistChannel]) => {
-        const resortedPlaylists = {
-          ...playlistChannel,
-          contents: playlistChannel.contents.reverse()
-        }
+        const sorted = sortChannelContents(playlistChannel, sortKeys.created_at, sortKeys.asc)
         this.setState({
           playlistListLength: length,
-          playlistChannel: resortedPlaylists,
-          searchList: playlistChannel,
+          playlistChannel: sorted,
         })
       })
-  }
-
-  togglePlaylistOrder = (resortedPlaylists) => {
-    this.setState({ resortedPlaylists: resortedPlaylists.reverse() })
-  }
-
-  applySearch = (predicate) => {
-    const updatedList = this.state.playlistChannel.contents.filter(item => {
-      const text = decode(`${item.user.full_name} / ${item.title}`)
-      return text.toLowerCase().search(predicate) !== -1
-    })
-    this.setState({ searchList: { ...this.state.playlistChannel, contents: updatedList } })
   }
 
   setQueryInState = (event) => {
@@ -165,10 +157,11 @@ class Main extends Component {
     this.API.getFullChannel(playlistSlug)
       .then(playlist => {
         const { currentTrackPlaylist } = this.state
+        const sorted = sortChannelContents(playlist, sortKeys.created_at, sortKeys.asc)
         this.setState({
-          currentOpenPlaylist: playlist,
+          currentOpenPlaylist: sorted,
           isCurrentPlaylistLoaded: true,
-          trackIsFromCurrentPlaylist: this.isTrackIsFromCurrentPlaylist(currentTrackPlaylist, playlist)
+          trackIsFromCurrentPlaylist: this.isTrackIsFromCurrentPlaylist(currentTrackPlaylist, playlist),
         })
       })
   }
@@ -233,6 +226,16 @@ class Main extends Component {
     this.playerRef = ref
   }
 
+  setSort = (stateKey, orderKey, paramKey) => {
+    if (stateKey === 'playlistChannel') {
+      this.setState({ playlistChannelSort: {orderKey, paramKey} })
+    } else if (stateKey === 'playlist') {
+      this.setState({ playlistSort: {orderKey, paramKey} })
+    } else {
+      console.error('Invalid stateKey arg at setSort')
+    }
+  }
+
   render () {
     return (
       <Router>
@@ -262,18 +265,21 @@ class Main extends Component {
               { ...this.state }
               exact path={'/'}
               component={Playlists}
-              applySearch={this.applySearch}
+              reversePlaylistChannel={this.reversePlaylistChannel}
               handlePlaylistSelect={this.handlePlaylistSelect}
               returnFullRoute={this.returnFullRoute}
               setQueryInState={this.setQueryInState}
+              setSort={this.setSort}
             />
             <PropsRoute
               { ...this.state }
               path={'/playlist/:playlistSlug'}
               component={Playlist}
+              reversePlaylist={this.reversePlaylist}
               handleSongSelection={this.handleSongSelection}
               returnSelectedPlaylist={this.returnSelectedPlaylist}
               returnFullRoute={this.returnFullRoute}
+              setSort={this.setSort}
             />
           </Switch>
         </main>
