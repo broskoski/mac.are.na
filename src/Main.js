@@ -11,6 +11,7 @@ import Header from './components/Header'
 import Playlists from './containers/Playlists'
 import Playlist from './containers/Playlist'
 import Player from './components/Player'
+import Sortainer from './components/Sortainer'
 
 import { tinyAPI } from './lib/api'
 import {
@@ -256,26 +257,26 @@ class Main extends Component {
             handleOnBuffer={this.handleOnBuffer}
             handleOnError={this.handleOnError}
            />
+          <Sortainer
+            { ...this.state }
+            setSort={this.setSort}
+            setQueryInState={this.setQueryInState}
+          />
           <Switch>
             <PropsRoute
               { ...this.state }
               exact path={'/'}
               component={Playlists}
-              reversePlaylistChannel={this.reversePlaylistChannel}
               handlePlaylistSelect={this.handlePlaylistSelect}
               returnFullRoute={this.returnFullRoute}
-              setQueryInState={this.setQueryInState}
-              setSort={this.setSort}
             />
             <PropsRoute
               { ...this.state }
               path={'/playlist/:playlistSlug'}
               component={Playlist}
-              reversePlaylist={this.reversePlaylist}
               handleSongSelection={this.handleSongSelection}
               returnSelectedPlaylist={this.returnSelectedPlaylist}
               returnFullRoute={this.returnFullRoute}
-              setSort={this.setSort}
             />
           </Switch>
         </main>

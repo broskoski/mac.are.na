@@ -4,7 +4,6 @@ import { getStatus, sortChannelContents } from '../lib/helpers'
 
 import LinkItem from '../components/LinkItem'
 import LoadState from '../components/LoadState'
-import Sortainer from '../components/Sortainer'
 
 class Playlists extends Component {
   componentDidMount() {
@@ -41,9 +40,7 @@ class Playlists extends Component {
     const {
       handlePlaylistSelect,
       playlistChannel,
-      setQueryInState,
       searchQuery,
-      setSort,
       playlistChannelSortObj,
       currentRoute,
     } = this.props
@@ -59,22 +56,6 @@ class Playlists extends Component {
 
       return (
         <div>
-          <div className="filterList">
-            <form>
-              <fieldset className="form-group">
-                <input value={searchQuery}
-                  className={'Input'}
-                  type={'text'}
-                  placeholder={'Search Channels'}
-                  onChange={(e) => setQueryInState(e)} />
-              </fieldset>
-            </form>
-            <Sortainer
-              stateKey={'playlistChannel'}
-              setSort={setSort}
-              sortState={playlistChannelSortObj}
-              currentRoute={currentRoute} />
-          </div>
           { renderList }
         </div>
       )

@@ -1,0 +1,18 @@
+<svg width="16" height="8" viewBox="0 0 16 8" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<title>sortArrow</title>
+<desc>Created using Figma</desc>
+<g id="Canvas" transform="translate(-2074 950)">
+<clipPath id="clip-0" clip-rule="evenodd">
+<path d="M 2074 -950L 2090 -950L 2090 -942L 2074 -942L 2074 -950Z" fill="#FFFFFF"/>
+</clipPath>
+<g id="sortArrow" clip-path="url(#clip-0)">
+<path d="M 2074 -950L 2090 -950L 2090 -942L 2074 -942L 2074 -950Z" fill="#FFFFFF"/>
+<g id="Polygon">
+<use xlink:href="#path0_fill" transform="matrix(-1 -1.66533e-16 1.66533e-16 -1 2087 -942)" fill="#585858"/>
+</g>
+</g>
+</g>
+<defs>
+<path id="path0_fill" d="M 5 0L 9.33013 7.5L 0.669873 7.5L 5 0Z"/>
+</defs>
+</svg>

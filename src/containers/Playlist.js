@@ -3,7 +3,6 @@ import { validateWithMessage, sortChannelContents } from '../lib/helpers'
 import LoadState from '../components/LoadState'
 
 import { SongItem, SongItemReject } from '../components/SongItem'
-import Sortainer from '../components/Sortainer'
 
 class Playlist extends Component {
   componentDidMount() {
@@ -46,7 +45,6 @@ class Playlist extends Component {
       isCurrentPlaylistLoaded,
       handlePlaylistSelect,
       playlistSortObj,
-      setSort,
       currentRoute,
     } = this.props
 
@@ -58,11 +56,6 @@ class Playlist extends Component {
 
       return (
         <div className='w-100 min-vh-100'>
-          <Sortainer
-            currentRoute={currentRoute}
-            stateKey={'playlist'}
-            setSort={setSort}
-            sortState={playlistSortObj} />
           { renderList }
           { rejectList }
         </div>
