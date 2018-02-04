@@ -5,12 +5,23 @@ import { sortKeys } from '../lib/helpers'
 const Sortainer = ({ sortState, setSort, stateKey }) => {
    // { orderKey: sortKeys.asc, paramKey: sortKeys.created_at }
    //  setSort = (stateKey, orderKey, paramKey) => {
+   // const { stateKey, orderKey, paramKey, } = sortObj
 
-  const handleSort = (eventKey) => {
-    if (sortState.paramKey === eventKey) {
-      setSort(stateKey, !sortState.orderKey, sortState.paramKey)
+  const handleSort = (newParamKey) => {
+    console.log(newParamKey, sortState.paramKey)
+    if (sortState.paramKey === newParamKey) {
+      console.log('eval true', !sortState.orderKey, sortState.paramKey)
+      setSort({
+        stateKey,
+        orderKey: !sortState.orderKey,
+        paramKey: sortState.paramKey,
+      })
     } else {
-      setSort(stateKey, sortState.orderKey, eventKey)
+      setSort({
+        stateKey,
+        orderKey: sortState.orderKey,
+        paramKey: newParamKey,
+      })
     }
   }
 

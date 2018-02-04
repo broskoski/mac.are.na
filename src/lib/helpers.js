@@ -112,26 +112,15 @@ function getCookie(cname) {
   return false
 }
 
-// immutable array.reverse in shallow object copy
-function reverseChannelContents(channel) {
-  return {
-    ...channel,
-    contents: [...channel.contents.reverse()]
-  }
-}
-
 const sortKeys = {
-  desc: 'DESC',
-  asc: 'ASC',
-  num: 'NUM',
-  title: 'TITLE',
-  updated_at: 'UPDATED_AT',
-  created_at: 'CREATED_AT'
+  title: 'title',
+  updated_at: 'updated_at',
+  created_at: 'created_at',
 }
 
 function alphaComparator(a, b) {
-  const nameA = a.name.toLowerCase()
-  const nameB = b.name.toLowerCase()
+  const nameA = a.toLowerCase()
+  const nameB = b.toLowerCase()
   if (nameA < nameB) { return -1 }
   if (nameA > nameB) { return 1 }
   return 0
@@ -160,9 +149,10 @@ function comparator(a, b, param) {
   }
 }
 
-function sortChannelContents(channelContents, param, order) {
-  const sortedArr = channelContents.sort((a, b) => comparator(a, b, param))
-  if (order === sortKeys.desc) {
+function sortChannelContents(channelContents, sortObj) {
+  const { orderKey, paramKey, } = sortObj
+  const sortedArr = channelContents.sort((a, b) => comparator(a[paramKey], b[paramKey], paramKey))
+  if (orderKey) {
     return sortedArr
   } else {
     return sortedArr.reverse()
@@ -180,7 +170,6 @@ export {
   playerStates,
   setCookie,
   getCookie,
-  reverseChannelContents,
   sortKeys,
   sortChannelContents,
 }

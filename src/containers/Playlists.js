@@ -44,7 +44,7 @@ class Playlists extends Component {
       setQueryInState,
       searchQuery,
       setSort,
-      playlistChannelSort,
+      playlistChannelSortObj,
     } = this.props
     if (playlistChannel) {
 
@@ -52,8 +52,7 @@ class Playlists extends Component {
         ? this.filterByQuery(playlistChannel.contents, searchQuery)
         : playlistChannel.contents
 
-      const { orderKey, paramKey } = playlistChannelSort
-      const sortedList = sortChannelContents(filteredList, paramKey, orderKey)
+      const sortedList = sortChannelContents(filteredList, playlistChannelSortObj)
 
       const renderList = this.makePlaylistLinks(sortedList, handlePlaylistSelect)
 
@@ -69,7 +68,7 @@ class Playlists extends Component {
                   onChange={(e) => setQueryInState(e)} />
               </fieldset>
             </form>
-            <Sortainer stateKey={'playlist'} setSort={setSort} sortState={playlistChannelSort} />
+            <Sortainer stateKey={'playlistChannel'} setSort={setSort} sortState={playlistChannelSortObj} />
           </div>
           { renderList }
         </div>

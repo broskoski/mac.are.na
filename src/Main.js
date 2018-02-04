@@ -45,8 +45,8 @@ class Main extends Component {
       trackIsFromCurrentPlaylist: true,
       searchQuery: '',
       currentRoute: '/',
-      playlistChannelSort: { orderKey: sortKeys.asc, paramKey: sortKeys.created_at },
-      playlistSort: { orderKey: sortKeys.asc, paramKey: sortKeys.created_at },
+      playlistChannelSortObj: { orderKey: true, paramKey: sortKeys.created_at },
+      playlistSortObj: { orderKey: true, paramKey: sortKeys.created_at },
     }
     this.API = new tinyAPI()
     this.playerRef = null
@@ -224,11 +224,13 @@ class Main extends Component {
     this.playerRef = ref
   }
 
-  setSort = (stateKey, orderKey, paramKey) => {
+  setSort = (sortObj) => {
+    console.log(sortObj)
+    const { stateKey, orderKey, paramKey, } = sortObj
     if (stateKey === 'playlistChannel') {
-      this.setState({ playlistChannelSort: {orderKey, paramKey} })
+      this.setState({ playlistChannelSortObj: {orderKey: orderKey, paramKey: paramKey} })
     } else if (stateKey === 'playlist') {
-      this.setState({ playlistSort: {orderKey, paramKey} })
+      this.setState({ playlistSortObj: {orderKey: orderKey, paramKey: paramKey} })
     } else {
       console.warn('Invalid stateKey arg at setSort')
     }
