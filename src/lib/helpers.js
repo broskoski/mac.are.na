@@ -116,6 +116,7 @@ const sortKeys = {
   title: 'title',
   updated_at: 'updated_at',
   created_at: 'created_at',
+  connected_at: 'connected_at',
 }
 
 function alphaComparator(a, b) {
@@ -145,7 +146,10 @@ function comparator(a, b, param) {
     case sortKeys.title: return alphaComparator(a, b)
     case sortKeys.created_at: return timeComparator(a, b)
     case sortKeys.updated_at: return timeComparator(a, b)
-    default: return 0
+    case sortKeys.connected_at: return timeComparator(a, b)
+    default:
+      console.warn('invalid param in comparator')
+      return 0
   }
 }
 

@@ -47,19 +47,22 @@ class Playlist extends Component {
       handlePlaylistSelect,
       playlistSortObj,
       setSort,
+      currentRoute,
     } = this.props
 
     if (isCurrentPlaylistLoaded && currentOpenPlaylist) {
       const withValidation = currentOpenPlaylist.contents.map(item => validateWithMessage(item))
-
       const sortedList = sortChannelContents(withValidation, playlistSortObj)
-
       const renderList = this.makeSongList(sortedList, handlePlaylistSelect)
       const rejectList = this.makeSongRejectList(withValidation)
 
       return (
         <div className='w-100 min-vh-100'>
-          <Sortainer stateKey={'playlist'} setSort={setSort} sortState={playlistSortObj} />
+          <Sortainer
+            currentRoute={currentRoute}
+            stateKey={'playlist'}
+            setSort={setSort}
+            sortState={playlistSortObj} />
           { renderList }
           { rejectList }
         </div>

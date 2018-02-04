@@ -26,16 +26,13 @@ class Main extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      activePage: 1,
       playlistListLength: 0,
-      per: 20,
       playlistChannel: null,
       isPlaying: false,
       currentTrackURL: null,
       indexOfCurrentTrack: 0,
       currentOpenPlaylist: null,
       currentTrackPlaylist: null,
-      maxItemsInCurrentPage: 0,
       volume: 0.8,
       trackProgress: 0,
       trackDuration: 0,
@@ -45,8 +42,8 @@ class Main extends Component {
       trackIsFromCurrentPlaylist: true,
       searchQuery: '',
       currentRoute: '/',
-      playlistChannelSortObj: { orderKey: true, paramKey: sortKeys.created_at },
-      playlistSortObj: { orderKey: true, paramKey: sortKeys.created_at },
+      playlistChannelSortObj: { orderKey: true, paramKey: sortKeys.connected_at },
+      playlistSortObj: { orderKey: true, paramKey: sortKeys.connected_at },
     }
     this.API = new tinyAPI()
     this.playerRef = null
@@ -225,7 +222,6 @@ class Main extends Component {
   }
 
   setSort = (sortObj) => {
-    console.log(sortObj)
     const { stateKey, orderKey, paramKey, } = sortObj
     if (stateKey === 'playlistChannel') {
       this.setState({ playlistChannelSortObj: {orderKey: orderKey, paramKey: paramKey} })

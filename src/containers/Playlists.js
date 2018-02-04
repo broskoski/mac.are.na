@@ -45,6 +45,7 @@ class Playlists extends Component {
       searchQuery,
       setSort,
       playlistChannelSortObj,
+      currentRoute,
     } = this.props
     if (playlistChannel) {
 
@@ -68,7 +69,11 @@ class Playlists extends Component {
                   onChange={(e) => setQueryInState(e)} />
               </fieldset>
             </form>
-            <Sortainer stateKey={'playlistChannel'} setSort={setSort} sortState={playlistChannelSortObj} />
+            <Sortainer
+              stateKey={'playlistChannel'}
+              setSort={setSort}
+              sortState={playlistChannelSortObj}
+              currentRoute={currentRoute} />
           </div>
           { renderList }
         </div>

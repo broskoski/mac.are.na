@@ -1,0 +1,23 @@
+
+.flexBetween {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.inlineBlock {
+  display: inline-block;
+}
+
+.invert {
+  filter: invert(100%) hue-rotate(180deg);
+  -webkit-filter: invert(100%) hue-rotate(180deg);
+}
+
+.public {
+  color: #17ac10;
+}
+
+.closed {
+  color: #4b3d67;
+}

@@ -2,15 +2,9 @@ import React from 'react'
 import classnames from 'classnames'
 import { sortKeys } from '../lib/helpers'
 
-const Sortainer = ({ sortState, setSort, stateKey }) => {
-   // { orderKey: sortKeys.asc, paramKey: sortKeys.created_at }
-   //  setSort = (stateKey, orderKey, paramKey) => {
-   // const { stateKey, orderKey, paramKey, } = sortObj
-
+const Sortainer = ({ sortState, setSort, stateKey, currentRoute }) => {
   const handleSort = (newParamKey) => {
-    console.log(newParamKey, sortState.paramKey)
     if (sortState.paramKey === newParamKey) {
-      console.log('eval true', !sortState.orderKey, sortState.paramKey)
       setSort({
         stateKey,
         orderKey: !sortState.orderKey,
@@ -24,14 +18,33 @@ const Sortainer = ({ sortState, setSort, stateKey }) => {
       })
     }
   }
+  if (currentRoute === '/') {
+    return (
+      <div>
+        <button onClick={() => handleSort(sortKeys.title)}>
+          {'Aa'}
+        </button>
+        <button onClick={() => handleSort(sortKeys.connected_at)}>
+          {'Date Added'}
+        </button>
+        <button onClick={() => handleSort(sortKeys.updated_at)}>
+          {'Date Updated'}
+        </button>
+      </div>
+    )
+  } else {
+    return (
+      <div>
+        <button onClick={() => handleSort(sortKeys.title)}>
+          {'Aa'}
+        </button>
+        <button onClick={() => handleSort(sortKeys.connected_at)}>
+          {'Date Added'}
+        </button>
+      </div>
+    )
+  }
 
-  return (
-    <div>
-      <button onClick={() => handleSort(sortKeys.title)}>{'Aa'}</button>
-      <button onClick={() => handleSort(sortKeys.created_at)}>{'Date Created'}</button>
-      <button onClick={() => handleSort(sortKeys.updated_at)}>{'Date Updated'}</button>
-    </div>
-  )
 }
 
 
