@@ -1,10 +1,6 @@
-body {
-  margin: 0;
-  padding: 0;
-  font-family: 'Arial', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  text-shadow: 1px 1px 1px rgba(0,0,0,0.004);
-  background-color: white;
+*, *:before, *:after {
+  box-sizing: inherit;
+  text-decoration: none !important;
 }
 
 html {
@@ -12,14 +8,29 @@ html {
   background-color: white;
 }
 
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Arial', 'Helvetica', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-shadow: 1px 1px 1px rgba(0,0,0,0.004);
+  background-color: white;
+  min-height: 100vh;
+}
+
 .invert {
   filter: invert(100%) hue-rotate(180deg);
   -webkit-filter: invert(100%) hue-rotate(180deg);
 }
 
-*, *:before, *:after {
-  box-sizing: inherit;
-  text-decoration: none !important;
+main {
+  padding: 4rem;
+  width: 100%;
+}
+
+button {
+  outline: none;
+  background-color: white;
 }
 
 header {
@@ -29,26 +40,39 @@ header {
 }
 
 header a {
-  /* width: 30px;
-  height: 30px; */
   margin: 0;
   padding: 0;
   color: black;
+  opacity: 0.4;
   transition: opacity 350ms;
 }
 
 header a:hover{
-  opacity: 0.66;
+  opacity: 1;
 }
 
-.toArena img, a.toArena {
+a.toArena {
   width: 30px;
   height: 30px;
 }
 
+a.toArena img {
+  width: 100%;
+  height: auto;
+}
+
+
 nav {
   display: flex;
   margin-bottom: 4em;
+}
+
+nav *:first-child {
+  margin-left: 0;
+}
+
+nav #nowPlaying {
+  margin-right: 0;
 }
 
 nav button {
@@ -69,17 +93,17 @@ nav button {
   transition: border-color 300ms;
 }
 
+nav button img {
+  width: 100%;
+  height: auto;
+}
+
 nav button:hover {
   border-color: black;
 }
 
-button {
-  outline: none;
-  background-color: white;
-}
-
 .form-group {
-    margin-bottom: 15px;
+  margin-bottom: 15px;
 }
 
 fieldset {
@@ -95,10 +119,10 @@ fieldset {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
-  padding: 0.75em 1em;
+  padding: 1rem 0.5em;
   border-radius: 0.125em;
   color: #585858;
-  /* background-color: #f7f7f7; */
+  /* background-color: #f0f0f0; */
   border: 1px solid #f0f0f0;
   font-size: 1rem;
   /* border: none; */
@@ -106,12 +130,12 @@ fieldset {
 }
 
 .Input:focus {
-  background-color: #f7f7f7;
+  background-color: #f0f0f0;
   color: rgb(88, 88, 88);
 }
 
 .Input:hover {
-  background-color: #f7f7f7;
+  background-color: #f0f0f0;
   color: rgb(88, 88, 88);
 }
 
@@ -149,6 +173,10 @@ fieldset {
 #nowPlaying-right{
   display: flex;
   align-items: center;
+}
+
+.track-time{
+  width: 130px;
 }
 
 .tile-wrap {
@@ -197,6 +225,8 @@ fieldset {
   border: none;
   border-top: 1px solid #f0f0f0;
   color: black;
+  font-size: 1rem;
+  transition: background-color 300ms;
 }
 
 .list-item:first-of-type{
@@ -211,27 +241,21 @@ fieldset {
 
 .list-item:hover {
   cursor: pointer;
+  background-color: #f0f0f0;
+}
+
+.list-item p {
+  margin: 0;
+  line-height: 1.25rem;
+}
+
+.bg-selected{
+  background-color: #f0f0f0;
 }
 
 /* button press */
 a:hover, a:active, a:focus {
   outline: medium none !important;
-}
-
-/* pagination */
-.pagination {
-  margin-top: 40px;
-  text-align: center;
-}
-.pagination li.active {
-  background-color: black !important;
-  border-top: 1px solid black;
-  border-bottom: 1px solid black;
-
-}
-
-.pagination li:hover a {
-  color: grey;
 }
 
 .flexBetween {
@@ -244,14 +268,6 @@ a:hover, a:active, a:focus {
   display: inline-block;
 }
 
-/* top li border */
-.bb {
-  /* border-top: solid 1px black; */
-}
-/* .w-100 > .bb ~ .bb {
-  border-top: none;
-} */
-
 .dot{
   width: 10px;
   height: 10px;
@@ -260,7 +276,6 @@ a:hover, a:active, a:focus {
   background-color: white;
   transition: background-color 300ms;
   border-radius: 999px;
-  /* margin-right: 1rem; */
 }
 
 .playerIdle {

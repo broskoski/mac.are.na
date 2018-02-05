@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { getStatus, validateWithMessage } from '../lib/helpers'
+import { validateWithMessage } from '../lib/helpers'
 import LoadState from '../components/LoadState'
 
 import { SongItem, SongItemReject } from '../components/SongItem'

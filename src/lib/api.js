@@ -1,8 +1,10 @@
 import { apiBase, playlistChannel } from '../config'
+import { sanitizeURL } from './helpers'
 const BASE = apiBase[process.env.NODE_ENV]
 
 const parse = {
   playlistChannel: (a) => a,
+  paginatedPlaylistChannel: (a) => a.contents,
   playlist: (a) => a,
   playlistListLength: (a) => a.length,
 }
@@ -19,10 +21,9 @@ class tinyAPI {
       .then(data => parse.playlistListLength(data))
   }
 
-  //this may be broken
   getPaginatedChannelContents = (pageIndex, per) => {
     return this.get(`${BASE}/channels/${playlistChannel}/contents?page=${pageIndex}&per=${per}`)
-      .then(data => parse.playlistChannel(data) )
+      .then(data => parse.paginatedPlaylistChannel(data) )
   }
 
   getChannelContents = () => {
@@ -36,6 +37,6 @@ class tinyAPI {
   }
 }
 
-module.exports = {
+export {
   tinyAPI,
 }

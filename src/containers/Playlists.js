@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { Pagination } from 'pui-react-pagination'
 import { decode } from 'he'
 import { getStatus } from '../lib/helpers'
 
@@ -39,9 +38,6 @@ class Playlists extends Component {
 
   render() {
     const {
-      listLength,
-      activePage,
-      handlePaginatedPageNav,
       handlePlaylistSelect,
       playlistChannel,
       setQueryInState,

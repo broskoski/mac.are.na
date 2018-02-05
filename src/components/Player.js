@@ -9,7 +9,7 @@ import forwardSVG from '../assets/forward.svg'
 import playSVG from '../assets/play.svg'
 import reverseSVG from '../assets/reverse.svg'
 import pauseSVG from '../assets/pause.svg'
-import { getURL } from '../lib/helpers'
+import { getURL, playerStates } from '../lib/helpers'
 
 // this is such a weirdo component
 class Player extends Component {
@@ -52,7 +52,6 @@ class Player extends Component {
     const timeFormat = trackDuration > 3600 ? 'H:m:ss' : 'm:ss'
     const progress = moment.utc(trackProgress * 1000).format(timeFormat)
     const duration = moment.utc(trackDuration * 1000).format(timeFormat)
-
     const time =`${progress} / ${duration}`
 
     const config = {
@@ -61,7 +60,7 @@ class Player extends Component {
       }
     }
 
-    // lmao jfc
+    // in safari, iframes needs to be at lease 1px x 1px to play.
     const style = {
       position: 'fixed',
       visibility: 'hidden',
@@ -108,19 +107,19 @@ class Player extends Component {
           onDuration={(e) => handleOnDuration(e)}
           onBuffer={(e) => handleOnBuffer(e)}
           onEnded={() => goToNextTrack()}
-          onError={() => handleOnError()} />
+          onError={(e) => handleOnError(e)} />
       </nav>
     )
   }
 }
 
 
-const Dot = ({playerStatus}) => {
+const Dot = ({ playerStatus }) => {
   const playerStatusClasses = classnames({
-    playerIdle: playerStatus === 'IDLE',
-    playerPlaying: playerStatus === 'PLAYING',
-    playerBuffering: playerStatus === 'BUFFERING',
-    playerErrored: playerStatus === 'ERRORED',
+    playerIdle: playerStatus === playerStates.idle,
+    playerPlaying: playerStatus === playerStates.playing,
+    playerBuffering: playerStatus === playerStates.buffering,
+    playerErrored: playerStatus === playerStates.errored,
     dot: true,
   })
   return (
@@ -180,13 +179,13 @@ const SourceLink = ({ trackInfo }) => {
 const TrackTime = ({ time, trackInfo }) => {
   if (trackInfo) {
     return (
-      <div className={'tile-wrap'}>
+      <div className={'tile-wrap track-time'}>
         <p>{time}</p>
       </div>
     )
   }
   return (
-    <div className={'tile-wrap'}>
+    <div className={'tile-wrap track-time'}>
       <p>{'--:--'}</p>
     </div>
 
