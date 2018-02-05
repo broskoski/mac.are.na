@@ -20,15 +20,21 @@ body {
   min-height: 100vh;
 }
 
-
 main {
-  padding: 4rem;
+  padding: 0.5rem;
   width: 100%;
+  @include for-medium-up {
+    padding: 4rem;
+  }
 }
 
 button {
   outline: none;
   background-color: white;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  text-decoration: none !important;
 }
 
 header {
@@ -56,15 +62,29 @@ a.toArena {
   }
 }
 
-
-
 #Sortainer {
   display: flex;
   justify-content: space-between;
+  flex-direction: column;
+
+  @include for-medium-up {
+    flex-direction: row;
+  }
   .left {
     flex: 1;
   }
-  .right{
+  .right {
+    display: flex;
+    button {
+      flex: 1;
+    }
+    flex: 1;
+    @include for-medium-up {
+      button {
+        flex: initial;
+      }
+      flex: initial;
+    }
   }
   input {
     border: none;
@@ -73,13 +93,21 @@ a.toArena {
     font-size: $font-size-h6;
     outline: none;
     border-bottom: 1px solid $colors-gray-border;
+    margin-bottom: 1rem;
+    @include for-medium-up {
+      margin-bottom: 0;
+    }
     &:focus {
       border-bottom: 1px solid $colors-gray-text;
     }
   }
   button {
     border: none;
-    padding: 1rem 1em;
+    padding: 1rem 0;
+    @include for-medium-up {
+      padding: 1rem 1em;
+
+    }
     font-size: $font-size-h6;
     &:hover {
       cursor: pointer;
@@ -88,7 +116,6 @@ a.toArena {
     &:focus {
       color: $colors-gray-hover;
     }
-
   }
   .unselected {
     border-bottom: 1px solid $colors-gray-border;
@@ -104,60 +131,70 @@ a.toArena {
       opacity: 1;
     }
   }
-
   img.asc {
     transform: rotateZ(180deg);
   }
 
-  img.desc{
+  img.desc {
     transform: rotateZ(0deg);
   }
 }
 
 nav {
   display: flex;
-  margin-bottom: 4em;
+  margin-bottom: 2rem;
+
   border: 1px solid $colors-gray-border;
+  flex-direction: column-reverse;
+  @include for-medium-up {
+    flex-direction: row;
+    margin-bottom: 4rem;
+  }
   button {
     border: none;
     height: 3rem;
     width: 3rem;
     color: #585858;
-    // border-right: 0.075em solid #d5d5d5;
     border-radius: 0.125em;
-
-
     display: flex;
     justify-content: center;
     align-items: center;
-    transition: border-color 300ms;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    user-select: none;
-    text-decoration: none !important;
     img {
-      width: 100%;
+      width: 1.75rem;
       height: auto;
+      opacity: .66; // equal to $colors-gray-text #585858
     }
     &:hover {
       border-color: black;
       cursor: pointer;
+      img {
+        opacity: 1;
+      }
     }
   }
 }
 
 #playPause {
-  border-right: 1px solid $colors-gray-border;
+  justify-content: space-around;
+  border-top: 1px solid $colors-gray-border;
+  @include for-medium-up {
+    border-right: 1px solid $colors-gray-border;
+    border-top: none;
+  }
 }
 
 #nowPlaying {
-  height: 3rem;
+  height: 6rem;
   flex: 1;
   background-color: white;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-radius: 0.125em;
+  flex-direction: column;
+  @include for-medium-up {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    height: 3rem;
+  }
   a {
     color: black;
     opacity: 0.5;
@@ -170,6 +207,12 @@ nav {
   .left, .right {
     display: flex;
     align-items: center;
+  }
+  .left {
+
+  }
+  .right {
+    justify-content: space-between;
   }
 }
 
@@ -189,7 +232,6 @@ nav {
   align-items: center;
   justify-content: center;
   padding: 0rem 1rem;
-  border-right: 1px solid white;
 }
 
 .tile-wrap-full {
@@ -203,7 +245,6 @@ nav {
 .tile-wrap-square {
   height: 3rem;
   width: 3rem;
-  border-right: 1px solid white;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -221,7 +262,7 @@ nav {
   width: 100%;
   text-align: left;
   border: none;
-  border-top: 1px solid #f0f0f0;
+  border-top: 1px solid $colors-gray-border;
   color: black;
   font-size: 1rem;
   transition: background-color 300ms;
@@ -229,13 +270,13 @@ nav {
     border-top: none;
   }
   &.rejected {
-    background-color: #fafafa;
+    background-color: $colors-gray-background;
     color: grey;
     pointer-events: none;
   }
   &:hover {
     cursor: pointer;
-    background-color: #f0f0f0;
+    background-color: $colors-gray-border;
   }
   p {
     margin: 0;
@@ -244,7 +285,7 @@ nav {
 }
 
 .bg-selected {
-  background-color: #f0f0f0;
+  background-color: $colors-gray-border;
 }
 
 /* button press */
@@ -266,17 +307,17 @@ a {
 }
 
 .playerIdle {
-  background-color: #c6c6c6;
+  background-color: $colors-gray-light;
 }
 
 .playerPlaying {
-  background-color: #17ac10;
+  background-color: $colors-public;
 }
 
 .playerBuffering {
-  background-color: #f2ba3d;
+  background-color: $gavins-made-up-yellow;
 }
 
 .playerErrored {
-  background-color: #e24d4d;
+  background-color: $colors-alert;
 }

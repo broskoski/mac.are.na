@@ -7,10 +7,10 @@
 </clipPath>
 <g id="pause" clip-path="url(#clip-0)">
 <g id="Rectangle">
-<use xlink:href="#path0_fill" transform="translate(-297 -297)" fill="#585858"/>
+<use xlink:href="#path0_fill" transform="translate(-297 -297)" fill="black"/>
 </g>
 <g id="Rectangle">
-<use xlink:href="#path0_fill" transform="translate(-281 -297)" fill="#585858"/>
+<use xlink:href="#path0_fill" transform="translate(-281 -297)" fill="black"/>
 </g>
 </g>
 </g>

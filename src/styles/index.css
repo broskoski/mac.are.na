@@ -56,12 +56,20 @@ body {
   min-height: 100vh; }
 
 main {
-  padding: 4rem;
+  padding: 0.5rem;
   width: 100%; }
+
+@media (min-width: 760px) {
+  main {
+    padding: 4rem; } }
 
 button {
   outline: none;
-  background-color: white; }
+  background-color: white;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  text-decoration: none !important; }
 
 header {
   display: flex;
@@ -88,10 +96,28 @@ a.toArena img {
 
 #Sortainer {
   display: flex;
-  justify-content: space-between; }
+  justify-content: space-between;
+  flex-direction: column; }
+
+@media (min-width: 760px) {
+  #Sortainer {
+    flex-direction: row; } }
 
 #Sortainer .left {
   flex: 1; }
+
+#Sortainer .right {
+  display: flex;
+  flex: 1; }
+
+#Sortainer .right button {
+  flex: 1; }
+
+@media (min-width: 760px) {
+  #Sortainer .right {
+    flex: initial; }
+  #Sortainer .right button {
+    flex: initial; } }
 
 #Sortainer input {
   border: none;
@@ -99,15 +125,24 @@ a.toArena img {
   padding: 1rem 1em;
   font-size: 1rem;
   outline: none;
-  border-bottom: 1px solid #e7e7e5; }
+  border-bottom: 1px solid #e7e7e5;
+  margin-bottom: 1rem; }
+
+@media (min-width: 760px) {
+  #Sortainer input {
+    margin-bottom: 0; } }
 
 #Sortainer input:focus {
   border-bottom: 1px solid #585858; }
 
 #Sortainer button {
   border: none;
-  padding: 1rem 1em;
+  padding: 1rem 0;
   font-size: 1rem; }
+
+@media (min-width: 760px) {
+  #Sortainer button {
+    padding: 1rem 1em; } }
 
 #Sortainer button:hover {
   cursor: pointer;
@@ -138,8 +173,14 @@ a.toArena img {
 
 nav {
   display: flex;
-  margin-bottom: 4em;
-  border: 1px solid #e7e7e5; }
+  margin-bottom: 2rem;
+  border: 1px solid #e7e7e5;
+  flex-direction: column-reverse; }
+
+@media (min-width: 760px) {
+  nav {
+    flex-direction: row;
+    margin-bottom: 4rem; } }
 
 nav button {
   border: none;
@@ -149,32 +190,42 @@ nav button {
   border-radius: 0.125em;
   display: flex;
   justify-content: center;
-  align-items: center;
-  transition: border-color 300ms;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  user-select: none;
-  text-decoration: none !important; }
+  align-items: center; }
 
 nav button img {
-  width: 100%;
-  height: auto; }
+  width: 1.75rem;
+  height: auto;
+  opacity: .66; }
 
 nav button:hover {
   border-color: black;
   cursor: pointer; }
 
+nav button:hover img {
+  opacity: 1; }
+
 #playPause {
-  border-right: 1px solid #e7e7e5; }
+  justify-content: space-around;
+  border-top: 1px solid #e7e7e5; }
+
+@media (min-width: 760px) {
+  #playPause {
+    border-right: 1px solid #e7e7e5;
+    border-top: none; } }
 
 #nowPlaying {
-  height: 3rem;
+  height: 6rem;
   flex: 1;
   background-color: white;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-radius: 0.125em; }
+  flex-direction: column; }
+
+@media (min-width: 760px) {
+  #nowPlaying {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    height: 3rem; } }
 
 #nowPlaying a {
   color: black;
@@ -189,6 +240,9 @@ nav button:hover {
   display: flex;
   align-items: center; }
 
+#nowPlaying .right {
+  justify-content: space-between; }
+
 #playPause {
   display: flex; }
 
@@ -200,8 +254,7 @@ nav button:hover {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0rem 1rem;
-  border-right: 1px solid white; }
+  padding: 0rem 1rem; }
 
 .tile-wrap-full {
   height: 3rem;
@@ -213,7 +266,6 @@ nav button:hover {
 .tile-wrap-square {
   height: 3rem;
   width: 3rem;
-  border-right: 1px solid white;
   display: flex;
   align-items: center;
   justify-content: center; }
@@ -229,7 +281,7 @@ nav button:hover {
   width: 100%;
   text-align: left;
   border: none;
-  border-top: 1px solid #f0f0f0;
+  border-top: 1px solid #e7e7e5;
   color: black;
   font-size: 1rem;
   transition: background-color 300ms; }
@@ -238,20 +290,20 @@ nav button:hover {
   border-top: none; }
 
 .list-item.rejected {
-  background-color: #fafafa;
+  background-color: #f7f7f7;
   color: grey;
   pointer-events: none; }
 
 .list-item:hover {
   cursor: pointer;
-  background-color: #f0f0f0; }
+  background-color: #e7e7e5; }
 
 .list-item p {
   margin: 0;
   line-height: 1.25rem; }
 
 .bg-selected {
-  background-color: #f0f0f0; }
+  background-color: #e7e7e5; }
 
 /* button press */
 a:hover, a:active, a:focus {
@@ -267,7 +319,7 @@ a:hover, a:active, a:focus {
   border-radius: 999px; }
 
 .playerIdle {
-  background-color: #c6c6c6; }
+  background-color: #9d9d9d; }
 
 .playerPlaying {
   background-color: #17ac10; }
