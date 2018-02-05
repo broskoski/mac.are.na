@@ -86,10 +86,11 @@ a.toArena {
       flex: initial;
     }
   }
-  input {
+  .search {
     border: none;
     width: 100%;
-    padding: 1rem 1em;
+    padding: 0 1em;
+    height: 3rem;
     font-size: $font-size-h6;
     outline: none;
     border-bottom: 1px solid $colors-gray-border;
@@ -103,10 +104,10 @@ a.toArena {
   }
   button {
     border: none;
-    padding: 1rem 0;
+    padding: 0 1em;
+    height: 3rem;
     @include for-medium-up {
       padding: 1rem 1em;
-
     }
     font-size: $font-size-h6;
     &:hover {

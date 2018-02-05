@@ -31,7 +31,7 @@ class Main extends Component {
       playlistChannel: null,
       isPlaying: false,
       currentTrackURL: null,
-      indexOfCurrentTrack: 0,
+      idOfCurrentTrack: 0,
       currentOpenPlaylist: null,
       currentTrackPlaylist: null,
       volume: 0.8,
@@ -118,10 +118,10 @@ class Main extends Component {
   }
 
   // currently any time a track is selected, it will be played.
-  handleSongSelection = (item, indexOfCurrentTrack) => {
+  handleSongSelection = (item) => {
     this.setState({
       currentTrackURL: item.macarenaURL,
-      indexOfCurrentTrack,
+      idOfCurrentTrack: item.id,
       currentTrackInfo: item,
       trackIsFromCurrentPlaylist: true,
       currentTrackPlaylist: this.state.currentOpenPlaylist
@@ -164,7 +164,8 @@ class Main extends Component {
 
   // update +1 track and index
   goToNextTrack = () => {
-    const { indexOfCurrentTrack, currentTrackPlaylist } = this.state
+    const { idOfCurrentTrack, currentTrackPlaylist } = this.state
+    const indexOfCurrentTrack = currentTrackPlaylist.findIndex(block => block.id === idOfCurrentTrack)
     if (indexOfCurrentTrack + 1 < currentTrackPlaylist.length) {
       const nextIndex = indexOfCurrentTrack + 1
       const nextTrack = currentTrackPlaylist.contents[nextIndex]
@@ -174,7 +175,8 @@ class Main extends Component {
 
   //  update -1 track and index
   goToPreviousTrack = () => {
-    const { indexOfCurrentTrack, currentTrackPlaylist } = this.state
+    const { idOfCurrentTrack, currentTrackPlaylist } = this.state
+    const indexOfCurrentTrack = currentTrackPlaylist.findIndex(block => block.id === idOfCurrentTrack)
     if (indexOfCurrentTrack > 0) {
       const previousIndex = indexOfCurrentTrack - 1
       const previousTrack = currentTrackPlaylist.contents[previousIndex]

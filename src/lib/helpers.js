@@ -141,6 +141,7 @@ function timeComparator(a, b) {
   return 0
 }
 
+// chooses a comparator to use based on input type
 function comparator(a, b, param) {
   switch(param) {
     case sortKeys.title: return alphaComparator(a, b)
@@ -153,6 +154,7 @@ function comparator(a, b, param) {
   }
 }
 
+// executes array.sort with comparator and handles order inversion
 function sortChannelContents(channelContents, sortObj) {
   const { orderKey, paramKey, } = sortObj
   const sortedArr = channelContents.sort((a, b) => comparator(a[paramKey], b[paramKey], paramKey))

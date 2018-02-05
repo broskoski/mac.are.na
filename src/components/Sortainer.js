@@ -35,10 +35,7 @@ const Sortainer = ({
       })
     }
   }
-  const searchClasses = classnames({
-    // selected: sortState.paramKey === sortKeys.title,
-    // unselected: sortState.paramKey !== sortKeys.title,
-  })
+
   const alphaSortClasses = classnames({
     selected: sortState.paramKey === sortKeys.title,
     unselected: sortState.paramKey !== sortKeys.title,
@@ -59,37 +56,64 @@ const Sortainer = ({
     desc: sortState.orderKey,
   })
 
-  return (
-    <div id={'Sortainer'}>
-      <div className={'left'}>
-        <input
-          value={searchQuery}
-          type={'text'}
-          placeholder={'Search Channels'}
-          onChange={(e) => setQueryInState(e)} />
+  if (currentRoute === '/') {
+    return (
+      <div id={'Sortainer'}>
+        <div className={'left'}>
+          <input
+            className={'search'}
+            value={searchQuery}
+            type={'text'}
+            placeholder={'Search Channels'}
+            onChange={(e) => setQueryInState(e)} />
+        </div>
+        <div className={'right'}>
+          <button
+            className={alphaSortClasses}
+            onClick={() => handleSort(sortKeys.title)}>
+            {'Title'}
+            <img className={orderSortClasses} src={sortArrow} />
+          </button>
+          <button
+            className={connectedSortClasses}
+            onClick={() => handleSort(sortKeys.connected_at)}>
+            {'Connected'}
+            <img className={orderSortClasses} src={sortArrow} />
+          </button>
+          <button
+            className={updatedSortClasses}
+            onClick={() => handleSort(sortKeys.updated_at)}>
+            {'Updated'}
+            <img className={orderSortClasses} src={sortArrow} />
+          </button>
+        </div>
       </div>
-      <div className={'right'}>
-        <button
-          className={alphaSortClasses}
-          onClick={() => handleSort(sortKeys.title)}>
-          {'Title'}
-          <img className={orderSortClasses} src={sortArrow} />
-        </button>
-        <button
-          className={connectedSortClasses}
-          onClick={() => handleSort(sortKeys.connected_at)}>
-          {'Connected'}
-          <img className={orderSortClasses} src={sortArrow} />
-        </button>
-        <button
-          className={updatedSortClasses}
-          onClick={() => handleSort(sortKeys.updated_at)}>
-          {'Updated'}
-          <img className={orderSortClasses} src={sortArrow} />
-        </button>
+    )
+  } else {
+    return (
+      <div id={'Sortainer'}>
+        <div className={'left'}>
+          <div className={'search'} />
+        </div>
+        <div className={'right'}>
+          <button
+            className={alphaSortClasses}
+            onClick={() => handleSort(sortKeys.title)}>
+            {'Title'}
+            <img className={orderSortClasses} src={sortArrow} />
+          </button>
+          <button
+            className={connectedSortClasses}
+            onClick={() => handleSort(sortKeys.connected_at)}>
+            {'Connected'}
+            <img className={orderSortClasses} src={sortArrow} />
+          </button>
+        </div>
       </div>
-    </div>
-  )
+    )
+  }
+
+
 }
 
 

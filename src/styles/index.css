@@ -23,7 +23,7 @@
   justify-content: center;
   align-items: center;
   background-color: transparent;
-  margin: 0 auto; }
+  margin: 8rem auto; }
 
 .loader svg rect {
   fill: rgba(255, 255, 255, 0);
@@ -119,25 +119,27 @@ a.toArena img {
   #Sortainer .right button {
     flex: initial; } }
 
-#Sortainer input {
+#Sortainer .search {
   border: none;
   width: 100%;
-  padding: 1rem 1em;
+  padding: 0 1em;
+  height: 3rem;
   font-size: 1rem;
   outline: none;
   border-bottom: 1px solid #e7e7e5;
   margin-bottom: 1rem; }
 
 @media (min-width: 760px) {
-  #Sortainer input {
+  #Sortainer .search {
     margin-bottom: 0; } }
 
-#Sortainer input:focus {
+#Sortainer .search:focus {
   border-bottom: 1px solid #585858; }
 
 #Sortainer button {
   border: none;
-  padding: 1rem 0;
+  padding: 0 1em;
+  height: 3rem;
   font-size: 1rem; }
 
 @media (min-width: 760px) {

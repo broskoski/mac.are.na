@@ -15,19 +15,21 @@ class Playlist extends Component {
   makeSongList = (validatedPlaylist) => {
     const {
       trackIsFromCurrentPlaylist,
-      indexOfCurrentTrack,
+      idOfCurrentTrack,
       handleSongSelection,
       currentTrackInfo,
     } = this.props
 
+
     return validatedPlaylist.filter(item => item.macarenaURLValidity.isValid)
       .map((item, index) => {
+        const isSelected = trackIsFromCurrentPlaylist && idOfCurrentTrack === item.id && currentTrackInfo
         return (
           <SongItem
             key={item.id}
             song={item}
-            isSelected={trackIsFromCurrentPlaylist && indexOfCurrentTrack === index && currentTrackInfo}
-            handleSelection={() => handleSongSelection(item, index)} />
+            isSelected={isSelected}
+            handleSelection={() => handleSongSelection(item)} />
         )
       })
   }
