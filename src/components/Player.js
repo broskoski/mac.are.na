@@ -72,12 +72,19 @@ class Player extends Component {
 
     return (
       <nav>
-        <button onClick={() => goToPreviousTrack()}><img alt={'rev'} src={reverseSVG} /></button>
-        <button onClick={() => handlePlayback()}>{playbackSymbol}</button>
-        <button onClick={() => goToNextTrack()}><img alt={'fwd'} src={forwardSVG} /></button>
-
+        <div id={'playPause'}>
+          <button onClick={() => goToPreviousTrack()}>
+            <img alt={'rev'} src={reverseSVG} />
+          </button>
+          <button onClick={() => handlePlayback()}>
+            {playbackSymbol}
+          </button>
+          <button onClick={() => goToNextTrack()}>
+            <img alt={'fwd'} src={forwardSVG} />
+          </button>
+        </div>
         <div id={'nowPlaying'}>
-          <div id={'nowPlaying-left'}>
+          <div className={'left'}>
             <Dot playerStatus={playerStatus} />
             <TrackTitle
               trackInfo={currentTrackInfo}
@@ -85,7 +92,7 @@ class Player extends Component {
               trackIsFromCurrentPlaylist={trackIsFromCurrentPlaylist}
               currentRoute={currentRoute} />
           </div>
-          <div id={'nowPlaying-right'}>
+          <div className={'right'}>
             <SourceLink trackInfo={currentTrackInfo} />
             <TrackTime time={time} trackInfo={currentTrackInfo} />
           </div>
@@ -143,7 +150,10 @@ const TrackTitle = ({
       return (
         <div className={'tile-wrap-full'}>
           <p>{title}
-            <Link to={`/playlist/${playlistSlug}`}>{`from ${playListTitle}`}</Link></p>
+            <Link to={`/playlist/${playlistSlug}`}>
+              {`from ${playListTitle}`}
+            </Link>
+          </p>
         </div>
       )
     }
@@ -186,7 +196,7 @@ const TrackTime = ({ time, trackInfo }) => {
   }
   return (
     <div className={'tile-wrap track-time'}>
-      <p>{'--:--'}</p>
+      <p>{'--:-- / --:-- '}</p>
     </div>
 
   )

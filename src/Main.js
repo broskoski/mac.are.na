@@ -11,25 +11,29 @@ import Header from './components/Header'
 import Playlists from './containers/Playlists'
 import Playlist from './containers/Playlist'
 import Player from './components/Player'
+import Sortainer from './components/Sortainer'
 
 import { tinyAPI } from './lib/api'
-import { playerStates, getCookie, setCookie } from './lib/helpers'
+import {
+  playerStates,
+  getCookie,
+  setCookie,
+  reverseChannelContents,
+  sortKeys,
+  sortChannelContents,
+} from './lib/helpers'
 
 class Main extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      activePage: 1,
       playlistListLength: 0,
-      per: 20,
       playlistChannel: null,
-      searchList: null,
       isPlaying: false,
       currentTrackURL: null,
-      indexOfCurrentTrack: 0,
+      idOfCurrentTrack: 0,
       currentOpenPlaylist: null,
       currentTrackPlaylist: null,
-      maxItemsInCurrentPage: 0,
       volume: 0.8,
       trackProgress: 0,
       trackDuration: 0,
@@ -39,6 +43,8 @@ class Main extends Component {
       trackIsFromCurrentPlaylist: true,
       searchQuery: '',
       currentRoute: '/',
+      playlistChannelSortObj: { orderKey: true, paramKey: sortKeys.connected_at },
+      playlistSortObj: { orderKey: true, paramKey: sortKeys.connected_at },
     }
     this.API = new tinyAPI()
     this.playerRef = null
@@ -62,28 +68,11 @@ class Main extends Component {
       this.API.getChannelContents(),
     ])
       .then(([length, playlistChannel]) => {
-        const resortedPlaylists = {
-          ...playlistChannel,
-          contents: playlistChannel.contents.reverse()
-        }
         this.setState({
           playlistListLength: length,
-          playlistChannel: resortedPlaylists,
-          searchList: playlistChannel,
+          playlistChannel: playlistChannel,
         })
       })
-  }
-
-  togglePlaylistOrder = (resortedPlaylists) => {
-    this.setState({ resortedPlaylists: resortedPlaylists.reverse() })
-  }
-
-  applySearch = (predicate) => {
-    const updatedList = this.state.playlistChannel.contents.filter(item => {
-      const text = decode(`${item.user.full_name} / ${item.title}`)
-      return text.toLowerCase().search(predicate) !== -1
-    })
-    this.setState({ searchList: { ...this.state.playlistChannel, contents: updatedList } })
   }
 
   setQueryInState = (event) => {
@@ -129,10 +118,10 @@ class Main extends Component {
   }
 
   // currently any time a track is selected, it will be played.
-  handleSongSelection = (item, indexOfCurrentTrack) => {
+  handleSongSelection = (item) => {
     this.setState({
       currentTrackURL: item.macarenaURL,
-      indexOfCurrentTrack,
+      idOfCurrentTrack: item.id,
       currentTrackInfo: item,
       trackIsFromCurrentPlaylist: true,
       currentTrackPlaylist: this.state.currentOpenPlaylist
@@ -168,14 +157,15 @@ class Main extends Component {
         this.setState({
           currentOpenPlaylist: playlist,
           isCurrentPlaylistLoaded: true,
-          trackIsFromCurrentPlaylist: this.isTrackIsFromCurrentPlaylist(currentTrackPlaylist, playlist)
+          trackIsFromCurrentPlaylist: this.isTrackIsFromCurrentPlaylist(currentTrackPlaylist, playlist),
         })
       })
   }
 
   // update +1 track and index
   goToNextTrack = () => {
-    const { indexOfCurrentTrack, currentTrackPlaylist } = this.state
+    const { idOfCurrentTrack, currentTrackPlaylist } = this.state
+    const indexOfCurrentTrack = currentTrackPlaylist.findIndex(block => block.id === idOfCurrentTrack)
     if (indexOfCurrentTrack + 1 < currentTrackPlaylist.length) {
       const nextIndex = indexOfCurrentTrack + 1
       const nextTrack = currentTrackPlaylist.contents[nextIndex]
@@ -185,7 +175,8 @@ class Main extends Component {
 
   //  update -1 track and index
   goToPreviousTrack = () => {
-    const { indexOfCurrentTrack, currentTrackPlaylist } = this.state
+    const { idOfCurrentTrack, currentTrackPlaylist } = this.state
+    const indexOfCurrentTrack = currentTrackPlaylist.findIndex(block => block.id === idOfCurrentTrack)
     if (indexOfCurrentTrack > 0) {
       const previousIndex = indexOfCurrentTrack - 1
       const previousTrack = currentTrackPlaylist.contents[previousIndex]
@@ -223,14 +214,25 @@ class Main extends Component {
     this.setState({playerStatus: playerStates.buffering })
   }
 
-  handleOnError = (e) => {
-    console.info('ruh roh, ', e)
+  handleOnError = (event) => {
+    console.warn('ruh roh, ', event)
     this.setState({playerStatus: playerStates.errored })
     this.goToNextTrack()
   }
 
   returnRef = (ref) => {
     this.playerRef = ref
+  }
+
+  setSort = (sortObj) => {
+    const { stateKey, orderKey, paramKey, } = sortObj
+    if (stateKey === 'playlistChannel') {
+      this.setState({ playlistChannelSortObj: {orderKey: orderKey, paramKey: paramKey} })
+    } else if (stateKey === 'playlist') {
+      this.setState({ playlistSortObj: {orderKey: orderKey, paramKey: paramKey} })
+    } else {
+      console.warn('Invalid stateKey arg at setSort')
+    }
   }
 
   render () {
@@ -245,6 +247,7 @@ class Main extends Component {
           <Player
             { ...this.state }
             ref={this.ref}
+            returnRef={this.returnRef}
             handlePlayback={this.handlePlayback}
             goToNextTrack={this.goToNextTrack}
             goToPreviousTrack={this.goToPreviousTrack}
@@ -255,17 +258,19 @@ class Main extends Component {
             handleOnDuration={this.handleOnDuration}
             handleOnBuffer={this.handleOnBuffer}
             handleOnError={this.handleOnError}
-            returnRef={this.returnRef}
            />
+          <Sortainer
+            { ...this.state }
+            setSort={this.setSort}
+            setQueryInState={this.setQueryInState}
+          />
           <Switch>
             <PropsRoute
               { ...this.state }
               exact path={'/'}
               component={Playlists}
-              applySearch={this.applySearch}
               handlePlaylistSelect={this.handlePlaylistSelect}
               returnFullRoute={this.returnFullRoute}
-              setQueryInState={this.setQueryInState}
             />
             <PropsRoute
               { ...this.state }

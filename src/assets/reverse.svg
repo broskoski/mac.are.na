@@ -7,10 +7,10 @@
 </clipPath>
 <g id="reverse" clip-path="url(#clip-0)">
 <g id="Polygon">
-<use xlink:href="#path0_fill" transform="matrix(-1.83697e-16 -1 1 -1.83697e-16 -481 -267)" fill="#585858"/>
+<use xlink:href="#path0_fill" transform="matrix(-1.83697e-16 -1 1 -1.83697e-16 -481 -267)" fill="black"/>
 </g>
 <g id="Rectangle">
-<use xlink:href="#path1_fill" transform="matrix(-1 1.22465e-16 -1.22465e-16 -1 -481 -267)" fill="#585858"/>
+<use xlink:href="#path1_fill" transform="matrix(-1 1.22465e-16 -1.22465e-16 -1 -481 -267)" fill="black"/>
 </g>
 </g>
 </g>

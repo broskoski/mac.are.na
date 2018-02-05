@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { decode } from 'he'
-import { getStatus } from '../lib/helpers'
+import { getStatus, sortChannelContents } from '../lib/helpers'
 
 import LinkItem from '../components/LinkItem'
 import LoadState from '../components/LoadState'
@@ -40,32 +40,22 @@ class Playlists extends Component {
     const {
       handlePlaylistSelect,
       playlistChannel,
-      setQueryInState,
       searchQuery,
+      playlistChannelSortObj,
+      currentRoute,
     } = this.props
     if (playlistChannel) {
 
-      let renderList = []
-      if (searchQuery !== '') {
-        const filteredPlaylistContents = this.filterByQuery(playlistChannel.contents, searchQuery)
-        renderList = this.makePlaylistLinks(filteredPlaylistContents, handlePlaylistSelect)
-      } else {
-        renderList = this.makePlaylistLinks(playlistChannel.contents, handlePlaylistSelect)
-      }
+      const filteredList = searchQuery !== ''
+        ? this.filterByQuery(playlistChannel.contents, searchQuery)
+        : playlistChannel.contents
+
+      const sortedList = sortChannelContents(filteredList, playlistChannelSortObj)
+
+      const renderList = this.makePlaylistLinks(sortedList, handlePlaylistSelect)
 
       return (
         <div>
-          <div className="filterList">
-            <form>
-              <fieldset className="form-group">
-                <input value={searchQuery}
-                  className={'Input'}
-                  type={'text'}
-                  placeholder={'Search Channels'}
-                  onChange={(e) => setQueryInState(e)} />
-              </fieldset>
-            </form>
-          </div>
           { renderList }
         </div>
       )

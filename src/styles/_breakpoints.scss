@@ -1,0 +1,3 @@
+@mixin for-medium-up {
+  @media (min-width: 760px) { @content; }
+}

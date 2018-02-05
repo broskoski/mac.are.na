@@ -1,0 +1,48 @@
+// VARS
+$colors-public:           #17ac10;
+$colors-closed:           #4b3d67;
+$colors-private:          #b60202;
+$colors-premium:          #00c5ff;
+$colors-alert:            #e24d4d;
+$colors-edit:             #fdffdb;
+$gavins-made-up-yellow:   #f2ba3d;
+
+$colors-gray-background:  #f7f7f7;
+$colors-gray-secondary:   #f0f0f0;
+$colors-gray-border:      #e7e7e5;
+$colors-gray-border-bold: #c6c6c6;
+$colors-gray-lighter:     #cbcbcb;
+$colors-gray-light:       #9d9d9d;
+$colors-gray-text:        #585858;
+$colors-gray-hover:       #050505;
+
+$font-size-h1:            2.5rem;
+$font-size-h2:            2rem;
+$font-size-h3:            1.75rem;
+$font-size-h4:            1.5rem;
+$font-size-h5:            1.25rem;
+$font-size-h6:            1rem;
+
+// ATOMICS
+.flexBetween {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.inlineBlock {
+  display: inline-block;
+}
+
+.invert {
+  filter: invert(100%) hue-rotate(180deg);
+  -webkit-filter: invert(100%) hue-rotate(180deg);
+}
+
+.public {
+  color: $colors-public;
+}
+
+.closed {
+  color: $colors-closed;
+}
