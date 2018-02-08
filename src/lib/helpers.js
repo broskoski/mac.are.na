@@ -22,9 +22,12 @@ function sanitizeURL (url) {
   return url
 }
 
-// makes a message
-function mm(URLValidity, message, item) {
-  return { url: URLValidity, message: message, item: item }
+// inserts a valdity message into a copy of the block
+function mm(isValid, message, item) {
+  return {
+    ...item,
+    macarenaURLValidity: { isValid, message, }
+  }
 }
 
 // our default messages
@@ -86,27 +89,61 @@ const playerStates = {
   errored: 'ERRORED'
 }
 
-// some boilerplate cookie making / getting functions
-function setCookie(cname, cvalue, exdays) {
-  const d = new Date()
-  d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000))
-  const expires = 'expires='+d.toUTCString()
-  document.cookie = cname + '=' + cvalue + ';' + expires + ';path=/'
+const sortKeys = {
+  title: 'title',
+  updated_at: 'updated_at',
+  created_at: 'created_at',
+  connected_at: 'connected_at',
+  position: 'position',
 }
 
-function getCookie(cname) {
-  const name = cname + '='
-  const ca = document.cookie.split(';')
-  for (var i = 0; i < ca.length; i++) {
-    let c = ca[i]
-    while (c.charAt(0) === ' ') {
-        c = c.substring(1)
-    }
-    if (c.indexOf(name) === 0) {
-        return c.substring(name.length, c.length)
-    }
+
+function stringComparator(a, b) {
+  // since contents aren't guaranteed to have names, check for nulls
+  const nameA = scrubTitle(a).toLowerCase()
+  const nameB = scrubTitle(b).toLowerCase()
+  if (nameA < nameB) { return -1 }
+  if (nameA > nameB) { return 1 }
+  return 0
+}
+
+function numComparator(a, b) {
+  if (a < b) { return -1 }
+  if (a > b) { return 1 }
+  return 0
+}
+
+function timeComparator(a, b) {
+  const dateA = new Date(a)
+  const dateB = new Date(b)
+  if (dateA < dateB) { return -1 }
+  if (dateA > dateB) { return 1 }
+  return 0
+}
+
+// chooses a comparator to use based on input type
+function comparator(a, b, param) {
+  switch(param) {
+    case sortKeys.title: return stringComparator(a, b)
+    case sortKeys.created_at: return timeComparator(a, b)
+    case sortKeys.updated_at: return timeComparator(a, b)
+    case sortKeys.connected_at: return timeComparator(a, b)
+    case sortKeys.position: return numComparator(a, b)
+    default:
+      console.warn('invalid param in comparator')
+      return 0
   }
-  return false
+}
+
+// executes array.sort with comparator and handles order inversion
+function sortChannelContents(channelContents, sortObj) {
+  const { orderKey, paramKey, } = sortObj
+  const sortedArr = channelContents.sort((a, b) => comparator(a[paramKey], b[paramKey], paramKey))
+  if (orderKey) {
+    return sortedArr
+  } else {
+    return sortedArr.reverse()
+  }
 }
 
 
@@ -118,6 +155,6 @@ export {
   scrubTitle,
   getStatus,
   playerStates,
-  setCookie,
-  getCookie,
+  sortKeys,
+  sortChannelContents,
 }

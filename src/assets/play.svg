@@ -7,7 +7,7 @@
 </clipPath>
 <g id="play" clip-path="url(#clip-0)">
 <g id="Polygon">
-<use xlink:href="#path0_fill" transform="matrix(6.12323e-17 1 -1 6.12323e-17 -372 -297)" fill="#585858"/>
+<use xlink:href="#path0_fill" transform="matrix(6.12323e-17 1 -1 6.12323e-17 -372 -297)" fill="black"/>
 </g>
 </g>
 </g>

@@ -16,7 +16,7 @@ const SongItem = ({status, isSelected, handleSelection, song }) => {
         className={`${itemClasses} ${isSelectedClassNames} ${status}`}
         onClick={handleSelection}>
           <div><p>{decode(title)}</p></div>
-        </button>
+      </button>
   )
 }
 
