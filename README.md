@@ -22,4 +22,4 @@ yarn start
 
 
 ### App Structure
-This app aggressively uses a single state in <Main /> and passes everything down through a router, then to it's child components. Using a single, faux-redux-like state has many benefits – predictability, flexibility and simplicity. Methods that interact with the state are placed in <Main /> and passed as props to children as well. Without local state, there is no confusion over where props originate or how different states interact. Items in the state can always be compared or updated.
+This app uses a single state in <Main /> and passes this state first through a router, then to it's child components. Using a single, faux-redux-like state has many benefits – predictability, flexibility and simplicity. Methods and event handlers are treated the same way. Without local state, there is no confusion over where props originate or how different states interact. Items in the state can always be compared or updated.
