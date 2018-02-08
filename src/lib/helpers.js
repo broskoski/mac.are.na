@@ -98,8 +98,8 @@ const sortKeys = {
 }
 
 
-function alphaComparator(a, b) {
-  // since contents don't need names, check for nulls
+function stringComparator(a, b) {
+  // since contents aren't guaranteed to have names, check for nulls
   const nameA = scrubTitle(a).toLowerCase()
   const nameB = scrubTitle(b).toLowerCase()
   if (nameA < nameB) { return -1 }
@@ -124,7 +124,7 @@ function timeComparator(a, b) {
 // chooses a comparator to use based on input type
 function comparator(a, b, param) {
   switch(param) {
-    case sortKeys.title: return alphaComparator(a, b)
+    case sortKeys.title: return stringComparator(a, b)
     case sortKeys.created_at: return timeComparator(a, b)
     case sortKeys.updated_at: return timeComparator(a, b)
     case sortKeys.connected_at: return timeComparator(a, b)
