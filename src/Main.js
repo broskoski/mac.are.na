@@ -16,8 +16,6 @@ import Sortainer from './components/Sortainer'
 import { tinyAPI } from './lib/api'
 import {
   playerStates,
-  getCookie,
-  setCookie,
   reverseChannelContents,
   sortKeys,
   sortChannelContents,
@@ -52,7 +50,7 @@ class Main extends Component {
 
   initializeCookies = () => {
     // FYI cookie returns string
-    if (getCookie('isInverted') === 'true') {
+    if (localStorage.getItem('isInverted') === 'true') {
       this.invert()
     } else {
       this.unInvert()
@@ -92,12 +90,12 @@ class Main extends Component {
 
   invert = () => {
     document.body.classList.add('invert')
-    setCookie('isInverted', true, 365)
+    localStorage.setItem('isInverted', 'true')
   }
 
   unInvert = () => {
     document.body.classList.remove('invert')
-    setCookie('isInverted', false, 365)
+    localStorage.setItem('isInverted', 'false')
   }
 
   // toggle function for playing and pausing with 1 UI element. Plays 1st track
