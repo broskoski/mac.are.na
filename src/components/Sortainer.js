@@ -41,9 +41,9 @@ const Sortainer = ({
     unselected: sortState.paramKey !== sortKeys.title,
   })
 
-  const connectedSortClasses = classnames({
-    selected: sortState.paramKey === sortKeys.connected_at,
-    unselected: sortState.paramKey !== sortKeys.connected_at,
+  const positionSortClasses = classnames({
+    selected: sortState.paramKey === sortKeys.position,
+    unselected: sortState.paramKey !== sortKeys.position,
   })
 
   const updatedSortClasses = classnames({
@@ -75,9 +75,9 @@ const Sortainer = ({
             <img className={orderSortClasses} src={sortArrow} />
           </button>
           <button
-            className={connectedSortClasses}
-            onClick={() => handleSort(sortKeys.connected_at)}>
-            {'Connected'}
+            className={positionSortClasses}
+            onClick={() => handleSort(sortKeys.position)}>
+            {'Position'}
             <img className={orderSortClasses} src={sortArrow} />
           </button>
           <button
@@ -103,9 +103,9 @@ const Sortainer = ({
             <img className={orderSortClasses} src={sortArrow} />
           </button>
           <button
-            className={connectedSortClasses}
-            onClick={() => handleSort(sortKeys.connected_at)}>
-            {'Connected'}
+            className={positionSortClasses}
+            onClick={() => handleSort(sortKeys.position)}>
+            {'Position'}
             <img className={orderSortClasses} src={sortArrow} />
           </button>
         </div>

@@ -41,8 +41,8 @@ class Main extends Component {
       trackIsFromCurrentPlaylist: true,
       searchQuery: '',
       currentRoute: '/',
-      playlistChannelSortObj: { orderKey: true, paramKey: sortKeys.connected_at },
-      playlistSortObj: { orderKey: true, paramKey: sortKeys.connected_at },
+      playlistChannelSortObj: { orderKey: true, paramKey: sortKeys.position },
+      playlistSortObj: { orderKey: true, paramKey: sortKeys.position },
     }
     this.API = new tinyAPI()
     this.playerRef = null

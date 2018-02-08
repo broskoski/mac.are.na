@@ -263,7 +263,8 @@ nav {
     background-color: #e7e7e5; }
   .list-item p {
     margin: 0;
-    line-height: 1.25rem; }
+    line-height: 1.25rem;
+    display: inline-block; }
 
 .bg-selected {
   background-color: #e7e7e5; }

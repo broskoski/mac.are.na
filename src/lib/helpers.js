@@ -94,11 +94,14 @@ const sortKeys = {
   updated_at: 'updated_at',
   created_at: 'created_at',
   connected_at: 'connected_at',
+  position: 'position',
 }
 
+
 function alphaComparator(a, b) {
-  const nameA = a.toLowerCase()
-  const nameB = b.toLowerCase()
+  // since contents don't need names, check for nulls
+  const nameA = a === null ? '' : a.toLowerCase()
+  const nameB = b === null ? '' : b.toLowerCase()
   if (nameA < nameB) { return -1 }
   if (nameA > nameB) { return 1 }
   return 0
@@ -125,6 +128,7 @@ function comparator(a, b, param) {
     case sortKeys.created_at: return timeComparator(a, b)
     case sortKeys.updated_at: return timeComparator(a, b)
     case sortKeys.connected_at: return timeComparator(a, b)
+    case sortKeys.position: return numComparator(a, b)
     default:
       console.warn('invalid param in comparator')
       return 0
