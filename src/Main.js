@@ -29,7 +29,7 @@ class Main extends Component {
       playlistChannel: null,
       isPlaying: false,
       currentTrackURL: null,
-      idOfCurrentTrack: 0,
+      idOfCurrentTrack: -1,
       currentOpenPlaylist: null,
       currentTrackPlaylist: null,
       volume: 0.8,
@@ -163,18 +163,21 @@ class Main extends Component {
   // update +1 track and index
   goToNextTrack = () => {
     const { idOfCurrentTrack, currentTrackPlaylist } = this.state
-    const indexOfCurrentTrack = currentTrackPlaylist.findIndex(block => block.id === idOfCurrentTrack)
+    const indexOfCurrentTrack = currentTrackPlaylist.contents.findIndex(block => block.id === idOfCurrentTrack)
     if (indexOfCurrentTrack + 1 < currentTrackPlaylist.length) {
       const nextIndex = indexOfCurrentTrack + 1
       const nextTrack = currentTrackPlaylist.contents[nextIndex]
       this.handleSongSelection(nextTrack, nextIndex)
+    } else if (indexOfCurrentTrack + 1 === currentTrackPlaylist.length) {
+      this.pause()
+      this.setState({currentTrackURL: false, currentTrackInfo: false, idOfCurrentTrack:-1, })
     }
   }
 
   //  update -1 track and index
   goToPreviousTrack = () => {
     const { idOfCurrentTrack, currentTrackPlaylist } = this.state
-    const indexOfCurrentTrack = currentTrackPlaylist.findIndex(block => block.id === idOfCurrentTrack)
+    const indexOfCurrentTrack = currentTrackPlaylist.contents.findIndex(block => block.id === idOfCurrentTrack)
     if (indexOfCurrentTrack > 0) {
       const previousIndex = indexOfCurrentTrack - 1
       const previousTrack = currentTrackPlaylist.contents[previousIndex]
@@ -185,7 +188,7 @@ class Main extends Component {
   }
 
   returnFullRoute = (currentRoute) => {
-    this.setState({currentRoute})
+    this.setState({ currentRoute })
   }
 
   handleOnReady = (e) => {
