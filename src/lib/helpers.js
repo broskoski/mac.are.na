@@ -100,8 +100,8 @@ const sortKeys = {
 
 function alphaComparator(a, b) {
   // since contents don't need names, check for nulls
-  const nameA = a === null ? '' : a.toLowerCase()
-  const nameB = b === null ? '' : b.toLowerCase()
+  const nameA = scrubTitle(a).toLowerCase()
+  const nameB = scrubTitle(b).toLowerCase()
   if (nameA < nameB) { return -1 }
   if (nameA > nameB) { return 1 }
   return 0
