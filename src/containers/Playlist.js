@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
+import classnames from 'classnames'
+
 import { validateWithMessage, sortChannelContents } from '../lib/helpers'
 import LoadState from '../components/LoadState'
-
 import { SongItem, SongItemReject } from '../components/SongItem'
+import sortArrow from '../assets/sortArrow.svg'
 
 class Playlist extends Component {
   componentDidMount() {
@@ -44,9 +46,9 @@ class Playlist extends Component {
   }
 
   makeSongRejectList = (rejects) => {
-      return rejects.map(item => {
-        return <SongItemReject message={item.macarenaURLValidity.message} key={item.id} song={item} />
-      })
+    return rejects.map(item => {
+      return <SongItemReject message={item.macarenaURLValidity.message} key={item.id} song={item} />
+    })
   }
 
 
@@ -79,7 +81,8 @@ class Playlist extends Component {
             rejectCount > 0
             ? <ToggleRejectedSongs
               toggleShowRejects={toggleShowRejects}
-              rejectCount={rejectCount} />
+              rejectCount={rejectCount}
+              showRejects={showRejects} />
             : <div />
           }
         </div>
@@ -90,13 +93,20 @@ class Playlist extends Component {
   }
 }
 
-const ToggleRejectedSongs = ({ toggleShowRejects, rejectCount }) => {
+const ToggleRejectedSongs = ({ toggleShowRejects, rejectCount, showRejects }) => {
+  const openClosedClasses = classnames({
+    up: showRejects,
+    down: !showRejects,
+  })
     return (
       <button
-        key={'hide-show-rejects'}
+        id={'hide-show-rejects'}
         className={'list-item'}
         onClick={() => toggleShowRejects()}>
-          <div><p>{`${rejectCount} unplayable blocks`}</p><p>{'Show'}</p></div>
+          <div className={'flexBetween'}>
+            <p>{`${rejectCount} unplayable blocks`}</p>
+            <img className={openClosedClasses} src={sortArrow} />
+          </div>
       </button>
   )
 }

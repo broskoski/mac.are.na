@@ -288,6 +288,17 @@ nav {
   background-color: $colors-gray-border;
 }
 
+#hide-show-rejects{
+  background-color: $colors-gray-background;
+  img.up {
+    transform: rotateZ(180deg);
+  }
+
+  img.down {
+    transform: rotateZ(0deg);
+  }
+}
+
 /* button press */
 
 a {

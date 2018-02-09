@@ -308,6 +308,15 @@ nav button:hover img {
 .bg-selected {
   background-color: #e7e7e5; }
 
+#hide-show-rejects {
+  background-color: #f7f7f7; }
+
+#hide-show-rejects img.up {
+  transform: rotateZ(180deg); }
+
+#hide-show-rejects img.down {
+  transform: rotateZ(0deg); }
+
 /* button press */
 a:hover, a:active, a:focus {
   outline: medium none !important; }
