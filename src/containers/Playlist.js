@@ -49,6 +49,7 @@ class Playlist extends Component {
       })
   }
 
+
   render () {
     const {
       currentOpenPlaylist,
@@ -57,23 +58,47 @@ class Playlist extends Component {
       playlistSortObj,
       currentRoute,
       currentOpenPlaylistRejects,
+      toggleShowRejects,
+      showRejects,
     } = this.props
 
     if (isCurrentPlaylistLoaded && currentOpenPlaylist) {
       const renderList = this.makeSongList(currentOpenPlaylist.contents, handlePlaylistSelect)
-      const rejectList = this.makeSongRejectList(currentOpenPlaylistRejects)
-
+      const rejectCount = currentOpenPlaylistRejects.length
       return (
         <div className='w-100 min-vh-100'>
-          { renderList }
-          { rejectList }
+          {
+            renderList
+          }
+          {
+            showRejects
+            ? this.makeSongRejectList(currentOpenPlaylistRejects)
+            : <div />
+          }
+          {
+            rejectCount > 0
+            ? <ToggleRejectedSongs
+              toggleShowRejects={toggleShowRejects}
+              rejectCount={rejectCount} />
+            : <div />
+          }
         </div>
       )
     } else {
       return <LoadState />
     }
-
   }
+}
+
+const ToggleRejectedSongs = ({ toggleShowRejects, rejectCount }) => {
+    return (
+      <button
+        key={'hide-show-rejects'}
+        className={'list-item'}
+        onClick={() => toggleShowRejects()}>
+          <div><p>{`${rejectCount} unplayable blocks`}</p><p>{'Show'}</p></div>
+      </button>
+  )
 }
 
 export default Playlist

@@ -13,7 +13,7 @@ const SongItem = ({status, isSelected, handleSelection, song }) => {
     return (
       <button
         key={`button-play-${song.id}`}
-        className={`${itemClasses} ${isSelectedClassNames} ${status}`}
+        className={`${itemClasses} ${isSelectedClassNames}`}
         onClick={handleSelection}>
           <div><p>{decode(title)}</p></div>
       </button>

@@ -221,8 +221,6 @@ nav {
   display: flex;
 }
 
-
-
 .track-time {
   width: 130px;
 }
@@ -322,4 +320,16 @@ a {
 
 .playerErrored {
   background-color: $colors-alert;
+}
+
+.public {
+  color: $colors-public;
+}
+
+.private {
+  color: $colors-private;
+}
+
+.closed {
+  color: $colors-closed;
 }
