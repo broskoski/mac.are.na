@@ -30,7 +30,7 @@ main {
 
 button {
   outline: none;
-  background-color: white;
+  background-color: transparent;
   -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
@@ -95,7 +95,6 @@ a.toArena {
     outline: none;
     border-bottom: 1px solid $colors-gray-border;
     margin-bottom: 1rem;
-
     @include for-medium-up {
       margin-bottom: 0;
     }
@@ -169,7 +168,7 @@ a.toArena {
 nav {
   display: flex;
   margin-bottom: 2rem;
-
+  border-radius: 3px;
   border: 1px solid $colors-gray-border;
   flex-direction: column-reverse;
   @include for-medium-up {
@@ -212,7 +211,7 @@ nav {
 #nowPlaying {
   height: 6rem;
   flex: 1;
-  background-color: white;
+  // background-color: white;
   display: flex;
   flex-direction: column;
   @include for-medium-up {
@@ -341,7 +340,7 @@ a {
   height: 10px;
   display: block;
   content: '';
-  background-color: white;
+  // background-color: white;
   transition: background-color 300ms;
   border-radius: 999px;
 }
