@@ -146,6 +146,29 @@ function sortChannelContents(channelContents, sortObj) {
   }
 }
 
+function immutablyChangeContents(newContents, channel) {
+  return {
+    ...channel,
+    contents: newContents,
+  }
+}
+
+function incrementInList(list, currentIndex) {
+  const listLength = list.length
+  if (currentIndex + 1 < listLength) {
+    return list[currentIndex + 1]
+  }
+  return false
+}
+
+function decrementInList(list, currentIndex) {
+  const listLength = list.length
+  if (currentIndex > 0) {
+    return list[currentIndex - 1]
+  }
+  return false
+}
+
 
 export {
   sanitizeURL,
@@ -157,4 +180,7 @@ export {
   playerStates,
   sortKeys,
   sortChannelContents,
+  immutablyChangeContents,
+  incrementInList,
+  decrementInList,
 }

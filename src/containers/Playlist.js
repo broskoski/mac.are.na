@@ -12,31 +12,39 @@ class Playlist extends Component {
     this.props.returnFullRoute(this.props.computedMatch.path)
   }
 
-  makeSongList = (validatedPlaylist) => {
+  makeSongList = (validItems) => {
     const {
       trackIsFromCurrentPlaylist,
-      idOfCurrentTrack,
-      handleSongSelection,
-      currentTrackInfo,
+      handleSongUserSelection,
+      currentTrack,
     } = this.props
 
-
-    return validatedPlaylist.filter(item => item.macarenaURLValidity.isValid)
-      .map((item, index) => {
-        const isSelected = trackIsFromCurrentPlaylist && idOfCurrentTrack === item.id && currentTrackInfo
+      return validItems.map((item, index) => {
         return (
           <SongItem
             key={item.id}
             song={item}
-            isSelected={isSelected}
-            handleSelection={() => handleSongSelection(item)} />
+            isSelected={this.handleIsSelected(item)}
+            handleSelection={() => handleSongUserSelection(item)} />
         )
       })
   }
 
-  makeSongRejectList = (validatedPlaylist) => {
-    return validatedPlaylist.filter(item => !item.macarenaURLValidity.isValid)
-      .map(item => {
+  handleIsSelected = (item) => {
+    const {
+      trackIsFromCurrentPlaylist,
+      currentTrack,
+    } = this.props
+    if (currentTrack) {
+      if (currentTrack.id === item.id && trackIsFromCurrentPlaylist) {
+        return true
+      }
+    }
+    return false
+  }
+
+  makeSongRejectList = (rejects) => {
+      return rejects.map(item => {
         return <SongItemReject message={item.macarenaURLValidity.message} key={item.id} song={item} />
       })
   }
@@ -48,13 +56,12 @@ class Playlist extends Component {
       handlePlaylistSelect,
       playlistSortObj,
       currentRoute,
+      currentOpenPlaylistRejects,
     } = this.props
 
     if (isCurrentPlaylistLoaded && currentOpenPlaylist) {
-      const withValidation = currentOpenPlaylist.contents.map(item => validateWithMessage(item))
-      const sortedList = sortChannelContents(withValidation, playlistSortObj)
-      const renderList = this.makeSongList(sortedList, handlePlaylistSelect)
-      const rejectList = this.makeSongRejectList(withValidation)
+      const renderList = this.makeSongList(currentOpenPlaylist.contents, handlePlaylistSelect)
+      const rejectList = this.makeSongRejectList(currentOpenPlaylistRejects)
 
       return (
         <div className='w-100 min-vh-100'>

@@ -27,7 +27,7 @@ class Player extends Component {
       handlePlayback,
       goToNextTrack,
       goToPreviousTrack,
-      currentTrackURL,
+      currentTrack,
       handleOnReady,
       handleOnStart,
       handleOnPlay,
@@ -38,7 +38,6 @@ class Player extends Component {
       volume,
       trackProgress,
       trackDuration,
-      currentTrackInfo,
       trackIsFromCurrentPlaylist,
       currentTrackPlaylist,
       playerStatus,
@@ -87,20 +86,20 @@ class Player extends Component {
           <div className={'left'}>
             <Dot playerStatus={playerStatus} />
             <TrackTitle
-              trackInfo={currentTrackInfo}
+              trackInfo={currentTrack}
               currentTrackPlaylist={currentTrackPlaylist}
               trackIsFromCurrentPlaylist={trackIsFromCurrentPlaylist}
               currentRoute={currentRoute} />
           </div>
           <div className={'right'}>
-            <SourceLink trackInfo={currentTrackInfo} />
-            <TrackTime time={time} trackInfo={currentTrackInfo} />
+            <SourceLink trackInfo={currentTrack} />
+            <TrackTime time={time} trackInfo={currentTrack} />
           </div>
         </div>
 
         <ReactPlayer
           ref={this.ref}
-          url={currentTrackURL}
+          url={currentTrack ? currentTrack.macarenaURL: ''}
           playing={isPlaying}
           autoPlay={false}
           hidden={false}
