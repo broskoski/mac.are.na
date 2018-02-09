@@ -21,6 +21,8 @@ import {
   sortChannelContents,
   immutablyChangeContents,
   validateWithMessage,
+  incrementInList,
+  decrementInList,
 } from './lib/helpers'
 
 class Main extends Component {
@@ -31,6 +33,7 @@ class Main extends Component {
       playlistChannel: null,
       isPlaying: false,
       currentOpenPlaylist: null,
+      currentOpenPlaylistRejects: [],
       currentTrackPlaylist: null,
       currentTrack: null,
       volume: 0.8,
@@ -115,14 +118,14 @@ class Main extends Component {
     }
   }
 
-  // currently any time a track is selected, it will be played.
-  handleSongSelection = (item, mustPlay) => {
+  // change the currentTrack state.
+  handleSongUserSelection = (item) => {
     this.setState({
       currentTrack: item,
       trackIsFromCurrentPlaylist: true,
       currentTrackPlaylist: this.state.currentOpenPlaylist
     })
-    mustPlay ? this.play() : null
+    this.play()
   }
 
   // determines if the currently playing/paused track is from the currently
@@ -151,9 +154,12 @@ class Main extends Component {
       .then(playlist => {
         // validate it right off the bat
         const validatedContents = playlist.contents.map(item => validateWithMessage(item))
+        const onlyValids = validatedContents.filter(item => item.macarenaURLValidity.isValid)
+        const onlyRejects = validatedContents.filter(item => !item.macarenaURLValidity.isValid)
         const { currentTrackPlaylist } = this.state
         this.setState({
-          currentOpenPlaylist: immutablyChangeContents(validatedContents, playlist),
+          currentOpenPlaylist: immutablyChangeContents(onlyValids, playlist),
+          currentOpenPlaylistRejects: onlyRejects,
           isCurrentPlaylistLoaded: true,
           trackIsFromCurrentPlaylist: this.isTrackIsFromCurrentPlaylist(currentTrackPlaylist, playlist),
         })
@@ -165,12 +171,12 @@ class Main extends Component {
     const { currentTrackPlaylist, currentTrack } = this.state
     const trackList = currentTrackPlaylist.contents
     const indexOfCurrentTrack = trackList.findIndex(block => block.id === currentTrack.id)
-    const nextItem = this.incrementInList(trackList, indexOfCurrentTrack)
+    const nextItem = incrementInList(trackList, indexOfCurrentTrack)
     if (nextItem) {
-      this.handleSongSelection(nextItem, false)
+      this.setState({ currentTrack: nextItem, })
     } else {
       this.pause()
-      this.setState({currentTrackURL: false, currentTrack: false, })
+      this.setState({ currentTrackURL: false, currentTrack: false, })
     }
   }
 
@@ -179,28 +185,12 @@ class Main extends Component {
     const { currentTrackPlaylist, currentTrack } = this.state
     const trackList = currentTrackPlaylist.contents
     const indexOfCurrentTrack = trackList.findIndex(block => block.id === currentTrack.id)
-    const previousItem = this.decrementInList(trackList, indexOfCurrentTrack)
+    const previousItem = decrementInList(trackList, indexOfCurrentTrack)
     if (previousItem) {
-      this.handleSongSelection(previousItem, false)
+      this.setState({ currentTrack: previousItem, })
     } else {
       this.playerRef.seekTo(0)
     }
-  }
-
-  incrementInList = (list, currentIndex) => {
-    const listLength = list.length
-    if (currentIndex + 1 < listLength) {
-      return list[currentIndex + 1]
-    }
-    return false
-  }
-
-  decrementInList = (list, currentIndex) => {
-    const listLength = list.length
-    if (currentIndex > 0) {
-      return list[currentIndex - 1]
-    }
-    return false
   }
 
   returnFullRoute = (currentRoute) => {
@@ -216,7 +206,7 @@ class Main extends Component {
   }
 
   handleOnPlay = (e) => {
-    this.setState({playerStatus: playerStates.playing })
+    this.setState({ playerStatus: playerStates.playing })
   }
 
   handleOnProgress = (e) => {
@@ -228,12 +218,12 @@ class Main extends Component {
   }
 
   handleOnBuffer = (e) => {
-    this.setState({playerStatus: playerStates.buffering })
+    this.setState({ playerStatus: playerStates.buffering })
   }
 
   handleOnError = (event) => {
     console.warn('ruh roh, ', event)
-    this.setState({playerStatus: playerStates.errored })
+    this.setState({ playerStatus: playerStates.errored })
     this.goToNextTrack()
   }
 
@@ -247,13 +237,13 @@ class Main extends Component {
     if (stateKey === 'playlistChannel') {
       const sortedList = sortChannelContents(playlistChannel.contents, sortObj)
       this.setState({
-        playlistChannelSortObj: { orderKey: orderKey, paramKey: paramKey },
+        playlistChannelSortObj: { orderKey, paramKey },
         playlistChannel: immutablyChangeContents(sortedList, playlistChannel)
       })
     } else if (stateKey === 'playlist') {
       const sortedList = sortChannelContents(currentOpenPlaylist.contents, sortObj)
       this.setState({
-        playlistSortObj: { orderKey: orderKey, paramKey: paramKey },
+        playlistSortObj: { orderKey, paramKey },
         currentOpenPlaylist: immutablyChangeContents(sortedList, currentOpenPlaylist)
       })
     } else {
@@ -302,7 +292,7 @@ class Main extends Component {
               { ...this.state }
               path={'/playlist/:playlistSlug'}
               component={Playlist}
-              handleSongSelection={this.handleSongSelection}
+              handleSongUserSelection={this.handleSongUserSelection}
               returnSelectedPlaylist={this.returnSelectedPlaylist}
               returnFullRoute={this.returnFullRoute}
             />
