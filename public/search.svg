@@ -1,0 +1,30 @@
+<svg width="40" height="40" viewBox="0 0 40 40" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<title>search</title>
+<desc>Created using Figma</desc>
+<g id="Canvas" transform="translate(-20 305)">
+<clipPath id="clip-0" clip-rule="evenodd">
+<path d="M 20 -305L 60 -305L 60 -265L 20 -265L 20 -305Z" fill="#FFFFFF"/>
+</clipPath>
+<g id="search" clip-path="url(#clip-0)">
+<g id="Group">
+<g id="Ellipse">
+<use xlink:href="#path0_fill" transform="matrix(-0.707107 -0.707107 0.707107 -0.707107 37.6777 -269.645)" fill="#FFFFFF"/>
+<mask id="mask0_outline_ins">
+<use xlink:href="#path0_fill" fill="white" transform="matrix(-0.707107 -0.707107 0.707107 -0.707107 37.6777 -269.645)"/>
+</mask>
+<g mask="url(#mask0_outline_ins)">
+<use xlink:href="#path1_stroke_2x" transform="matrix(-0.707107 -0.707107 0.707107 -0.707107 37.6777 -269.645)"/>
+</g>
+</g>
+<g id="Rectangle">
+<use xlink:href="#path2_fill" transform="matrix(0.707107 -0.707107 0.707107 0.707107 42.6274 -278.837)"/>
+</g>
+</g>
+</g>
+</g>
+<defs>
+<path id="path0_fill" d="M 25 12.5C 25 19.4036 19.4036 25 12.5 25C 5.59644 25 0 19.4036 0 12.5C 0 5.59644 5.59644 0 12.5 0C 19.4036 0 25 5.59644 25 12.5Z"/>
+<path id="path1_stroke_2x" d="M 22 12.5C 22 17.7467 17.7467 22 12.5 22L 12.5 28C 21.0604 28 28 21.0604 28 12.5L 22 12.5ZM 12.5 22C 7.25329 22 3 17.7467 3 12.5L -3 12.5C -3 21.0604 3.93959 28 12.5 28L 12.5 22ZM 3 12.5C 3 7.25329 7.25329 3 12.5 3L 12.5 -3C 3.93959 -3 -3 3.93959 -3 12.5L 3 12.5ZM 12.5 3C 17.7467 3 22 7.25329 22 12.5L 28 12.5C 28 3.93959 21.0604 -3 12.5 -3L 12.5 3Z"/>
+<path id="path2_fill" d="M 0 0L 5 0L 5 12L 0 12L 0 0Z"/>
+</defs>
+</svg>

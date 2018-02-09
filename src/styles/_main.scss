@@ -66,7 +66,6 @@ a.toArena {
   display: flex;
   justify-content: space-between;
   flex-direction: column;
-
   @include for-medium-up {
     flex-direction: row;
   }
@@ -86,15 +85,17 @@ a.toArena {
       flex: initial;
     }
   }
+
   .search {
     border: none;
     width: 100%;
-    padding: 0 1em;
+    padding: 0 1em 0 3em;
     height: 3rem;
     font-size: $font-size-h6;
     outline: none;
     border-bottom: 1px solid $colors-gray-border;
     margin-bottom: 1rem;
+
     @include for-medium-up {
       margin-bottom: 0;
     }
@@ -102,6 +103,26 @@ a.toArena {
       border-bottom: 1px solid $colors-gray-text;
     }
   }
+
+  .search-wrap {
+    position: relative;
+
+    &:before {
+      bottom: 0.85em;
+      left: 1em;
+      height: 1.25rem;
+      width: 1.25rem;
+      background-repeat: no-repeat;
+      background-image: url('/search.svg');
+      background-size: cover;
+      background-position: 0 0;
+      content: '';
+      display: block;
+      position: absolute;
+      transform: rotateY(-180deg);
+    }
+  }
+
   button {
     border: none;
     padding: 0 1em;
@@ -118,6 +139,7 @@ a.toArena {
       color: $colors-gray-hover;
     }
   }
+
   .unselected {
     border-bottom: 1px solid $colors-gray-border;
     color: $colors-gray-light;
@@ -125,6 +147,7 @@ a.toArena {
       opacity: 0;
     }
   }
+
   .selected {
     border-bottom: 1px solid $colors-gray-text;
     color: $colors-gray-text;
@@ -132,6 +155,7 @@ a.toArena {
       opacity: 1;
     }
   }
+
   img.asc {
     transform: rotateZ(180deg);
   }
@@ -296,6 +320,10 @@ nav {
 
   img.down {
     transform: rotateZ(0deg);
+  }
+  &:hover {
+    cursor: pointer;
+    background-color: $colors-gray-border;
   }
 }
 
