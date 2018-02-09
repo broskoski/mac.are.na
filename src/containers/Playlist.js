@@ -15,23 +15,33 @@ class Playlist extends Component {
   makeSongList = (validatedPlaylist) => {
     const {
       trackIsFromCurrentPlaylist,
-      idOfCurrentTrack,
       handleSongSelection,
-      currentTrackInfo,
+      currentTrack,
     } = this.props
-
 
     return validatedPlaylist.filter(item => item.macarenaURLValidity.isValid)
       .map((item, index) => {
-        const isSelected = trackIsFromCurrentPlaylist && idOfCurrentTrack === item.id && currentTrackInfo
         return (
           <SongItem
             key={item.id}
             song={item}
-            isSelected={isSelected}
-            handleSelection={() => handleSongSelection(item)} />
+            isSelected={this.handleIsSelected(item)}
+            handleSelection={() => handleSongSelection(item, true)} />
         )
       })
+  }
+
+  handleIsSelected = (item) => {
+    const {
+      trackIsFromCurrentPlaylist,
+      currentTrack,
+    } = this.props
+    if (currentTrack) {
+      if (currentTrack.id === item.id && trackIsFromCurrentPlaylist) {
+        return true
+      }
+    }
+    return false
   }
 
   makeSongRejectList = (validatedPlaylist) => {
@@ -52,8 +62,8 @@ class Playlist extends Component {
 
     if (isCurrentPlaylistLoaded && currentOpenPlaylist) {
       const withValidation = currentOpenPlaylist.contents.map(item => validateWithMessage(item))
-      const sortedList = sortChannelContents(withValidation, playlistSortObj)
-      const renderList = this.makeSongList(sortedList, handlePlaylistSelect)
+      // const sortedList = sortChannelContents(withValidation, playlistSortObj)
+      const renderList = this.makeSongList(withValidation, handlePlaylistSelect)
       const rejectList = this.makeSongRejectList(withValidation)
 
       return (

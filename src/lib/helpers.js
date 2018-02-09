@@ -146,6 +146,13 @@ function sortChannelContents(channelContents, sortObj) {
   }
 }
 
+function immutablyChangeContents(newContents, channel) {
+  return {
+    ...channel,
+    contents: newContents,
+  }
+}
+
 
 export {
   sanitizeURL,
@@ -157,4 +164,5 @@ export {
   playerStates,
   sortKeys,
   sortChannelContents,
+  immutablyChangeContents,
 }
