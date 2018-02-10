@@ -1,19 +1,19 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import {
   BrowserRouter as Router,
   Route,
   Switch,
   withRouter
-} from 'react-router-dom';
-import { decode } from 'he';
+} from 'react-router-dom'
+import { decode } from 'he'
 
-import Header from './components/Header';
-import Playlists from './containers/Playlists';
-import Playlist from './containers/Playlist';
-import Player from './components/Player';
-import Sortainer from './components/Sortainer';
+import Header from './components/Header'
+import Playlists from './containers/Playlists'
+import Playlist from './containers/Playlist'
+import Player from './components/Player'
+import Sortainer from './components/Sortainer'
 
-import { tinyAPI } from './lib/api';
+import { tinyAPI } from './lib/api'
 import {
   playerStates,
   reverseChannelContents,
@@ -23,11 +23,11 @@ import {
   validateWithMessage,
   incrementInList,
   decrementInList
-} from './lib/helpers';
+} from './lib/helpers'
 
 class Main extends Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       playlistListLength: 0,
       playlistChannel: null,
@@ -47,58 +47,58 @@ class Main extends Component {
       playlistChannelSortObj: { orderKey: true, paramKey: sortKeys.position },
       playlistSortObj: { orderKey: true, paramKey: sortKeys.position },
       showRejects: false
-    };
-    this.API = new tinyAPI();
-    this.playerRef = null;
+    }
+    this.API = new tinyAPI()
+    this.playerRef = null
   }
 
   initializeCookies = () => {
     // FYI cookie returns string
     if (localStorage.getItem('isInverted') === 'true') {
-      this.invert();
+      this.invert()
     } else {
-      this.unInvert();
+      this.unInvert()
     }
-  };
+  }
 
   // get list of playlists and playlist list length. also attach invert event
   componentWillMount() {
-    this.initializeCookies();
-    window.addEventListener('keydown', e => this.handleInvert(e));
+    this.initializeCookies()
+    window.addEventListener('keydown', e => this.handleInvert(e))
     Promise.all([this.API.getBlockCount(), this.API.getChannelContents()]).then(
       ([length, playlistChannel]) => {
         this.setState({
           playlistListLength: length,
           playlistChannel: playlistChannel
-        });
+        })
       }
-    );
+    )
   }
 
   setQueryInState = event => {
-    this.setState({ searchQuery: event.target.value });
-  };
+    this.setState({ searchQuery: event.target.value })
+  }
 
   // mhm
   handleInvert = e => {
     if (e.shiftKey && e.ctrlKey && e.code === 'KeyI') {
       if (document.body.classList.contains('invert')) {
-        this.unInvert();
+        this.unInvert()
       } else {
-        this.invert();
+        this.invert()
       }
     }
-  };
+  }
 
   invert = () => {
-    document.body.classList.add('invert');
-    localStorage.setItem('isInverted', 'true');
-  };
+    document.body.classList.add('invert')
+    localStorage.setItem('isInverted', 'true')
+  }
 
   unInvert = () => {
-    document.body.classList.remove('invert');
-    localStorage.setItem('isInverted', 'false');
-  };
+    document.body.classList.remove('invert')
+    localStorage.setItem('isInverted', 'false')
+  }
 
   // toggle function for playing and pausing with 1 UI element. Plays 1st track
   // of playlist if pressed and nothing has been played yet
@@ -108,14 +108,14 @@ class Main extends Component {
       currentOpenPlaylist,
       isPlaying,
       currentTrack
-    } = this.state;
+    } = this.state
     if (currentRoute === '/playlist/:playlistSlug' && !currentTrack) {
-      const item = currentOpenPlaylist.contents[0];
-      this.handleSongSelection(item, false);
+      const item = currentOpenPlaylist.contents[0]
+      this.handleSongSelection(item, false)
     } else if (currentRoute === '/playlist/:playlistSlug' || currentTrack) {
-      isPlaying ? this.pause() : this.play();
+      isPlaying ? this.pause() : this.play()
     }
-  };
+  }
 
   // change the currentTrack state.
   handleSongUserSelection = item => {
@@ -123,44 +123,44 @@ class Main extends Component {
       currentTrack: item,
       trackIsFromCurrentPlaylist: true,
       currentTrackPlaylist: this.state.currentOpenPlaylist
-    });
-    this.play();
-  };
+    })
+    this.play()
+  }
 
   // determines if the currently playing/paused track is from the currently
   // displayed playlist
   isTrackIsFromCurrentPlaylist = (pl1, pl2) => {
     if (pl1 && pl2) {
-      return pl1.id === pl2.id ? true : false;
+      return pl1.id === pl2.id ? true : false
     } else {
-      return true;
+      return true
     }
-  };
+  }
 
   play = () => {
-    this.setState({ isPlaying: true });
-  };
+    this.setState({ isPlaying: true })
+  }
 
   pause = () => {
-    this.setState({ isPlaying: false, playerStatus: playerStates.idle });
-  };
+    this.setState({ isPlaying: false, playerStatus: playerStates.idle })
+  }
 
   // if we select a playlist, get it's contents.
   // then, set it as the current open playlist
   returnSelectedPlaylist = playlistSlug => {
-    this.setState({ isCurrentPlaylistLoaded: false });
+    this.setState({ isCurrentPlaylistLoaded: false })
     this.API.getFullChannel(playlistSlug).then(playlist => {
       // validate it right off the bat
       const validatedContents = playlist.contents.map(item =>
         validateWithMessage(item)
-      );
+      )
       const onlyValids = validatedContents.filter(
         item => item.macarenaURLValidity.isValid
-      );
+      )
       const onlyRejects = validatedContents.filter(
         item => !item.macarenaURLValidity.isValid
-      );
-      const { currentTrackPlaylist } = this.state;
+      )
+      const { currentTrackPlaylist } = this.state
       this.setState({
         currentOpenPlaylist: immutablyChangeContents(onlyValids, playlist),
         currentOpenPlaylistRejects: onlyRejects,
@@ -169,108 +169,108 @@ class Main extends Component {
           currentTrackPlaylist,
           playlist
         )
-      });
-    });
-  };
+      })
+    })
+  }
 
   // update +1 track and index
   goToNextTrack = () => {
-    const { currentTrackPlaylist, currentTrack } = this.state;
-    const trackList = currentTrackPlaylist.contents;
+    const { currentTrackPlaylist, currentTrack } = this.state
+    const trackList = currentTrackPlaylist.contents
     const indexOfCurrentTrack = trackList.findIndex(
       block => block.id === currentTrack.id
-    );
-    const nextItem = incrementInList(trackList, indexOfCurrentTrack);
+    )
+    const nextItem = incrementInList(trackList, indexOfCurrentTrack)
     if (nextItem) {
-      this.setState({ currentTrack: nextItem });
+      this.setState({ currentTrack: nextItem })
     } else {
-      this.pause();
-      this.setState({ currentTrackURL: false, currentTrack: false });
+      this.pause()
+      this.setState({ currentTrackURL: false, currentTrack: false })
     }
-  };
+  }
 
   //  update -1 track and index
   goToPreviousTrack = () => {
-    const { currentTrackPlaylist, currentTrack } = this.state;
-    const trackList = currentTrackPlaylist.contents;
+    const { currentTrackPlaylist, currentTrack } = this.state
+    const trackList = currentTrackPlaylist.contents
     const indexOfCurrentTrack = trackList.findIndex(
       block => block.id === currentTrack.id
-    );
-    const previousItem = decrementInList(trackList, indexOfCurrentTrack);
+    )
+    const previousItem = decrementInList(trackList, indexOfCurrentTrack)
     if (previousItem) {
-      this.setState({ currentTrack: previousItem });
+      this.setState({ currentTrack: previousItem })
     } else {
-      this.playerRef.seekTo(0);
+      this.playerRef.seekTo(0)
     }
-  };
+  }
 
   returnFullRoute = currentRoute => {
-    this.setState({ currentRoute });
-  };
+    this.setState({ currentRoute })
+  }
 
   handleOnReady = e => {
     // console.log(e, 'ready')
-  };
+  }
 
   handleOnStart = e => {
     // console.log(e, 'start')
-  };
+  }
 
   handleOnPlay = e => {
-    this.setState({ playerStatus: playerStates.playing });
-  };
+    this.setState({ playerStatus: playerStates.playing })
+  }
 
   handleOnProgress = e => {
-    this.setState({ trackProgress: e.playedSeconds });
-  };
+    this.setState({ trackProgress: e.playedSeconds })
+  }
 
   handleOnDuration = e => {
-    this.setState({ trackDuration: e });
-  };
+    this.setState({ trackDuration: e })
+  }
 
   handleOnBuffer = e => {
-    this.setState({ playerStatus: playerStates.buffering });
-  };
+    this.setState({ playerStatus: playerStates.buffering })
+  }
 
   handleOnError = event => {
-    console.warn('ruh roh, ', event);
-    this.setState({ playerStatus: playerStates.errored });
-    this.goToNextTrack();
-  };
+    console.warn('ruh roh, ', event)
+    this.setState({ playerStatus: playerStates.errored })
+    this.goToNextTrack()
+  }
 
   returnRef = ref => {
-    this.playerRef = ref;
-  };
+    this.playerRef = ref
+  }
 
   setSort = sortObj => {
-    const { stateKey, orderKey, paramKey } = sortObj;
-    const { currentOpenPlaylist, playlistChannel } = this.state;
+    const { stateKey, orderKey, paramKey } = sortObj
+    const { currentOpenPlaylist, playlistChannel } = this.state
     if (stateKey === 'playlistChannel') {
-      const sortedList = sortChannelContents(playlistChannel.contents, sortObj);
+      const sortedList = sortChannelContents(playlistChannel.contents, sortObj)
       this.setState({
         playlistChannelSortObj: { orderKey, paramKey },
         playlistChannel: immutablyChangeContents(sortedList, playlistChannel)
-      });
+      })
     } else if (stateKey === 'playlist') {
       const sortedList = sortChannelContents(
         currentOpenPlaylist.contents,
         sortObj
-      );
+      )
       this.setState({
         playlistSortObj: { orderKey, paramKey },
         currentOpenPlaylist: immutablyChangeContents(
           sortedList,
           currentOpenPlaylist
         )
-      });
+      })
     } else {
-      console.warn('Invalid stateKey arg at setSort');
+      console.warn('Invalid stateKey arg at setSort')
     }
-  };
+  }
 
   toggleShowRejects = () => {
-    this.setState({ showRejects: !this.state.showRejects });
-  };
+    this.setState({ showRejects: !this.state.showRejects })
+  }
 
   render() {
     return (
@@ -322,19 +322,19 @@ class Main extends Component {
           </Switch>
         </main>
       </Router>
-    );
+    )
   }
 }
 
 // we need router info from <Router /> in header but header is not a route
-const HeaderWithRouter = withRouter(props => <Header {...props} />);
+const HeaderWithRouter = withRouter(props => <Header {...props} />)
 
 // this takes props from <PropsRoute /> and passes them in a new
 // object to the wrapped component
 const renderMergedProps = (component, ...mePropsies) => {
-  const finalProps = Object.assign({}, ...mePropsies);
-  return React.createElement(component, finalProps);
-};
+  const finalProps = Object.assign({}, ...mePropsies)
+  return React.createElement(component, finalProps)
+}
 
 // this component serves as a wrapper that allows props to be passed into routes
 // this is why we can use one local state for most of the app
@@ -344,10 +344,10 @@ const PropsRoute = ({ component, ...mePropsies }) => {
       key={mePropsies.location.key}
       {...mePropsies}
       render={routeProps => {
-        return renderMergedProps(component, routeProps, mePropsies);
+        return renderMergedProps(component, routeProps, mePropsies)
       }}
     />
-  );
-};
+  )
+}
 
-export default Main;
+export default Main

@@ -1,17 +1,17 @@
-import React, { Component } from 'react';
-import classnames from 'classnames';
+import React, { Component } from 'react'
+import classnames from 'classnames'
 
-import { validateWithMessage, sortChannelContents } from '../lib/helpers';
-import LoadState from '../components/LoadState';
-import { SongItem, SongItemReject } from '../components/SongItem';
-import sortArrow from '../assets/sortArrow.svg';
+import { validateWithMessage, sortChannelContents } from '../lib/helpers'
+import LoadState from '../components/LoadState'
+import { SongItem, SongItemReject } from '../components/SongItem'
+import sortArrow from '../assets/sortArrow.svg'
 
 class Playlist extends Component {
   componentDidMount() {
     // get slug from router params and return it to <Main />
-    const playlistSlug = this.props.match.params.playlistSlug;
-    this.props.returnSelectedPlaylist(playlistSlug);
-    this.props.returnFullRoute(this.props.computedMatch.path);
+    const playlistSlug = this.props.match.params.playlistSlug
+    this.props.returnSelectedPlaylist(playlistSlug)
+    this.props.returnFullRoute(this.props.computedMatch.path)
   }
 
   makeSongList = validItems => {
@@ -19,7 +19,7 @@ class Playlist extends Component {
       trackIsFromCurrentPlaylist,
       handleSongUserSelection,
       currentTrack
-    } = this.props;
+    } = this.props
 
     return validItems.map((item, index) => {
       return (
@@ -29,19 +29,19 @@ class Playlist extends Component {
           isSelected={this.handleIsSelected(item)}
           handleSelection={() => handleSongUserSelection(item)}
         />
-      );
-    });
-  };
+      )
+    })
+  }
 
   handleIsSelected = item => {
-    const { trackIsFromCurrentPlaylist, currentTrack } = this.props;
+    const { trackIsFromCurrentPlaylist, currentTrack } = this.props
     if (currentTrack) {
       if (currentTrack.id === item.id && trackIsFromCurrentPlaylist) {
-        return true;
+        return true
       }
     }
-    return false;
-  };
+    return false
+  }
 
   makeSongRejectList = rejects => {
     return rejects.map(item => {
@@ -51,9 +51,9 @@ class Playlist extends Component {
           key={item.id}
           song={item}
         />
-      );
-    });
-  };
+      )
+    })
+  }
 
   render() {
     const {
@@ -65,14 +65,14 @@ class Playlist extends Component {
       currentOpenPlaylistRejects,
       toggleShowRejects,
       showRejects
-    } = this.props;
+    } = this.props
 
     if (isCurrentPlaylistLoaded && currentOpenPlaylist) {
       const renderList = this.makeSongList(
         currentOpenPlaylist.contents,
         handlePlaylistSelect
-      );
-      const rejectCount = currentOpenPlaylistRejects.length;
+      )
+      const rejectCount = currentOpenPlaylistRejects.length
       return (
         <div className="w-100 min-vh-100">
           {renderList}
@@ -91,9 +91,9 @@ class Playlist extends Component {
             <div />
           )}
         </div>
-      );
+      )
     } else {
-      return <LoadState />;
+      return <LoadState />
     }
   }
 }
@@ -106,7 +106,7 @@ const ToggleRejectedSongs = ({
   const openClosedClasses = classnames({
     up: showRejects,
     down: !showRejects
-  });
+  })
   return (
     <button
       id={'hide-show-rejects'}
@@ -118,7 +118,7 @@ const ToggleRejectedSongs = ({
         <img className={openClosedClasses} src={sortArrow} />
       </div>
     </button>
-  );
-};
+  )
+}
 
-export default Playlist;
+export default Playlist

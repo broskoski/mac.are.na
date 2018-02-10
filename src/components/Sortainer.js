@@ -1,7 +1,7 @@
-import React from 'react';
-import classnames from 'classnames';
-import { sortKeys } from '../lib/helpers';
-import sortArrow from '../assets/sortArrow.svg';
+import React from 'react'
+import classnames from 'classnames'
+import { sortKeys } from '../lib/helpers'
+import sortArrow from '../assets/sortArrow.svg'
 
 const Sortainer = ({
   playlistChannelSortObj,
@@ -12,9 +12,9 @@ const Sortainer = ({
   setQueryInState
 }) => {
   const sortState =
-    currentRoute === '/' ? playlistChannelSortObj : playlistSortObj;
+    currentRoute === '/' ? playlistChannelSortObj : playlistSortObj
 
-  const stateKey = currentRoute === '/' ? 'playlistChannel' : 'playlist';
+  const stateKey = currentRoute === '/' ? 'playlistChannel' : 'playlist'
 
   const handleSort = newParamKey => {
     if (sortState.paramKey === newParamKey) {
@@ -22,35 +22,35 @@ const Sortainer = ({
         stateKey,
         orderKey: !sortState.orderKey,
         paramKey: sortState.paramKey
-      });
+      })
     } else {
       setSort({
         stateKey,
         orderKey: sortState.orderKey,
         paramKey: newParamKey
-      });
+      })
     }
-  };
+  }
 
   const alphaSortClasses = classnames({
     selected: sortState.paramKey === sortKeys.title,
     unselected: sortState.paramKey !== sortKeys.title
-  });
+  })
 
   const positionSortClasses = classnames({
     selected: sortState.paramKey === sortKeys.position,
     unselected: sortState.paramKey !== sortKeys.position
-  });
+  })
 
   const updatedSortClasses = classnames({
     selected: sortState.paramKey === sortKeys.updated_at,
     unselected: sortState.paramKey !== sortKeys.updated_at
-  });
+  })
 
   const orderSortClasses = classnames({
     asc: !sortState.orderKey,
     desc: sortState.orderKey
-  });
+  })
 
   if (currentRoute === '/') {
     return (
@@ -90,7 +90,7 @@ const Sortainer = ({
           </button>
         </div>
       </div>
-    );
+    )
   } else {
     return (
       <div id={'Sortainer'}>
@@ -114,8 +114,8 @@ const Sortainer = ({
           </button>
         </div>
       </div>
-    );
+    )
   }
-};
+}
 
-export default Sortainer;
+export default Sortainer

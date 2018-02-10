@@ -1,25 +1,25 @@
-import React, { Component } from 'react';
-import ReactPlayer from 'react-player';
-import { Link } from 'react-router-dom';
-import moment from 'moment';
-import { decode } from 'he';
-import classnames from 'classnames';
+import React, { Component } from 'react'
+import ReactPlayer from 'react-player'
+import { Link } from 'react-router-dom'
+import moment from 'moment'
+import { decode } from 'he'
+import classnames from 'classnames'
 
-import forwardSVG from '../assets/forward.svg';
-import playSVG from '../assets/play.svg';
-import reverseSVG from '../assets/reverse.svg';
-import pauseSVG from '../assets/pause.svg';
-import { getURL, playerStates } from '../lib/helpers';
+import forwardSVG from '../assets/forward.svg'
+import playSVG from '../assets/play.svg'
+import reverseSVG from '../assets/reverse.svg'
+import pauseSVG from '../assets/pause.svg'
+import { getURL, playerStates } from '../lib/helpers'
 
 // this is such a weirdo component
 class Player extends Component {
   componentDidMount = () => {
-    this.props.returnRef(this.player);
-  };
+    this.props.returnRef(this.player)
+  }
 
   ref = player => {
-    this.player = player;
-  };
+    this.player = player
+  }
 
   render() {
     const {
@@ -42,24 +42,24 @@ class Player extends Component {
       currentTrackPlaylist,
       playerStatus,
       currentRoute
-    } = this.props;
+    } = this.props
 
     const playbackSymbol = isPlaying ? (
       <img alt={'pause'} src={pauseSVG} />
     ) : (
       <img alt={'play'} src={playSVG} />
-    );
+    )
 
-    const timeFormat = trackDuration > 3600 ? 'H:m:ss' : 'm:ss';
-    const progress = moment.utc(trackProgress * 1000).format(timeFormat);
-    const duration = moment.utc(trackDuration * 1000).format(timeFormat);
-    const time = `${progress} / ${duration}`;
+    const timeFormat = trackDuration > 3600 ? 'H:m:ss' : 'm:ss'
+    const progress = moment.utc(trackProgress * 1000).format(timeFormat)
+    const duration = moment.utc(trackDuration * 1000).format(timeFormat)
+    const time = `${progress} / ${duration}`
 
     const config = {
       soundcloud: {
         clientId: process.env.REACT_APP_SOUNDCLOUD_CLIENT_ID
       }
-    };
+    }
 
     // in safari, iframes needs to be at lease 1px x 1px to play.
     const style = {
@@ -69,7 +69,7 @@ class Player extends Component {
       width: '1px',
       height: '1px',
       overflow: 'hidden'
-    };
+    }
 
     return (
       <nav>
@@ -117,7 +117,7 @@ class Player extends Component {
           onError={e => handleOnError(e)}
         />
       </nav>
-    );
+    )
   }
 }
 
@@ -128,13 +128,13 @@ const Dot = ({ playerStatus }) => {
     playerBuffering: playerStatus === playerStates.buffering,
     playerErrored: playerStatus === playerStates.errored,
     dot: true
-  });
+  })
   return (
     <div className={'tile-wrap-square'}>
       <div key={'dot'} className={playerStatusClasses} />
     </div>
-  );
-};
+  )
+}
 
 const TrackTitle = ({
   trackInfo,
@@ -143,10 +143,10 @@ const TrackTitle = ({
   currentRoute
 }) => {
   if (trackInfo) {
-    const title = decode(trackInfo.title);
+    const title = decode(trackInfo.title)
     if (!trackIsFromCurrentPlaylist || currentRoute === '/') {
-      const playlistSlug = currentTrackPlaylist.slug;
-      const playListTitle = decode(currentTrackPlaylist.title);
+      const playlistSlug = currentTrackPlaylist.slug
+      const playListTitle = decode(currentTrackPlaylist.title)
       return (
         <div className={'tile-wrap-full'}>
           <p>
@@ -156,36 +156,36 @@ const TrackTitle = ({
             </Link>
           </p>
         </div>
-      );
+      )
     }
 
     return (
       <div className={'tile-wrap-full'}>
         <p>{title}</p>
       </div>
-    );
+    )
   }
 
   return (
     <div className={'tile-wrap-full'}>
       <p>{':~)'}</p>
     </div>
-  );
-};
+  )
+}
 
 const SourceLink = ({ trackInfo }) => {
   if (trackInfo) {
-    const source = getURL(trackInfo);
+    const source = getURL(trackInfo)
     return (
       <div className={'tile-wrap'}>
         <a target={'_blank'} href={`${source}`}>
           {'Source'}
         </a>
       </div>
-    );
+    )
   }
-  return <div />;
-};
+  return <div />
+}
 
 const TrackTime = ({ time, trackInfo }) => {
   if (trackInfo) {
@@ -193,13 +193,13 @@ const TrackTime = ({ time, trackInfo }) => {
       <div className={'tile-wrap track-time'}>
         <p>{time}</p>
       </div>
-    );
+    )
   }
   return (
     <div className={'tile-wrap track-time'}>
       <p>{'--:-- / --:-- '}</p>
     </div>
-  );
-};
+  )
+}
 
-export default Player;
+export default Player

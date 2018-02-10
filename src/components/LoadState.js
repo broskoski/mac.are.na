@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 
 const LoadState = () => {
   return (
@@ -21,7 +21,7 @@ const LoadState = () => {
         </svg>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default LoadState;
+export default LoadState

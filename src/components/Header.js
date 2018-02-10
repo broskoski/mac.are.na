@@ -1,17 +1,17 @@
-import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import logo from '../assets/logo.svg';
-import { decode } from 'he';
-import { getStatus } from '../lib/helpers';
-import arrow from '../assets/arrow.svg';
+import React, { Component } from 'react'
+import { Link } from 'react-router-dom'
+import logo from '../assets/logo.svg'
+import { decode } from 'he'
+import { getStatus } from '../lib/helpers'
+import arrow from '../assets/arrow.svg'
 
 class Header extends Component {
   handleHeaderText = () => {
-    const { currentOpenPlaylist, isCurrentPlaylistLoaded } = this.props;
+    const { currentOpenPlaylist, isCurrentPlaylistLoaded } = this.props
     if (currentOpenPlaylist && isCurrentPlaylistLoaded) {
       if (this.props.location.pathname !== '/') {
-        const playlistTitle = decode(`/ ${currentOpenPlaylist.title}`);
-        const status = getStatus(currentOpenPlaylist);
+        const playlistTitle = decode(`/ ${currentOpenPlaylist.title}`)
+        const status = getStatus(currentOpenPlaylist)
         return (
           <div
             style={{ marginLeft: '1rem' }}
@@ -19,15 +19,15 @@ class Header extends Component {
           >
             {playlistTitle}
           </div>
-        );
+        )
       }
-      return '';
+      return ''
     }
-    return '';
-  };
+    return ''
+  }
 
   handleToArena = () => {
-    const { currentOpenPlaylist, isCurrentPlaylistLoaded } = this.props;
+    const { currentOpenPlaylist, isCurrentPlaylistLoaded } = this.props
     if (
       currentOpenPlaylist &&
       isCurrentPlaylistLoaded &&
@@ -43,7 +43,7 @@ class Header extends Component {
         >
           <img alt={'Find on are.na'} src={arrow} />
         </a>
-      );
+      )
     }
     return (
       <a
@@ -53,8 +53,8 @@ class Header extends Component {
       >
         <img alt={'Find on are.na'} src={arrow} />
       </a>
-    );
-  };
+    )
+  }
 
   render() {
     return (
@@ -68,8 +68,8 @@ class Header extends Component {
         </h1>
         {this.handleToArena()}
       </header>
-    );
+    )
   }
 }
 
-export default Header;
+export default Header

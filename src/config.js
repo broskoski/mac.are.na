@@ -4,4 +4,4 @@ module.exports = {
     production: 'https://secure.are.na/v2'
   },
   playlistChannel: 'mac-are-na'
-};
+}
