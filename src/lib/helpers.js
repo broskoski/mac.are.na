@@ -163,7 +163,6 @@ function comparator(a, b, param) {
     case sortKeys.position:
       return numComparator(a, b)
     default:
-      console.warn('invalid param in comparator')
       return 0
   }
 }
@@ -197,7 +196,6 @@ function incrementInList(list, currentIndex) {
 }
 
 function decrementInList(list, currentIndex) {
-  const listLength = list.length
   if (currentIndex > 0) {
     return list[currentIndex - 1]
   }

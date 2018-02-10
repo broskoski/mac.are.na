@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { decode } from 'he'
 import { getStatus, sortChannelContents } from '../lib/helpers'
 
@@ -8,7 +9,8 @@ import LoadState from '../components/LoadState'
 class Playlists extends Component {
   componentDidMount() {
     // make app aware of current route
-    this.props.returnFullRoute(this.props.computedMatch.path)
+    const { setCurrentRoute, computedMatch } = this.props
+    setCurrentRoute(computedMatch.path)
   }
 
   // take an array of playlists and make a list of link components
@@ -42,8 +44,7 @@ class Playlists extends Component {
       handlePlaylistSelect,
       playlistChannel,
       searchQuery,
-      playlistChannelSortObj,
-      currentRoute
+      playlistChannelSortObj
     } = this.props
     if (playlistChannel) {
       const filteredList =
@@ -66,6 +67,16 @@ class Playlists extends Component {
       return <LoadState />
     }
   }
+}
+
+Playlists.propTypes = {
+  handlePlaylistSelect: PropTypes.func,
+  playlistChannel: PropTypes.any,
+  searchQuery: PropTypes.string,
+  playlistChannelSortObj: PropTypes.string,
+  currentRoute: PropTypes.string,
+  setCurrentRoute: PropTypes.func,
+  computedMatch: PropTypes.any
 }
 
 export default Playlists

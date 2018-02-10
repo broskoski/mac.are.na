@@ -5,7 +5,6 @@ import {
   Switch,
   withRouter
 } from 'react-router-dom'
-import { decode } from 'he'
 
 import Header from './components/Header'
 import Playlists from './containers/Playlists'
@@ -16,7 +15,6 @@ import Sortainer from './components/Sortainer'
 import { tinyAPI } from './lib/api'
 import {
   playerStates,
-  reverseChannelContents,
   sortKeys,
   sortChannelContents,
   immutablyChangeContents,
@@ -147,7 +145,7 @@ class Main extends Component {
 
   // if we select a playlist, get it's contents.
   // then, set it as the current open playlist
-  returnSelectedPlaylist = playlistSlug => {
+  setSelectedPlaylist = playlistSlug => {
     this.setState({ isCurrentPlaylistLoaded: false })
     this.API.getFullChannel(playlistSlug).then(playlist => {
       // validate it right off the bat
@@ -204,7 +202,7 @@ class Main extends Component {
     }
   }
 
-  returnFullRoute = currentRoute => {
+  setCurrentRoute = currentRoute => {
     this.setState({ currentRoute })
   }
 
@@ -233,7 +231,6 @@ class Main extends Component {
   }
 
   handleOnError = event => {
-    console.warn('ruh roh, ', event)
     this.setState({ playerStatus: playerStates.errored })
     this.goToNextTrack()
   }
@@ -263,8 +260,6 @@ class Main extends Component {
           currentOpenPlaylist
         )
       })
-    } else {
-      console.warn('Invalid stateKey arg at setSort')
     }
   }
 
@@ -308,15 +303,15 @@ class Main extends Component {
               path={'/'}
               component={Playlists}
               handlePlaylistSelect={this.handlePlaylistSelect}
-              returnFullRoute={this.returnFullRoute}
+              setCurrentRoute={this.setCurrentRoute}
             />
             <PropsRoute
               {...this.state}
               path={'/playlist/:playlistSlug'}
               component={Playlist}
               handleSongUserSelection={this.handleSongUserSelection}
-              returnSelectedPlaylist={this.returnSelectedPlaylist}
-              returnFullRoute={this.returnFullRoute}
+              setSelectedPlaylist={this.setSelectedPlaylist}
+              setCurrentRoute={this.setCurrentRoute}
               toggleShowRejects={this.toggleShowRejects}
             />
           </Switch>

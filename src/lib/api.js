@@ -1,5 +1,4 @@
 import { apiBase, playlistChannel } from '../config'
-import { sanitizeURL } from './helpers'
 const BASE = apiBase[process.env.NODE_ENV]
 
 const parse = {

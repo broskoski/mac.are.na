@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 import classnames from 'classnames'
 import { decode } from 'he'
@@ -19,6 +20,14 @@ const LinkItem = ({ status, isSelected, handleSelection, text, to }) => {
       <p>{decode(text)}</p>
     </Link>
   )
+}
+
+LinkItem.propTypes = {
+  status: PropTypes.string,
+  isSelected: PropTypes.bool,
+  handleSelection: PropTypes.func,
+  text: PropTypes.string,
+  to: PropTypes.string
 }
 
 export default LinkItem

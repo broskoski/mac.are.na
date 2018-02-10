@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import classnames from 'classnames'
+import PropTypes from 'prop-types'
 
-import { validateWithMessage, sortChannelContents } from '../lib/helpers'
 import LoadState from '../components/LoadState'
 import { SongItem, SongItemReject } from '../components/SongItem'
 import sortArrow from '../assets/sortArrow.svg'
@@ -9,17 +9,20 @@ import sortArrow from '../assets/sortArrow.svg'
 class Playlist extends Component {
   componentDidMount() {
     // get slug from router params and return it to <Main />
-    const playlistSlug = this.props.match.params.playlistSlug
-    this.props.returnSelectedPlaylist(playlistSlug)
-    this.props.returnFullRoute(this.props.computedMatch.path)
+    const {
+      match,
+      setSelectedPlaylist,
+      setCurrentRoute,
+      computedMatch
+    } = this.props
+
+    const playlistSlug = match.params.playlistSlug
+    setSelectedPlaylist(playlistSlug)
+    setCurrentRoute(computedMatch.path)
   }
 
   makeSongList = validItems => {
-    const {
-      trackIsFromCurrentPlaylist,
-      handleSongUserSelection,
-      currentTrack
-    } = this.props
+    const { handleSongUserSelection } = this.props
 
     return validItems.map((item, index) => {
       return (
@@ -60,8 +63,6 @@ class Playlist extends Component {
       currentOpenPlaylist,
       isCurrentPlaylistLoaded,
       handlePlaylistSelect,
-      playlistSortObj,
-      currentRoute,
       currentOpenPlaylistRejects,
       toggleShowRejects,
       showRejects
@@ -98,6 +99,22 @@ class Playlist extends Component {
   }
 }
 
+Playlist.propTypes = {
+  match: PropTypes.any,
+  setSelectedPlaylist: PropTypes.func,
+  setCurrentRoute: PropTypes.func,
+  computedMatch: PropTypes.any,
+  handleSongUserSelection: PropTypes.func,
+  currentTrack: PropTypes.any,
+  trackIsFromCurrentPlaylist: PropTypes.bool,
+  currentOpenPlaylist: PropTypes.any,
+  isCurrentPlaylistLoaded: PropTypes.bool,
+  handlePlaylistSelect: PropTypes.func,
+  currentOpenPlaylistRejects: PropTypes.any,
+  toggleShowRejects: PropTypes.func,
+  showRejects: PropTypes.bool
+}
+
 const ToggleRejectedSongs = ({
   toggleShowRejects,
   rejectCount,
@@ -115,7 +132,11 @@ const ToggleRejectedSongs = ({
     >
       <div className={'flexBetween'}>
         <p>{`${rejectCount} unplayable blocks`}</p>
-        <img className={openClosedClasses} src={sortArrow} />
+        <img
+          alt={`sort-${openClosedClasses}`}
+          className={openClosedClasses}
+          src={sortArrow}
+        />
       </div>
     </button>
   )
