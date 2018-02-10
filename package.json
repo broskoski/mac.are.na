@@ -5,6 +5,7 @@
   "description": "Are.na channel -> Music",
   "scripts": {
     "precommit": "lint-staged",
+    "lint": "eslint ./",
     "start-js": "react-scripts start",
     "build-css": "node-sass src/styles -o src/styles",
     "watch-css": "npm run build-css && node-sass src/styles -o src/styles --watch --recursive",
