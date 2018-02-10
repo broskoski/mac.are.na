@@ -5,6 +5,7 @@ import {
   Switch,
   withRouter
 } from 'react-router-dom'
+import PropTypes from 'prop-types'
 
 import Header from './components/Header'
 import Playlists from './containers/Playlists'
@@ -343,6 +344,10 @@ const PropsRoute = ({ component, ...mePropsies }) => {
       }}
     />
   )
+}
+
+PropsRoute.propTypes = {
+  component: PropTypes.any
 }
 
 export default Main

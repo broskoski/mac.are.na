@@ -12,7 +12,7 @@ class tinyAPI {
   get = endpoint => {
     return fetch(endpoint)
       .then(response => response.json())
-      .catch(err => console.error('ruh roh,', err))
+      .catch(err => false)
   }
 
   getBlockCount = () => {
