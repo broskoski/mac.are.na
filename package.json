@@ -4,6 +4,7 @@
   "private": true,
   "description": "Are.na channel -> Music",
   "scripts": {
+    "precommit": "lint-staged",
     "start-js": "react-scripts start",
     "build-css": "node-sass src/styles -o src/styles",
     "watch-css": "npm run build-css && node-sass src/styles -o src/styles --watch --recursive",
@@ -23,11 +24,20 @@
   "contributors": [
     "Gavin Atkinson"
   ],
+  "lint-staged": {
+    "src/**/*.{js,jsx,json,css}": [
+      "prettier --single-quote --write",
+      "git add"
+    ]
+  },
   "license": "MIT",
   "dependencies": {
     "classnames": "^2.2.5",
     "he": "^1.1.1",
+    "husky": "^0.14.3",
+    "lint-staged": "^6.1.0",
     "moment": "^2.20.1",
+    "prettier": "^1.10.2",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-player": "^1.1.1",
