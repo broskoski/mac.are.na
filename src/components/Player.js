@@ -1,15 +1,16 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import ReactPlayer from 'react-player'
-import { Link } from 'react-router-dom'
 import moment from 'moment'
-import { decode } from 'he'
-import classnames from 'classnames'
 
 import forwardSVG from '../assets/forward.svg'
 import playSVG from '../assets/play.svg'
 import reverseSVG from '../assets/reverse.svg'
 import pauseSVG from '../assets/pause.svg'
-import { getURL, playerStates } from '../lib/helpers'
+import Dot from './Dot'
+import TrackTime from './TrackTime'
+import TrackTitle from './TrackTitle'
+import SourceLink from './SourceLink'
 
 // this is such a weirdo component
 class Player extends Component {
@@ -73,16 +74,16 @@ class Player extends Component {
 
     return (
       <nav>
-        <div id={'playPause'}>
+        <div id="playPause">
           <button onClick={() => goToPreviousTrack()}>
-            <img alt={'rev'} src={reverseSVG} />
+            <img alt="rev" src={reverseSVG} />
           </button>
           <button onClick={() => handlePlayback()}>{playbackSymbol}</button>
           <button onClick={() => goToNextTrack()}>
-            <img alt={'fwd'} src={forwardSVG} />
+            <img alt="fwd" src={forwardSVG} />
           </button>
         </div>
-        <div id={'nowPlaying'}>
+        <div id="nowPlaying">
           <div className={'left'}>
             <Dot playerStatus={playerStatus} />
             <TrackTitle
@@ -121,85 +122,27 @@ class Player extends Component {
   }
 }
 
-const Dot = ({ playerStatus }) => {
-  const playerStatusClasses = classnames({
-    playerIdle: playerStatus === playerStates.idle,
-    playerPlaying: playerStatus === playerStates.playing,
-    playerBuffering: playerStatus === playerStates.buffering,
-    playerErrored: playerStatus === playerStates.errored,
-    dot: true
-  })
-  return (
-    <div className={'tile-wrap-square'}>
-      <div key={'dot'} className={playerStatusClasses} />
-    </div>
-  )
-}
-
-const TrackTitle = ({
-  trackInfo,
-  currentTrackPlaylist,
-  trackIsFromCurrentPlaylist,
-  currentRoute
-}) => {
-  if (trackInfo) {
-    const title = decode(trackInfo.title)
-    if (!trackIsFromCurrentPlaylist || currentRoute === '/') {
-      const playlistSlug = currentTrackPlaylist.slug
-      const playListTitle = decode(currentTrackPlaylist.title)
-      return (
-        <div className={'tile-wrap-full'}>
-          <p>
-            {title}
-            <Link to={`/playlist/${playlistSlug}`}>
-              {`from ${playListTitle}`}
-            </Link>
-          </p>
-        </div>
-      )
-    }
-
-    return (
-      <div className={'tile-wrap-full'}>
-        <p>{title}</p>
-      </div>
-    )
-  }
-
-  return (
-    <div className={'tile-wrap-full'}>
-      <p>{':~)'}</p>
-    </div>
-  )
-}
-
-const SourceLink = ({ trackInfo }) => {
-  if (trackInfo) {
-    const source = getURL(trackInfo)
-    return (
-      <div className={'tile-wrap'}>
-        <a target={'_blank'} href={`${source}`}>
-          {'Source'}
-        </a>
-      </div>
-    )
-  }
-  return <div />
-}
-
-const TrackTime = ({ time, trackInfo }) => {
-  if (trackInfo) {
-    return (
-      <div className={'tile-wrap track-time'}>
-        <p>{time}</p>
-      </div>
-    )
-  }
-  return (
-    <div className={'tile-wrap track-time'}>
-      <p>{'--:-- / --:-- '}</p>
-    </div>
-  )
+Player.propTypes = {
+  isPlaying: PropTypes.bool,
+  handlePlayback: PropTypes.func,
+  goToNextTrack: PropTypes.func,
+  goToPreviousTrack: PropTypes.func,
+  currentTrack: PropTypes.any,
+  handleOnReady: PropTypes.func,
+  handleOnStart: PropTypes.func,
+  handleOnPlay: PropTypes.func,
+  handleOnProgress: PropTypes.func,
+  handleOnDuration: PropTypes.func,
+  handleOnBuffer: PropTypes.func,
+  handleOnError: PropTypes.func,
+  volume: PropTypes.number,
+  trackProgress: PropTypes.number,
+  trackDuration: PropTypes.number,
+  trackIsFromCurrentPlaylist: PropTypes.bool,
+  currentTrackPlaylist: PropTypes.any,
+  playerStatus: PropTypes.any,
+  currentRoute: PropTypes.string,
+  returnRef: PropTypes.func
 }
 
 export default Player
