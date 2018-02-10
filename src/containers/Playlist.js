@@ -1,10 +1,9 @@
 import React, { Component } from 'react'
-import classnames from 'classnames'
 import PropTypes from 'prop-types'
 
 import LoadState from '../components/LoadState'
+import ToggleRejectedSongs from '../components/ToggleRejectedSongs'
 import { SongItem, SongItemReject } from '../components/SongItem'
-import sortArrow from '../assets/sortArrow.svg'
 
 class Playlist extends Component {
   componentDidMount() {
@@ -113,33 +112,6 @@ Playlist.propTypes = {
   currentOpenPlaylistRejects: PropTypes.any,
   toggleShowRejects: PropTypes.func,
   showRejects: PropTypes.bool
-}
-
-const ToggleRejectedSongs = ({
-  toggleShowRejects,
-  rejectCount,
-  showRejects
-}) => {
-  const openClosedClasses = classnames({
-    up: showRejects,
-    down: !showRejects
-  })
-  return (
-    <button
-      id={'hide-show-rejects'}
-      className={'list-item'}
-      onClick={() => toggleShowRejects()}
-    >
-      <div className={'flexBetween'}>
-        <p>{`${rejectCount} unplayable blocks`}</p>
-        <img
-          alt={`sort-${openClosedClasses}`}
-          className={openClosedClasses}
-          src={sortArrow}
-        />
-      </div>
-    </button>
-  )
 }
 
 export default Playlist
