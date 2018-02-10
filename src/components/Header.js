@@ -7,12 +7,6 @@ import { decode } from 'he'
 import { getStatus } from '../lib/helpers'
 import arrow from '../assets/arrow.svg'
 
-Header.propTypes = {
-  currentOpenPlaylist: PropTypes.any,
-  isCurrentPlaylistLoaded: PropTypes.bool,
-  location: PropTypes.any
-}
-
 class Header extends Component {
   handleHeaderText = () => {
     const { currentOpenPlaylist, isCurrentPlaylistLoaded } = this.props
@@ -80,6 +74,12 @@ class Header extends Component {
       </header>
     )
   }
+}
+
+Header.propTypes = {
+  currentOpenPlaylist: PropTypes.any,
+  isCurrentPlaylistLoaded: PropTypes.bool,
+  location: PropTypes.any
 }
 
 export default Header
