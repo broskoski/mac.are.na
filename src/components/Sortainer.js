@@ -1,4 +1,6 @@
 import React from 'react'
+import PropTypes from 'prop-types'
+
 import classnames from 'classnames'
 import { sortKeys } from '../lib/helpers'
 import sortArrow from '../assets/sortArrow.svg'
@@ -72,21 +74,33 @@ const Sortainer = ({
             onClick={() => handleSort(sortKeys.title)}
           >
             {'Title'}
-            <img className={orderSortClasses} src={sortArrow} />
+            <img
+              alt={`title-sort-${alphaSortClasses}`}
+              className={orderSortClasses}
+              src={sortArrow}
+            />
           </button>
           <button
             className={positionSortClasses}
             onClick={() => handleSort(sortKeys.position)}
           >
             {'Position'}
-            <img className={orderSortClasses} src={sortArrow} />
+            <img
+              alt={`position-sort-${positionSortClasses}`}
+              className={orderSortClasses}
+              src={sortArrow}
+            />
           </button>
           <button
             className={updatedSortClasses}
             onClick={() => handleSort(sortKeys.updated_at)}
           >
             {'Updated'}
-            <img className={orderSortClasses} src={sortArrow} />
+            <img
+              alt={`updated-sort-${updatedSortClasses}`}
+              className={orderSortClasses}
+              src={sortArrow}
+            />
           </button>
         </div>
       </div>
@@ -103,19 +117,36 @@ const Sortainer = ({
             onClick={() => handleSort(sortKeys.title)}
           >
             {'Title'}
-            <img className={orderSortClasses} src={sortArrow} />
+            <img
+              alt={`title-sort-${alphaSortClasses}`}
+              className={orderSortClasses}
+              src={sortArrow}
+            />
           </button>
           <button
             className={positionSortClasses}
             onClick={() => handleSort(sortKeys.position)}
           >
             {'Position'}
-            <img className={orderSortClasses} src={sortArrow} />
+            <img
+              alt={`position-sort-${positionSortClasses}`}
+              className={orderSortClasses}
+              src={sortArrow}
+            />
           </button>
         </div>
       </div>
     )
   }
+}
+
+Sortainer.propTypes = {
+  playlistChannelSortObj: PropTypes.any,
+  playlistSortObj: PropTypes.any,
+  setSort: PropTypes.func,
+  currentRoute: PropTypes.string,
+  searchQuery: PropTypes.string,
+  setQueryInState: PropTypes.func
 }
 
 export default Sortainer
