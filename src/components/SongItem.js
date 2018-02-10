@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import { decode } from 'he'
 import { scrubTitle } from '../lib/helpers'
@@ -23,6 +24,13 @@ const SongItem = ({ status, isSelected, handleSelection, song }) => {
   )
 }
 
+SongItem.propTypes = {
+  status: PropTypes.string,
+  isSelected: PropTypes.bool,
+  handleSelection: PropTypes.func,
+  song: PropTypes.any
+}
+
 const SongItemReject = ({ isSelected, handleSelection, song, message }) => {
   const itemClasses = 'list-item rejected'
   const title = scrubTitle(song.title)
@@ -34,6 +42,13 @@ const SongItemReject = ({ isSelected, handleSelection, song, message }) => {
       </div>
     </div>
   )
+}
+
+SongItemReject.propTypes = {
+  isSelected: PropTypes.bool,
+  handleSelection: PropTypes.func,
+  song: PropTypes.any,
+  message: PropTypes.string
 }
 
 export { SongItem, SongItemReject }
