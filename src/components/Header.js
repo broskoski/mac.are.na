@@ -1,39 +1,60 @@
-import React, { Component } from 'react'
-import { Link } from 'react-router-dom'
-import logo from '../assets/logo.svg'
-import { decode } from 'he'
-import { getStatus } from '../lib/helpers'
-import arrow from '../assets/arrow.svg'
+import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
+import logo from '../assets/logo.svg';
+import { decode } from 'he';
+import { getStatus } from '../lib/helpers';
+import arrow from '../assets/arrow.svg';
 
 class Header extends Component {
   handleHeaderText = () => {
-    const { currentOpenPlaylist, isCurrentPlaylistLoaded } = this.props
+    const { currentOpenPlaylist, isCurrentPlaylistLoaded } = this.props;
     if (currentOpenPlaylist && isCurrentPlaylistLoaded) {
       if (this.props.location.pathname !== '/') {
-        const playlistTitle = decode(`/ ${currentOpenPlaylist.title}`)
-        const status = getStatus(currentOpenPlaylist)
-        return <div style={{marginLeft:'1rem'}} className={`inlineBlock ${status}`}>{playlistTitle}</div>
+        const playlistTitle = decode(`/ ${currentOpenPlaylist.title}`);
+        const status = getStatus(currentOpenPlaylist);
+        return (
+          <div
+            style={{ marginLeft: '1rem' }}
+            className={`inlineBlock ${status}`}
+          >
+            {playlistTitle}
+          </div>
+        );
       }
-      return ''
+      return '';
     }
-    return ''
-  }
+    return '';
+  };
 
   handleToArena = () => {
-    const { currentOpenPlaylist, isCurrentPlaylistLoaded } = this.props
-    if (currentOpenPlaylist && isCurrentPlaylistLoaded && this.props.location.pathname !== '/') {
+    const { currentOpenPlaylist, isCurrentPlaylistLoaded } = this.props;
+    if (
+      currentOpenPlaylist &&
+      isCurrentPlaylistLoaded &&
+      this.props.location.pathname !== '/'
+    ) {
       return (
-        <a className={'toArena'} target={'_blank'} href={`https://www.are.na/${currentOpenPlaylist.user.slug}/${currentOpenPlaylist.slug}`}>
+        <a
+          className={'toArena'}
+          target={'_blank'}
+          href={`https://www.are.na/${currentOpenPlaylist.user.slug}/${
+            currentOpenPlaylist.slug
+          }`}
+        >
           <img alt={'Find on are.na'} src={arrow} />
         </a>
-      )
+      );
     }
     return (
-      <a className={'toArena'} target={'_blank'} href={`https://www.are.na/charles-broskoski/mac-are-na`}>
+      <a
+        className={'toArena'}
+        target={'_blank'}
+        href={`https://www.are.na/charles-broskoski/mac-are-na`}
+      >
         <img alt={'Find on are.na'} src={arrow} />
       </a>
-    )
-  }
+    );
+  };
 
   render() {
     return (
@@ -43,12 +64,12 @@ class Header extends Component {
             <img className="logo" src={logo} alt="logo" />
             {'mac.are.na'}
           </Link>
-          { this.handleHeaderText() }
+          {this.handleHeaderText()}
         </h1>
-        { this.handleToArena() }
+        {this.handleToArena()}
       </header>
-    )
+    );
   }
 }
 
-export default Header
+export default Header;
