@@ -30,7 +30,7 @@ main {
 
 button {
   outline: none;
-  background-color: white;
+  background-color: transparent;
   -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
@@ -66,7 +66,6 @@ a.toArena {
   display: flex;
   justify-content: space-between;
   flex-direction: column;
-
   @include for-medium-up {
     flex-direction: row;
   }
@@ -86,10 +85,11 @@ a.toArena {
       flex: initial;
     }
   }
+
   .search {
     border: none;
     width: 100%;
-    padding: 0 1em;
+    padding: 0 1em 0 3em;
     height: 3rem;
     font-size: $font-size-h6;
     outline: none;
@@ -102,6 +102,27 @@ a.toArena {
       border-bottom: 1px solid $colors-gray-text;
     }
   }
+
+  .search-wrap {
+    position: relative;
+
+    &:before {
+      bottom: 0.85em;
+      left: 1em;
+      height: 1.25rem;
+      width: 1.25rem;
+      background-repeat: no-repeat;
+      background-image: url('/search.svg');
+      background-size: cover;
+      background-position: 0 0;
+      content: '';
+      display: block;
+      position: absolute;
+      transform: rotateY(-180deg);
+      opacity: .66;
+    }
+  }
+
   button {
     border: none;
     padding: 0 1em;
@@ -118,6 +139,7 @@ a.toArena {
       color: $colors-gray-hover;
     }
   }
+
   .unselected {
     border-bottom: 1px solid $colors-gray-border;
     color: $colors-gray-light;
@@ -125,6 +147,7 @@ a.toArena {
       opacity: 0;
     }
   }
+
   .selected {
     border-bottom: 1px solid $colors-gray-text;
     color: $colors-gray-text;
@@ -132,6 +155,7 @@ a.toArena {
       opacity: 1;
     }
   }
+
   img.asc {
     transform: rotateZ(180deg);
   }
@@ -144,7 +168,7 @@ a.toArena {
 nav {
   display: flex;
   margin-bottom: 2rem;
-
+  border-radius: 3px;
   border: 1px solid $colors-gray-border;
   flex-direction: column-reverse;
   @include for-medium-up {
@@ -187,7 +211,7 @@ nav {
 #nowPlaying {
   height: 6rem;
   flex: 1;
-  background-color: white;
+  // background-color: white;
   display: flex;
   flex-direction: column;
   @include for-medium-up {
@@ -220,8 +244,6 @@ nav {
 #playPause{
   display: flex;
 }
-
-
 
 .track-time {
   width: 130px;
@@ -290,6 +312,21 @@ nav {
   background-color: $colors-gray-border;
 }
 
+#hide-show-rejects{
+  background-color: $colors-gray-background;
+  img.up {
+    transform: rotateZ(180deg);
+  }
+
+  img.down {
+    transform: rotateZ(0deg);
+  }
+  &:hover {
+    cursor: pointer;
+    background-color: $colors-gray-border;
+  }
+}
+
 /* button press */
 
 a {
@@ -303,7 +340,7 @@ a {
   height: 10px;
   display: block;
   content: '';
-  background-color: white;
+  // background-color: white;
   transition: background-color 300ms;
   border-radius: 999px;
 }
@@ -322,4 +359,16 @@ a {
 
 .playerErrored {
   background-color: $colors-alert;
+}
+
+.public {
+  color: $colors-public;
+}
+
+.private {
+  color: $colors-private;
+}
+
+.closed {
+  color: $colors-closed;
 }

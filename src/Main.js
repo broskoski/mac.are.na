@@ -46,6 +46,7 @@ class Main extends Component {
       currentRoute: '/',
       playlistChannelSortObj: { orderKey: true, paramKey: sortKeys.position },
       playlistSortObj: { orderKey: true, paramKey: sortKeys.position },
+      showRejects: false,
     }
     this.API = new tinyAPI()
     this.playerRef = null
@@ -251,6 +252,10 @@ class Main extends Component {
     }
   }
 
+  toggleShowRejects = () => {
+    this.setState({ showRejects: !this.state.showRejects})
+  }
+
   render () {
     return (
       <Router>
@@ -295,6 +300,7 @@ class Main extends Component {
               handleSongUserSelection={this.handleSongUserSelection}
               returnSelectedPlaylist={this.returnSelectedPlaylist}
               returnFullRoute={this.returnFullRoute}
+              toggleShowRejects={this.toggleShowRejects}
             />
           </Switch>
         </main>

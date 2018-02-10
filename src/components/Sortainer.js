@@ -60,12 +60,14 @@ const Sortainer = ({
     return (
       <div id={'Sortainer'}>
         <div className={'left'}>
-          <input
-            className={'search'}
-            value={searchQuery}
-            type={'text'}
-            placeholder={'Search Channels'}
-            onChange={(e) => setQueryInState(e)} />
+          <div className={'search-wrap'}>
+            <input
+              className={'search'}
+              value={searchQuery}
+              type={'text'}
+              placeholder={'Search Channels'}
+              onChange={(e) => setQueryInState(e)} />
+          </div>
         </div>
         <div className={'right'}>
           <button
