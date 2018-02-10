@@ -1,13 +1,22 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
+import PropTypes from 'prop-types'
+
 import logo from '../assets/logo.svg'
 import { decode } from 'he'
 import { getStatus } from '../lib/helpers'
 import arrow from '../assets/arrow.svg'
 
+Header.propTypes = {
+  currentOpenPlaylist: PropTypes.any,
+  isCurrentPlaylistLoaded: PropTypes.bool,
+  location: PropTypes.any
+}
+
 class Header extends Component {
   handleHeaderText = () => {
     const { currentOpenPlaylist, isCurrentPlaylistLoaded } = this.props
+
     if (currentOpenPlaylist && isCurrentPlaylistLoaded) {
       if (this.props.location.pathname !== '/') {
         const playlistTitle = decode(`/ ${currentOpenPlaylist.title}`)
@@ -28,6 +37,7 @@ class Header extends Component {
 
   handleToArena = () => {
     const { currentOpenPlaylist, isCurrentPlaylistLoaded } = this.props
+
     if (
       currentOpenPlaylist &&
       isCurrentPlaylistLoaded &&
