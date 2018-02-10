@@ -13,8 +13,8 @@ const Dot = ({ playerStatus }) => {
     dot: true
   })
   return (
-    <div className={'tile-wrap-square'}>
-      <div key={'dot'} className={playerStatusClasses} />
+    <div className="tile-wrap-square">
+      <div key="dot" className={playerStatusClasses} />
     </div>
   )
 }
