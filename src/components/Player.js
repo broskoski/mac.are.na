@@ -1,15 +1,16 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import ReactPlayer from 'react-player'
-import { Link } from 'react-router-dom'
 import moment from 'moment'
-import { decode } from 'he'
-import classnames from 'classnames'
 
 import forwardSVG from '../assets/forward.svg'
 import playSVG from '../assets/play.svg'
 import reverseSVG from '../assets/reverse.svg'
 import pauseSVG from '../assets/pause.svg'
-import { getURL, playerStates } from '../lib/helpers'
+import Dot from './Dot'
+import TrackTime from './TrackTime'
+import TrackTitle from './TrackTitle'
+import SourceLink from './SourceLink'
 
 // this is such a weirdo component
 class Player extends Component {
@@ -21,7 +22,7 @@ class Player extends Component {
     this.player = player
   }
 
-  render () {
+  render() {
     const {
       isPlaying,
       handlePlayback,
@@ -41,17 +42,19 @@ class Player extends Component {
       trackIsFromCurrentPlaylist,
       currentTrackPlaylist,
       playerStatus,
-      currentRoute,
+      currentRoute
     } = this.props
 
-    const playbackSymbol = isPlaying
-      ? <img alt={'pause'} src={pauseSVG} />
-      : <img alt={'play'} src={playSVG} />
+    const playbackSymbol = isPlaying ? (
+      <img alt={'pause'} src={pauseSVG} />
+    ) : (
+      <img alt={'play'} src={playSVG} />
+    )
 
     const timeFormat = trackDuration > 3600 ? 'H:m:ss' : 'm:ss'
     const progress = moment.utc(trackProgress * 1000).format(timeFormat)
     const duration = moment.utc(trackDuration * 1000).format(timeFormat)
-    const time =`${progress} / ${duration}`
+    const time = `${progress} / ${duration}`
 
     const config = {
       soundcloud: {
@@ -66,30 +69,29 @@ class Player extends Component {
       transform: 'translate(-10000px)',
       width: '1px',
       height: '1px',
-      overflow: 'hidden',
+      overflow: 'hidden'
     }
 
     return (
       <nav>
-        <div id={'playPause'}>
+        <div id="playPause">
           <button onClick={() => goToPreviousTrack()}>
-            <img alt={'rev'} src={reverseSVG} />
+            <img alt="rev" src={reverseSVG} />
           </button>
-          <button onClick={() => handlePlayback()}>
-            {playbackSymbol}
-          </button>
+          <button onClick={() => handlePlayback()}>{playbackSymbol}</button>
           <button onClick={() => goToNextTrack()}>
-            <img alt={'fwd'} src={forwardSVG} />
+            <img alt="fwd" src={forwardSVG} />
           </button>
         </div>
-        <div id={'nowPlaying'}>
+        <div id="nowPlaying">
           <div className={'left'}>
             <Dot playerStatus={playerStatus} />
             <TrackTitle
               trackInfo={currentTrack}
               currentTrackPlaylist={currentTrackPlaylist}
               trackIsFromCurrentPlaylist={trackIsFromCurrentPlaylist}
-              currentRoute={currentRoute} />
+              currentRoute={currentRoute}
+            />
           </div>
           <div className={'right'}>
             <SourceLink trackInfo={currentTrack} />
@@ -99,107 +101,48 @@ class Player extends Component {
 
         <ReactPlayer
           ref={this.ref}
-          url={currentTrack ? currentTrack.macarenaURL: ''}
+          url={currentTrack ? currentTrack.macarenaURL : ''}
           playing={isPlaying}
           autoPlay={false}
           hidden={false}
           style={style}
           volume={volume} // 0 to 1
           config={config}
-          onReady={(e) => handleOnReady(e)}
-          onStart={(e) => handleOnStart(e)}
-          onPlay={(e) => handleOnPlay(e)}
-          onProgress={(e) => handleOnProgress(e)}
-          onDuration={(e) => handleOnDuration(e)}
-          onBuffer={(e) => handleOnBuffer(e)}
+          onReady={e => handleOnReady(e)}
+          onStart={e => handleOnStart(e)}
+          onPlay={e => handleOnPlay(e)}
+          onProgress={e => handleOnProgress(e)}
+          onDuration={e => handleOnDuration(e)}
+          onBuffer={e => handleOnBuffer(e)}
           onEnded={() => goToNextTrack()}
-          onError={(e) => handleOnError(e)} />
+          onError={e => handleOnError(e)}
+        />
       </nav>
     )
   }
 }
 
-
-const Dot = ({ playerStatus }) => {
-  const playerStatusClasses = classnames({
-    playerIdle: playerStatus === playerStates.idle,
-    playerPlaying: playerStatus === playerStates.playing,
-    playerBuffering: playerStatus === playerStates.buffering,
-    playerErrored: playerStatus === playerStates.errored,
-    dot: true,
-  })
-  return (
-    <div className={'tile-wrap-square'}>
-      <div key={'dot'} className={playerStatusClasses} />
-    </div>
-  )
+Player.propTypes = {
+  isPlaying: PropTypes.bool,
+  handlePlayback: PropTypes.func,
+  goToNextTrack: PropTypes.func,
+  goToPreviousTrack: PropTypes.func,
+  currentTrack: PropTypes.any,
+  handleOnReady: PropTypes.func,
+  handleOnStart: PropTypes.func,
+  handleOnPlay: PropTypes.func,
+  handleOnProgress: PropTypes.func,
+  handleOnDuration: PropTypes.func,
+  handleOnBuffer: PropTypes.func,
+  handleOnError: PropTypes.func,
+  volume: PropTypes.number,
+  trackProgress: PropTypes.number,
+  trackDuration: PropTypes.number,
+  trackIsFromCurrentPlaylist: PropTypes.bool,
+  currentTrackPlaylist: PropTypes.any,
+  playerStatus: PropTypes.any,
+  currentRoute: PropTypes.string,
+  returnRef: PropTypes.func
 }
-
-const TrackTitle = ({
-  trackInfo,
-  currentTrackPlaylist,
-  trackIsFromCurrentPlaylist,
-  currentRoute,
-}) => {
-  if (trackInfo) {
-    const title = decode(trackInfo.title)
-    if (!trackIsFromCurrentPlaylist || currentRoute === '/') {
-      const playlistSlug = currentTrackPlaylist.slug
-      const playListTitle = decode(currentTrackPlaylist.title)
-      return (
-        <div className={'tile-wrap-full'}>
-          <p>{title}
-            <Link to={`/playlist/${playlistSlug}`}>
-              {`from ${playListTitle}`}
-            </Link>
-          </p>
-        </div>
-      )
-    }
-
-    return (
-      <div className={'tile-wrap-full'}>
-        <p>{title}</p>
-      </div>
-    )
-  }
-
-  return (
-    <div className={'tile-wrap-full'}>
-      <p>{':~)'}</p>
-    </div>
-  )
-}
-
-const SourceLink = ({ trackInfo }) => {
-  if (trackInfo) {
-    const source = getURL(trackInfo)
-    return (
-      <div className={'tile-wrap'}>
-        <a target={'_blank'} href={`${source}`}>{'Source'}</a>
-      </div>
-    )
-  }
-  return (
-    <div />
-  )
-}
-
-const TrackTime = ({ time, trackInfo }) => {
-  if (trackInfo) {
-    return (
-      <div className={'tile-wrap track-time'}>
-        <p>{time}</p>
-      </div>
-    )
-  }
-  return (
-    <div className={'tile-wrap track-time'}>
-      <p>{'--:-- / --:-- '}</p>
-    </div>
-
-  )
-}
-
 
 export default Player
