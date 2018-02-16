@@ -32,6 +32,12 @@
     ]
   },
   "license": "MIT",
+  "prettier": {
+    "bracketSpacing": true,
+    "semi": false,
+    "singleQuote": true,
+    "trailingComma": "es5"
+  },
   "dependencies": {
     "classnames": "^2.2.5",
     "eslint-plugin-react": "^7.6.1",
