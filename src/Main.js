@@ -14,6 +14,7 @@ import Player from './components/Player'
 import Sortainer from './components/Sortainer'
 
 import { tinyAPI } from './lib/api'
+import { Validator } from './lib/validator'
 import {
   playerStates,
   sortKeys,
@@ -23,6 +24,7 @@ import {
   incrementInList,
   decrementInList
 } from './lib/helpers'
+import validatorConfig from './lib/validatorConfig'
 
 class Main extends Component {
   constructor(props) {
@@ -48,6 +50,7 @@ class Main extends Component {
       showRejects: false
     }
     this.API = new tinyAPI()
+    this.validator = new Validator(validatorConfig)
     this.playerRef = null
   }
 
@@ -150,14 +153,15 @@ class Main extends Component {
     this.setState({ isCurrentPlaylistLoaded: false })
     this.API.getFullChannel(playlistSlug).then(playlist => {
       // validate it right off the bat
-      const validatedContents = playlist.contents.map(item =>
-        validateWithMessage(item)
+      const validatedContents = playlist.contents.map(block =>
+        // validateWithMessage(item)
+        this.validator.validate(block)
       )
       const onlyValids = validatedContents.filter(
-        item => item.macarenaURLValidity.isValid
+        block => block.macarenaURLValidity.isValid
       )
       const onlyRejects = validatedContents.filter(
-        item => !item.macarenaURLValidity.isValid
+        block => !block.macarenaURLValidity.isValid
       )
       const { currentTrackPlaylist } = this.state
       this.setState({

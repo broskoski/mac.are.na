@@ -90,8 +90,7 @@ class Player extends Component {
               trackInfo={currentTrack}
               currentTrackPlaylist={currentTrackPlaylist}
               trackIsFromCurrentPlaylist={trackIsFromCurrentPlaylist}
-              currentRoute={currentRoute}
-            />
+              currentRoute={currentRoute} />
           </div>
           <div className={'right'}>
             <SourceLink trackInfo={currentTrack} />

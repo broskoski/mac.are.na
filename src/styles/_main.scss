@@ -340,7 +340,6 @@ a {
   height: 10px;
   display: block;
   content: '';
-  // background-color: white;
   transition: background-color 300ms;
   border-radius: 999px;
 }
@@ -359,16 +358,4 @@ a {
 
 .playerErrored {
   background-color: $colors-alert;
-}
-
-.public {
-  color: $colors-public;
-}
-
-.private {
-  color: $colors-private;
-}
-
-.closed {
-  color: $colors-closed;
 }
