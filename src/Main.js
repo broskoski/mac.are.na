@@ -13,6 +13,7 @@ import Playlist from './containers/Playlist'
 import Player from './components/Player'
 import Sortainer from './components/Sortainer'
 
+import { playlistChannel } from '../config'
 import { tinyAPI } from './lib/api'
 import { Validator } from './lib/validator'
 import {
@@ -67,7 +68,7 @@ class Main extends Component {
   componentWillMount() {
     this.initializeCookies()
     window.addEventListener('keydown', e => this.handleInvert(e))
-    Promise.all([this.API.getBlockCount(), this.API.getChannelContents()]).then(
+    Promise.all([this.API.getBlockCount(playlistChannel), this.API.getChannelContents(playlistChannel)]).then(
       ([length, playlistChannel]) => {
         this.setState({
           playlistListLength: length,
