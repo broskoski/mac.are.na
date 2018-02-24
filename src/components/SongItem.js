@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import { decode } from 'he'
-import { scrubTitle } from '../lib/helpers'
 
 const SongItem = ({ status, isSelected, handleSelection, song }) => {
   const itemClasses = 'list-item'
@@ -10,7 +9,7 @@ const SongItem = ({ status, isSelected, handleSelection, song }) => {
     'bg-selected': isSelected,
     '': !isSelected
   })
-  const title = scrubTitle(song.title)
+  const title = song.validation.sanitizers.fillTitle
   return (
     <button
       key={`button-play-${song.id}`}
@@ -33,7 +32,7 @@ SongItem.propTypes = {
 
 const SongItemReject = ({ isSelected, handleSelection, song, message }) => {
   const itemClasses = 'list-item rejected'
-  const title = scrubTitle(song.title)
+  const title = song.validation.sanitizers.fillTitle
   return (
     <div key={`button-reject-${song.id}`} className={`${itemClasses}`}>
       <div className={'flexBetween'}>

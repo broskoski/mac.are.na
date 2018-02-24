@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { getURL } from '../lib/helpers'
+import { getURL } from '../lib/core'
 
 const SourceLink = ({ trackInfo }) => {
   if (trackInfo) {

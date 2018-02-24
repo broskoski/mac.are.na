@@ -154,14 +154,13 @@ class Main extends Component {
     this.API.getFullChannel(playlistSlug).then(playlist => {
       // validate it right off the bat
       const validatedContents = playlist.contents.map(block =>
-        // validateWithMessage(item)
         this.validator.validate(block)
       )
       const onlyValids = validatedContents.filter(
-        block => block.macarenaURLValidity.isValid
+        block => block.validity.isValid
       )
       const onlyRejects = validatedContents.filter(
-        block => !block.macarenaURLValidity.isValid
+        block => !block.validity.isValid
       )
       const { currentTrackPlaylist } = this.state
       this.setState({

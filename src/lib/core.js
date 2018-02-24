@@ -25,7 +25,15 @@ function getStatus(item) {
   }
 }
 
+function fillTitle(title) {
+  if (title === null || title === '') {
+    return 'Untitled on Are.na'
+  }
+  return title
+}
+
 export {
   getURL,
   updateInObject,
+  fillTitle,
 }

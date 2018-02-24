@@ -1,6 +1,6 @@
 import reactPlayer from 'react-player'
 import { message } from './validator'
-import { getURL } from './core'
+import { getURL, fillTitle } from './core'
 
 const validatorConfig = {
     whitelists: {
@@ -18,6 +18,11 @@ const validatorConfig = {
     },
 }
 
+/**
+ * pretty much just runs reactPlayer.canPlay() and returns a message with the result
+ * @param  {collection} block a block or channel from are.na API
+ * @return {message}          a validation message
+ */
 function reactPlayerValidator(block) {
   const url = getURL(block)
   let result
@@ -29,6 +34,11 @@ function reactPlayerValidator(block) {
   return result
 }
 
+/**
+ * runs a URL through any number of regexs
+ * @param  {collection} block a block or channel from are.na API
+ * @return {string URL}       returns a cleaned URL
+ */
 function cleanURL(block) {
   const url = getURL(block)
   const youtubeRegex = /(youtu(?:\.be|be\.com)\/(?:.*v(?:\/|=)|(?:.*\/)?)([\w'-]+))/gi
@@ -38,13 +48,6 @@ function cleanURL(block) {
     return youtubeResult[0]
   }
   return url
-}
-
-function fillTitle(title) {
-  if (title === null || title === '') {
-    return 'Untitled on Are.na'
-  }
-  return title
 }
 
 export default validatorConfig
