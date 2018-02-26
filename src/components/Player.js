@@ -26,9 +26,9 @@ class Player extends Component {
     const {
       isPlaying,
       handlePlayback,
-      goToNextTrack,
-      goToPreviousTrack,
-      currentTrack,
+      goToNextBlock,
+      goToPreviousBlock,
+      currentBlock,
       handleOnReady,
       handleOnStart,
       handleOnPlay,
@@ -39,8 +39,8 @@ class Player extends Component {
       volume,
       trackProgress,
       trackDuration,
-      trackIsFromCurrentPlaylist,
-      currentTrackPlaylist,
+      trackIsFromCurrentChannel,
+      channelOfCurrentBlock,
       playerStatus,
       currentRoute
     } = this.props
@@ -75,11 +75,11 @@ class Player extends Component {
     return (
       <nav>
         <div id="playPause">
-          <button onClick={() => goToPreviousTrack()}>
+          <button onClick={() => goToPreviousBlock()}>
             <img alt="rev" src={reverseSVG} />
           </button>
           <button onClick={() => handlePlayback()}>{playbackSymbol}</button>
-          <button onClick={() => goToNextTrack()}>
+          <button onClick={() => goToNextBlock()}>
             <img alt="fwd" src={forwardSVG} />
           </button>
         </div>
@@ -87,20 +87,20 @@ class Player extends Component {
           <div className={'left'}>
             <Dot playerStatus={playerStatus} />
             <TrackTitle
-              trackInfo={currentTrack}
-              currentTrackPlaylist={currentTrackPlaylist}
-              trackIsFromCurrentPlaylist={trackIsFromCurrentPlaylist}
+              trackInfo={currentBlock}
+              channelOfCurrentBlock={channelOfCurrentBlock}
+              trackIsFromCurrentChannel={trackIsFromCurrentChannel}
               currentRoute={currentRoute} />
           </div>
           <div className={'right'}>
-            <SourceLink trackInfo={currentTrack} />
-            <TrackTime time={time} trackInfo={currentTrack} />
+            <SourceLink trackInfo={currentBlock} />
+            <TrackTime time={time} trackInfo={currentBlock} />
           </div>
         </div>
 
         <ReactPlayer
           ref={this.ref}
-          url={currentTrack ? currentTrack.macarenaURL : ''}
+          url={currentBlock ? currentBlock.macarenaURL : ''}
           playing={isPlaying}
           autoPlay={false}
           hidden={false}
@@ -113,7 +113,7 @@ class Player extends Component {
           onProgress={e => handleOnProgress(e)}
           onDuration={e => handleOnDuration(e)}
           onBuffer={e => handleOnBuffer(e)}
-          onEnded={() => goToNextTrack()}
+          onEnded={() => goToNextBlock()}
           onError={e => handleOnError(e)}
         />
       </nav>
@@ -124,9 +124,9 @@ class Player extends Component {
 Player.propTypes = {
   isPlaying: PropTypes.bool,
   handlePlayback: PropTypes.func,
-  goToNextTrack: PropTypes.func,
-  goToPreviousTrack: PropTypes.func,
-  currentTrack: PropTypes.any,
+  goToNextBlock: PropTypes.func,
+  goToPreviousBlock: PropTypes.func,
+  currentBlock: PropTypes.any,
   handleOnReady: PropTypes.func,
   handleOnStart: PropTypes.func,
   handleOnPlay: PropTypes.func,
@@ -137,8 +137,8 @@ Player.propTypes = {
   volume: PropTypes.number,
   trackProgress: PropTypes.number,
   trackDuration: PropTypes.number,
-  trackIsFromCurrentPlaylist: PropTypes.bool,
-  currentTrackPlaylist: PropTypes.any,
+  trackIsFromCurrentChannel: PropTypes.bool,
+  channelOfCurrentBlock: PropTypes.object,
   playerStatus: PropTypes.any,
   currentRoute: PropTypes.string,
   returnRef: PropTypes.func

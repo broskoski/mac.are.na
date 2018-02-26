@@ -13,18 +13,12 @@ import Playlist from './containers/Playlist'
 import Player from './components/Player'
 import Sortainer from './components/Sortainer'
 
-import { playlistChannel } from '../config'
-import { tinyAPI } from './lib/api'
+import { playlistChannel } from './config'
+import { TinyAPI } from './lib/api'
 import { Validator } from './lib/validator'
-import {
-  playerStates,
-  sortKeys,
-  sortChannelContents,
-  immutablyChangeContents,
-  validateWithMessage,
-  incrementInList,
-  decrementInList
-} from './lib/helpers'
+import { playerStates } from './lib/keys'
+import { updateInObject, incrementInList, decrementInList } from './lib/core'
+import { sortChannelContents, sortKeys } from './lib/sort'
 import validatorConfig from './lib/validatorConfig'
 
 class Main extends Component {
@@ -34,23 +28,23 @@ class Main extends Component {
       playlistListLength: 0,
       playlistChannel: null,
       isPlaying: false,
-      currentOpenPlaylist: null,
-      currentOpenPlaylistRejects: [],
-      currentTrackPlaylist: null,
-      currentTrack: null,
+      currentOpenChannel: null,
+      currentOpenChannelRejects: [],
+      channelOfCurrentBlock: null,
+      blockOnDeck: null,
       volume: 0.8,
       trackProgress: 0,
       trackDuration: 0,
-      isCurrentPlaylistLoaded: false,
+      isCurrentChannelLoaded: false,
       playerStatus: playerStates.idle,
-      trackIsFromCurrentPlaylist: true,
+      blockIsFromCurrentChannel: true,
       searchQuery: '',
       currentRoute: '/',
       playlistChannelSortObj: { orderKey: true, paramKey: sortKeys.position },
       playlistSortObj: { orderKey: true, paramKey: sortKeys.position },
       showRejects: false
     }
-    this.API = new tinyAPI()
+    this.API = new TinyAPI()
     this.validator = new Validator(validatorConfig)
     this.playerRef = null
   }
@@ -108,33 +102,33 @@ class Main extends Component {
   handlePlayback = () => {
     const {
       currentRoute,
-      currentOpenPlaylist,
+      currentOpenChannel,
       isPlaying,
-      currentTrack
+      blockOnDeck
     } = this.state
-    if (currentRoute === '/playlist/:playlistSlug' && !currentTrack) {
-      const item = currentOpenPlaylist.contents[0]
-      this.handleSongSelection(item, false)
-    } else if (currentRoute === '/playlist/:playlistSlug' || currentTrack) {
+    if (currentRoute === '/playlist/:channelSlug' && !blockOnDeck) {
+      const firstBlock = currentOpenChannel.contents[0]
+      this.handleBlockUserSelection(firstBlock, false)
+    } else if (currentRoute === '/playlist/:channelSlug' || blockOnDeck) {
       isPlaying ? this.pause() : this.play()
     }
   }
 
-  // change the currentTrack state.
-  handleSongUserSelection = item => {
+  // change the blockOnDeck state.
+  handleBlockUserSelection = block => {
     this.setState({
-      currentTrack: item,
-      trackIsFromCurrentPlaylist: true,
-      currentTrackPlaylist: this.state.currentOpenPlaylist
+      blockOnDeck: block,
+      blockIsFromCurrentChannel: true,
+      channelOfCurrentBlock: this.state.currentOpenChannel
     })
     this.play()
   }
 
   // determines if the currently playing/paused track is from the currently
   // displayed playlist
-  isTrackIsFromCurrentPlaylist = (pl1, pl2) => {
-    if (pl1 && pl2) {
-      return pl1.id === pl2.id ? true : false
+  isBlockIsFromCurrentChannel = (channelA, channelB) => {
+    if (channelA && channelB) {
+      return channelA.id === channelB.id ? true : false
     } else {
       return true
     }
@@ -150,11 +144,11 @@ class Main extends Component {
 
   // if we select a playlist, get it's contents.
   // then, set it as the current open playlist
-  setSelectedPlaylist = playlistSlug => {
-    this.setState({ isCurrentPlaylistLoaded: false })
-    this.API.getFullChannel(playlistSlug).then(playlist => {
+  setSelectedChannel = channelSlug => {
+    this.setState({ isCurrentChannelLoaded: false })
+    this.API.getFullChannel(channelSlug).then(channel => {
       // validate it right off the bat
-      const validatedContents = playlist.contents.map(block =>
+      const validatedContents = channel.contents.map(block =>
         this.validator.validate(block)
       )
       const onlyValids = validatedContents.filter(
@@ -163,45 +157,45 @@ class Main extends Component {
       const onlyRejects = validatedContents.filter(
         block => !block.validity.isValid
       )
-      const { currentTrackPlaylist } = this.state
+      const { channelOfCurrentBlock } = this.state
       this.setState({
-        currentOpenPlaylist: immutablyChangeContents(onlyValids, playlist),
-        currentOpenPlaylistRejects: onlyRejects,
-        isCurrentPlaylistLoaded: true,
-        trackIsFromCurrentPlaylist: this.isTrackIsFromCurrentPlaylist(
-          currentTrackPlaylist,
-          playlist
+        currentOpenChannel: updateInObject(channel, 'contents', onlyValids),
+        currentOpenChannelRejects: onlyRejects,
+        isCurrentChannelLoaded: true,
+        blockIsFromCurrentChannel: this.isBlockIsFromCurrentChannel(
+          channelOfCurrentBlock,
+          channel
         )
       })
     })
   }
 
   // update +1 track and index
-  goToNextTrack = () => {
-    const { currentTrackPlaylist, currentTrack } = this.state
-    const trackList = currentTrackPlaylist.contents
-    const indexOfCurrentTrack = trackList.findIndex(
-      block => block.id === currentTrack.id
+  goToNextBlock = () => {
+    const { channelOfCurrentBlock, blockOnDeck } = this.state
+    const trackList = channelOfCurrentBlock.contents
+    const indexOfCurrentBlock = trackList.findIndex(
+      block => block.id === blockOnDeck.id
     )
-    const nextItem = incrementInList(trackList, indexOfCurrentTrack)
+    const nextItem = incrementInList(trackList, indexOfCurrentBlock)
     if (nextItem) {
-      this.setState({ currentTrack: nextItem })
+      this.setState({ blockOnDeck: nextItem })
     } else {
       this.pause()
-      this.setState({ currentTrackURL: false, currentTrack: false })
+      this.setState({ blockOnDeckURL: false, blockOnDeck: false })
     }
   }
 
   //  update -1 track and index
-  goToPreviousTrack = () => {
-    const { currentTrackPlaylist, currentTrack } = this.state
-    const trackList = currentTrackPlaylist.contents
-    const indexOfCurrentTrack = trackList.findIndex(
-      block => block.id === currentTrack.id
+  goToPreviousBlock = () => {
+    const { channelOfCurrentBlock, blockOnDeck } = this.state
+    const trackList = channelOfCurrentBlock.contents
+    const indexOfCurrentBlock = trackList.findIndex(
+      block => block.id === blockOnDeck.id
     )
-    const previousItem = decrementInList(trackList, indexOfCurrentTrack)
+    const previousItem = decrementInList(trackList, indexOfCurrentBlock)
     if (previousItem) {
-      this.setState({ currentTrack: previousItem })
+      this.setState({ blockOnDeck: previousItem })
     } else {
       this.playerRef.seekTo(0)
     }
@@ -237,7 +231,7 @@ class Main extends Component {
 
   handleOnError = event => {
     this.setState({ playerStatus: playerStates.errored })
-    this.goToNextTrack()
+    this.goToNextBlock()
   }
 
   returnRef = ref => {
@@ -246,23 +240,24 @@ class Main extends Component {
 
   setSort = sortObj => {
     const { stateKey, orderKey, paramKey } = sortObj
-    const { currentOpenPlaylist, playlistChannel } = this.state
+    const { currentOpenChannel, playlistChannel } = this.state
     if (stateKey === 'playlistChannel') {
       const sortedList = sortChannelContents(playlistChannel.contents, sortObj)
       this.setState({
         playlistChannelSortObj: { orderKey, paramKey },
-        playlistChannel: immutablyChangeContents(sortedList, playlistChannel)
+        playlistChannel: updateInObject(sortedList, 'contents', playlistChannel)
       })
     } else if (stateKey === 'playlist') {
       const sortedList = sortChannelContents(
-        currentOpenPlaylist.contents,
+        currentOpenChannel.contents,
         sortObj
       )
       this.setState({
         playlistSortObj: { orderKey, paramKey },
-        currentOpenPlaylist: immutablyChangeContents(
+        currentOpenChannel: updateInObject(
           sortedList,
-          currentOpenPlaylist
+          'contents',
+          currentOpenChannel
         )
       })
     }
@@ -278,16 +273,16 @@ class Main extends Component {
         <main>
           <HeaderWithRouter
             currentRoute={'/'}
-            currentOpenPlaylist={this.state.currentOpenPlaylist}
-            isCurrentPlaylistLoaded={this.state.isCurrentPlaylistLoaded}
+            currentOpenChannel={this.state.currentOpenChannel}
+            isCurrentChannelLoaded={this.state.isCurrentChannelLoaded}
           />
           <Player
             {...this.state}
             ref={this.ref}
             returnRef={this.returnRef}
             handlePlayback={this.handlePlayback}
-            goToNextTrack={this.goToNextTrack}
-            goToPreviousTrack={this.goToPreviousTrack}
+            goToNextBlock={this.goToNextBlock}
+            goToPreviousBlock={this.goToPreviousBlock}
             handleOnReady={this.handleOnReady}
             handleOnStart={this.handleOnStart}
             handleOnPlay={this.handleOnPlay}
@@ -307,15 +302,15 @@ class Main extends Component {
               exact
               path={'/'}
               component={Playlists}
-              handlePlaylistSelect={this.handlePlaylistSelect}
+              handleChannelSelect={this.handleChannelSelect}
               setCurrentRoute={this.setCurrentRoute}
             />
             <PropsRoute
               {...this.state}
-              path={'/playlist/:playlistSlug'}
+              path={'/playlist/:channelSlug'}
               component={Playlist}
-              handleSongUserSelection={this.handleSongUserSelection}
-              setSelectedPlaylist={this.setSelectedPlaylist}
+              handleBlockUserSelection={this.handleBlockUserSelection}
+              setSelectedChannel={this.setSelectedChannel}
               setCurrentRoute={this.setCurrentRoute}
               toggleShowRejects={this.toggleShowRejects}
             />

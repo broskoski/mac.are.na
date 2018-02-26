@@ -1,21 +1,5 @@
 import ReactPlayer from 'react-player'
-import { fillTitle, getStatus } from './core'
-
-function makeHash() {
-  let text = ''
-  let possible =
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-  for (var i = 0; i < 5; i++)
-    text += possible.charAt(Math.floor(Math.random() * possible.length))
-  return text
-}
-
-const playerStates = {
-  idle: 'IDLE',
-  buffering: 'BUFFERING',
-  playing: 'PLAYING',
-  errored: 'ERRORED'
-}
+import { fillTitle } from './core'
 
 const sortKeys = {
   title: 'title',
@@ -91,35 +75,8 @@ function sortChannelContents(channelContents, sortObj) {
   }
 }
 
-function immutablyChangeContents(newContents, channel) {
-  return {
-    ...channel,
-    contents: newContents
-  }
-}
-
-function incrementInList(list, currentIndex) {
-  const listLength = list.length
-  if (currentIndex + 1 < listLength) {
-    return list[currentIndex + 1]
-  }
-  return false
-}
-
-function decrementInList(list, currentIndex) {
-  if (currentIndex > 0) {
-    return list[currentIndex - 1]
-  }
-  return false
-}
 
 export {
-  makeHash,
-  getStatus,
-  playerStates,
   sortKeys,
   sortChannelContents,
-  immutablyChangeContents,
-  incrementInList,
-  decrementInList
 }

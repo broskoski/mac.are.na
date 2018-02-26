@@ -8,15 +8,15 @@ const parse = {
   playlistListLength: a => a.length
 }
 
-class tinyAPI {
+class TinyAPI {
   get = endpoint => {
     return fetch(endpoint)
       .then(response => response.json())
-      .catch(err => false)
+      .catch(err => console.error(err))
   }
 
-  getBlockCount = () => {
-    return this.get(`${BASE}/channels/${playlistChannel}/thumb`).then(data =>
+  getBlockCount = (slug) => {
+    return this.get(`${BASE}/channels/${slug}/thumb`).then(data =>
       parse.playlistListLength(data)
     )
   }
@@ -33,11 +33,11 @@ class tinyAPI {
     )
   }
 
-  getFullChannel = (playlistID, pagination) => {
-    return this.get(`${BASE}/channels/${playlistID}`).then(data =>
+  getFullChannel = (slug, pagination) => {
+    return this.get(`${BASE}/channels/${slug}`).then(data =>
       parse.playlist(data)
     )
   }
 }
 
-export { tinyAPI }
+export { TinyAPI }

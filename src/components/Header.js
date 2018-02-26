@@ -4,17 +4,17 @@ import PropTypes from 'prop-types'
 
 import logo from '../assets/logo.svg'
 import { decode } from 'he'
-import { getStatus } from '../lib/helpers'
+import { getStatus } from '../lib/core'
 import arrow from '../assets/arrow.svg'
 
 class Header extends Component {
   handleHeaderText = () => {
-    const { currentOpenPlaylist, isCurrentPlaylistLoaded } = this.props
+    const { currentOpenChannel, isCurrentChannelLoaded } = this.props
 
-    if (currentOpenPlaylist && isCurrentPlaylistLoaded) {
+    if (currentOpenChannel && isCurrentChannelLoaded) {
       if (this.props.location.pathname !== '/') {
-        const playlistTitle = decode(`/ ${currentOpenPlaylist.title}`)
-        const status = getStatus(currentOpenPlaylist)
+        const playlistTitle = decode(`/ ${currentOpenChannel.title}`)
+        const status = getStatus(currentOpenChannel)
         return (
           <div
             style={{ marginLeft: '1rem' }}
@@ -30,19 +30,19 @@ class Header extends Component {
   }
 
   handleToArena = () => {
-    const { currentOpenPlaylist, isCurrentPlaylistLoaded } = this.props
+    const { currentOpenChannel, isCurrentChannelLoaded } = this.props
 
     if (
-      currentOpenPlaylist &&
-      isCurrentPlaylistLoaded &&
+      currentOpenChannel &&
+      isCurrentChannelLoaded &&
       this.props.location.pathname !== '/'
     ) {
       return (
         <a
           className={'toArena'}
           target={'_blank'}
-          href={`https://www.are.na/${currentOpenPlaylist.user.slug}/${
-            currentOpenPlaylist.slug
+          href={`https://www.are.na/${currentOpenChannel.user.slug}/${
+            currentOpenChannel.slug
           }`}
         >
           <img alt={'Find on are.na'} src={arrow} />
@@ -77,8 +77,8 @@ class Header extends Component {
 }
 
 Header.propTypes = {
-  currentOpenPlaylist: PropTypes.any,
-  isCurrentPlaylistLoaded: PropTypes.bool,
+  currentOpenChannel: PropTypes.any,
+  isCurrentChannelLoaded: PropTypes.bool,
   location: PropTypes.any
 }
 

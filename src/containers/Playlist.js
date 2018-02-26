@@ -10,26 +10,26 @@ class Playlist extends Component {
     // get slug from router params and return it to <Main />
     const {
       match,
-      setSelectedPlaylist,
+      setSelectedChannel,
       setCurrentRoute,
       computedMatch
     } = this.props
 
     const playlistSlug = match.params.playlistSlug
-    setSelectedPlaylist(playlistSlug)
+    setSelectedChannel(playlistSlug)
     setCurrentRoute(computedMatch.path)
   }
 
   makeSongList = validItems => {
-    const { handleSongUserSelection } = this.props
+    const { handleBlockUserSelection } = this.props
 
-    return validItems.map((item, index) => {
+    return validItems.map((block, index) => {
       return (
         <SongItem
-          key={item.id}
-          song={item}
-          isSelected={this.handleIsSelected(item)}
-          handleSelection={() => handleSongUserSelection(item)}
+          key={block.id}
+          block={block}
+          isSelected={this.handleIsSelected(block)}
+          handleSelection={() => handleBlockUserSelection(block)}
         />
       )
     })
@@ -100,10 +100,10 @@ class Playlist extends Component {
 
 Playlist.propTypes = {
   match: PropTypes.any,
-  setSelectedPlaylist: PropTypes.func,
+  setSelectedChannel: PropTypes.func,
   setCurrentRoute: PropTypes.func,
   computedMatch: PropTypes.any,
-  handleSongUserSelection: PropTypes.func,
+  handleBlockUserSelection: PropTypes.func,
   currentTrack: PropTypes.any,
   trackIsFromCurrentPlaylist: PropTypes.bool,
   currentOpenPlaylist: PropTypes.any,

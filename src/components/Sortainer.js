@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 import classnames from 'classnames'
-import { sortKeys } from '../lib/helpers'
+import { sortKeys } from '../lib/sort'
 import sortArrow from '../assets/sortArrow.svg'
 
 const Sortainer = ({

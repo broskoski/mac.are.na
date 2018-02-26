@@ -4,16 +4,16 @@ import { decode } from 'he'
 import { Link } from 'react-router-dom'
 
 const TrackTitle = ({
-  trackInfo,
-  currentTrackPlaylist,
-  trackIsFromCurrentPlaylist,
+  block,
+  playlistOfCurrentBlock,
+  blockIsFromCurrentPlaylist,
   currentRoute
 }) => {
-  if (trackInfo) {
-    const title = decode(trackInfo.title)
-    if (!trackIsFromCurrentPlaylist || currentRoute === '/') {
-      const playlistSlug = currentTrackPlaylist.slug
-      const playListTitle = decode(currentTrackPlaylist.title)
+  if (block) {
+    const title = decode(block.title)
+    if (!blockIsFromCurrentPlaylist || currentRoute === '/') {
+      const playlistSlug = playlistOfCurrentBlock.slug
+      const playListTitle = decode(playlistOfCurrentBlock.title)
       return (
         <div className={'tile-wrap-full'}>
           <p>
@@ -41,9 +41,9 @@ const TrackTitle = ({
 }
 
 TrackTitle.propTypes = {
-  trackInfo: PropTypes.any,
-  currentTrackPlaylist: PropTypes.any,
-  trackIsFromCurrentPlaylist: PropTypes.bool,
+  block: PropTypes.any,
+  playlistOfCurrentBlock: PropTypes.any,
+  blockIsFromCurrentPlaylist: PropTypes.bool,
   currentRoute: PropTypes.string
 }
 

@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 
-import { playerStates } from '../lib/helpers'
+import { playerStates } from '../lib/keys'
 
 const Dot = ({ playerStatus }) => {
   const playerStatusClasses = classnames({

@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { decode } from 'he'
-import { getStatus, sortChannelContents } from '../lib/helpers'
-
+import { sortChannelContents } from '../lib/sort'
+import { getStatus } from '../lib/core'
 import LinkItem from '../components/LinkItem'
 import LoadState from '../components/LoadState'
 

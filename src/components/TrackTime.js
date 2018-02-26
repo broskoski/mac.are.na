@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-const TrackTime = ({ time, trackInfo }) => {
-  if (trackInfo) {
+const TrackTime = ({ time, block }) => {
+  if (block) {
     return (
       <div className="tile-wrap track-time">
         <p>{time}</p>
@@ -18,7 +18,7 @@ const TrackTime = ({ time, trackInfo }) => {
 
 TrackTime.propTypes = {
   time: PropTypes.string,
-  trackInfo: PropTypes.any
+  block: PropTypes.any
 }
 
 export default TrackTime

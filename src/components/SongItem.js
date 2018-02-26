@@ -3,16 +3,16 @@ import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import { decode } from 'he'
 
-const SongItem = ({ status, isSelected, handleSelection, song }) => {
+const SongItem = ({ status, isSelected, handleSelection, block }) => {
   const itemClasses = 'list-item'
   const isSelectedClassNames = classnames({
     'bg-selected': isSelected,
     '': !isSelected
   })
-  const title = song.validation.sanitizers.fillTitle
+  const title = block.validation.sanitizers.fillTitle
   return (
     <button
-      key={`button-play-${song.id}`}
+      key={`button-play-${block.id}`}
       className={`${itemClasses} ${isSelectedClassNames}`}
       onClick={handleSelection}
     >
@@ -27,14 +27,14 @@ SongItem.propTypes = {
   status: PropTypes.string,
   isSelected: PropTypes.bool,
   handleSelection: PropTypes.func,
-  song: PropTypes.any
+  block: PropTypes.any
 }
 
-const SongItemReject = ({ isSelected, handleSelection, song, message }) => {
+const SongItemReject = ({ isSelected, handleSelection, block, message }) => {
   const itemClasses = 'list-item rejected'
-  const title = song.validation.sanitizers.fillTitle
+  const title = block.validation.sanitizers.fillTitle
   return (
-    <div key={`button-reject-${song.id}`} className={`${itemClasses}`}>
+    <div key={`button-reject-${block.id}`} className={`${itemClasses}`}>
       <div className={'flexBetween'}>
         <p>{`${decode(title)}`}</p>
         <p>{`${message}`}</p>
@@ -46,7 +46,7 @@ const SongItemReject = ({ isSelected, handleSelection, song, message }) => {
 SongItemReject.propTypes = {
   isSelected: PropTypes.bool,
   handleSelection: PropTypes.func,
-  song: PropTypes.any,
+  block: PropTypes.any,
   message: PropTypes.string
 }
 
