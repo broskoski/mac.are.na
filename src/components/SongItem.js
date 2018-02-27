@@ -30,14 +30,13 @@ SongItem.propTypes = {
   block: PropTypes.any
 }
 
-const SongItemReject = ({ isSelected, handleSelection, block, message }) => {
+const SongItemReject = ({ isSelected, handleSelection, block }) => {
   const itemClasses = 'list-item rejected'
   const title = block.validation.sanitizers.fillTitle
   return (
     <div key={`button-reject-${block.id}`} className={`${itemClasses}`}>
       <div className={'flexBetween'}>
         <p>{`${decode(title)}`}</p>
-        <p>{`${message}`}</p>
       </div>
     </div>
   )

@@ -1,3 +1,6 @@
+import resolvePath from 'object-resolve-path'
+import flatten from 'flat'
+
 import { updateInObject } from './core'
 
 const defaultState = {
@@ -7,10 +10,10 @@ const defaultState = {
     extension: false,
     contentType: false,
     state: false,
-    pass: false,
+    pass: false
   },
   validators: {},
-  sanitizers: {},
+  sanitizers: {}
 }
 
 class Validator {
@@ -19,58 +22,19 @@ class Validator {
     this.validationState = defaultState
   }
 
-/**
- * performs validation with config
- * @param  {collection} block a represntation of a block or channel from are.na
- * @return {collection}       a new block or channel with validation messages appended
- */
-  validateSafe(block) {
-    const configIsLegit = Validator.checkConfig()
-    if (configIsLegit) {
-      const whitelists = this.config.whitelists
-      /* some sanitizers need to be run regardless of whitelist validity, ie
-      if you need to tell the user about the titles of rejected blocks.
-      */
-      Validator.callMethods(block, 'sanitizers')
-      this.testAgainstWhitelist('state', block.state, whitelists.state)
-      const itemDidPassStateCheck = this.validationState.whitelists.state.isValid
-      if (itemDidPassStateCheck) {
-        this.testAgainstWhitelist('class', block.class, whitelists.class)
-        const itemDidPassClassCheck = this.validationState.whitelists.class.isValid
-        if (itemDidPassClassCheck) {
-          if (block.class === 'Attachment') {
-            this.testAgainstWhitelist('extension', block.attachment.extension, whitelists.extension)
-          } else {
-            this.testAgainstWhitelist('providerName', block.source.provider.name, whitelists.providerName)
-          }
-          Validator.callMethods(block, 'validators')
-        }
-      }
-      Validator.quickReject()
-      const blockWithValidation = updateInObject(block, 'validation', this.validationState)
-      this.validationState = defaultState
-      return blockWithValidation
-    } else {
-      // idk if this is confusing or not
-      return block
-    }
-  }
-
   validate(block) {
-    const configIsLegit = Validator.checkConfig()
-    if (configIsLegit) {
+    const configDidPass = this.checkConfig()
+    if (configDidPass) {
       const whitelists = this.config.whitelists
-      Validator.callMethods(block, 'sanitizers')
-      this.testAgainstWhitelist('state', block.state, whitelists.state)
-      this.testAgainstWhitelist('class', block.class, whitelists.class)
-      if (block.class === 'Attachment') {
-        this.testAgainstWhitelist('extension', block.attachment.extension, whitelists.extension)
-      } else {
-        this.testAgainstWhitelist('providerName', block.source.provider.name, whitelists.providerName)
-      }
-      Validator.callMethods(block, 'validators')
-      Validator.quickReject()
-      const blockWithValidation = updateInObject(block, 'validation', this.validationState)
+      this.callMethods(block, 'sanitizers')
+      this.checkWhitelists(block)
+      this.callMethods(block, 'validators')
+      this.reportNaiveValidity()
+      const blockWithValidation = updateInObject(
+        block,
+        'validation',
+        this.validationState
+      )
       this.validationState = defaultState
       return blockWithValidation
     } else {
@@ -78,31 +42,25 @@ class Validator {
     }
   }
 
-  /**
-   * takes a whitelist, it's name and a value and checks fof inclusion. Then
-   * returns a validation message with results
-   * @param  {string}     key       the key of the whitelist being checked
-   * @param  {type}       value     the value to compare against the whitelist from the block or channel
-   * @param  {array}      whitelist an array of string keys representing acceptable values
-   * @return {message}              returns no value but does immutably change the class validationState
-   */
-  testAgainstWhitelist(key, value, whitelist) {
-    let result
-    if (whitelist.includes('*')) {
-      result = message(true, value, `any value accepted`)
-    } else if (whitelist.includes(value)) {
-      result = message(true, value, `${key}:${value} is in whitelist`)
-    } else {
-      result = message(false, value, `${key}:${value} is not in whitelist`)
-    }
-
-    this.validationState = {
-      ...this.validationState,
-      whitelists: {
-        ...this.validationState.whitelists,
-        [key]: result,
+  checkWhitelists(block) {
+    const whitelists = this.config.whitelists
+    let results = {}
+    Object.keys(whitelists).map(path => {
+      const currentWhitelist = whitelists[path]
+      const value = resolvePath(block, path)
+      if (value !== undefined) {
+        if (currentWhitelist.includes('*')) {
+          results[path] = mark(true, path, value)
+        } else if (currentWhitelist.includes(value)) {
+          results[path] = mark(true, path, value)
+        } else {
+          results[path] = mark(false, path, value)
+        }
+      } else {
+        results[path] = mark(null, path, value)
       }
-    }
+    })
+    this.setState({ whitelists: results })
   }
 
   /**
@@ -112,55 +70,40 @@ class Validator {
    * @return {[type]}           returns no value but does immutably change the
    *                            class validationState
    */
-  static callMethods(block, key) {
+  callMethods(block, key) {
     const methods = this.config[key]
     const keys = Object.keys(methods)
-
-    // ugh not this kind of thing again
     let results = {}
     keys.map(methodName => {
       const method = methods[methodName]
       const result = method(block)
       results[methodName] = result
     })
-
-    this.validationState = {
-      ...this.validationState,
-      [key]: results,
-    }
+    this.setState({ [key]: results })
   }
 
   /**
-   * provides a boolean indication if at least one test has failed
+   * provides a boolean indication if at least one test has failed. nulls are
+   * interpreted as 'could not check'
    * @return {Boolean} did at least one test fail?
-  */
-  static quickReject() {
-    const state = this.validationState
-    const keys = Object.keys(state)
-    const inspectableFields = keys.filter(item => item !== 'sanitizers')
-    // need to drop sanitizers from this check
-    const isValid = inspectableFields.map(category => {
-       const items = Object.keys(state[category])
-       const rejects = items.filter(item => !item.isValid)
-       if (rejects.length > 0) {
-         return false
-       }
-       return true
-    })
-
-    this.validationState = {
-      ...this.validationState,
-      isValid,
-    }
+   */
+  reportNaiveValidity() {
+    let isValid = true
+    const state = { ...this.validationState }
+    delete state['sanitizers']
+    const flat = flatten(state, { maxDepth: 2 })
+    const rejects = Object.values(flat).filter(item => item.isValid === false)
+    isValid = rejects.length > 0 ? false : true
+    this.setState({ isValid: isValid })
   }
 
   /**
    * runs some basic stuff to tell you what is wrong with your config
    * @return {Boolean} whether or not the config passed
    */
-  static checkConfig() {
+  checkConfig() {
     const config = this.config
-    if (!config) {
+    if (config === undefined || config === null) {
       console.error('No config object passed to validator')
       return false
     }
@@ -171,7 +114,7 @@ class Validator {
     const whiteListKeys = Object.keys(config.whitelists)
     whiteListKeys.map(key => {
       const whitelist = config.whitelists[key]
-      if (typeof whitelist !== 'array') {
+      if (!Array.isArray(whitelist)) {
         console.error(`Whitelist ${key} must be an array.`)
         return false
       }
@@ -184,24 +127,21 @@ class Validator {
     })
     return true
   }
-}
-/**
- * makes a validation message object
- * @param  {Boolean}  isValid did the value pass validation or not
- * @param  {any}      type    the value of the key being compared
- * @param  {string}   message a human-readable message that could be passed to
- *                            an interface
- * @return {object}           the message object
- */
-function message(isValid, value, message) {
-  return {
-    isValid,
-    isOfValue: value,
-    message,
+
+  setState(entry) {
+    this.validationState = {
+      ...this.validationState,
+      ...entry
+    }
   }
 }
 
-export {
-  Validator,
-  message,
+function mark(isValid, keyToEval, value) {
+  return {
+    isValid,
+    keyEvaluated: keyToEval,
+    isOfValue: value
+  }
 }
+
+export { Validator, mark }

@@ -1,21 +1,21 @@
 import reactPlayer from 'react-player'
-import { message } from './validator'
+import { mark } from './validator'
 import { getURL, fillTitle } from './core'
 
 const validatorConfig = {
-    whitelists: {
-      class: ['Attachement', 'Media'],
-      providerName: ['YouTube', 'Vimeo', 'SoundCloud'],
-      extension: ['mp3', 'flac', 'wav'],
-      state: ['available'],
-    },
-    sanitizers: {
-      cleanURL: block => cleanURL(block),
-      fillTitle: block => fillTitle(block.title),
-    },
-    validators: {
-      reactPlayerValidator: block => reactPlayerValidator(block),
-    },
+  whitelists: {
+    class: ['Attachement', 'Media'],
+    'source.provider.name': ['YouTube', 'Vimeo', 'SoundCloud'],
+    'attachment.extension': ['mp3', 'flac', 'wav'],
+    state: ['available']
+  },
+  sanitizers: {
+    cleanURL: a => cleanURL(a),
+    fillTitle: a => fillTitle(a.title)
+  },
+  validators: {
+    reactPlayerValidator: a => reactPlayerValidator(a)
+  }
 }
 
 /**
@@ -27,9 +27,9 @@ function reactPlayerValidator(block) {
   const url = getURL(block)
   let result
   if (reactPlayer.canPlay(url)) {
-    result = message(true, 'REACT_PLAYER_CANPLAY', 'React Player can play block')
+    result = mark(true, 'REACT_PLAYER_CANPLAY')
   } else {
-    result = message(false, 'REACT_PLAYER_NOPLAY', 'React Player cannot play block')
+    result = mark(false, 'REACT_PLAYER_NOPLAY')
   }
   return result
 }
@@ -40,12 +40,13 @@ function reactPlayerValidator(block) {
  * @return {string URL}       returns a cleaned URL
  */
 function cleanURL(block) {
-  const url = getURL(block)
   const youtubeRegex = /(youtu(?:\.be|be\.com)\/(?:.*v(?:\/|=)|(?:.*\/)?)([\w'-]+))/gi
-
-  const youtubeResult = url.match(youtubeRegex)
-  if (youtubeResult) {
-    return youtubeResult[0]
+  const url = getURL(block)
+  if (url) {
+    const youtubeResult = url.match(youtubeRegex)
+    if (youtubeResult) {
+      return youtubeResult[0]
+    }
   }
   return url
 }

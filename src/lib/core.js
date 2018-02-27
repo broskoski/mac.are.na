@@ -1,16 +1,21 @@
 function getURL(block) {
-  switch (block.class) {
-    case 'Attachment':
-      return block.attachment.url
-    default:
-      return block.source.url
+  if (block.state === 'available') {
+    switch (block.class) {
+      case 'Attachment':
+        return block.attachment.url
+      case 'Text':
+        return false
+      default:
+        return block.source.url
+    }
   }
+  return false
 }
 
 function updateInObject(originalObject, key, val) {
   return {
     ...originalObject,
-    [key]: val,
+    [key]: val
   }
 }
 

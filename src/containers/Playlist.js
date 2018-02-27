@@ -5,7 +5,7 @@ import LoadState from '../components/LoadState'
 import ToggleRejectedSongs from '../components/ToggleRejectedSongs'
 import { SongItem, SongItemReject } from '../components/SongItem'
 
-class Playlist extends Component {
+class Channel extends Component {
   componentDidMount() {
     // get slug from router params and return it to <Main />
     const {
@@ -15,8 +15,8 @@ class Playlist extends Component {
       computedMatch
     } = this.props
 
-    const playlistSlug = match.params.playlistSlug
-    setSelectedChannel(playlistSlug)
+    const channelSlug = match.params.channelSlug
+    setSelectedChannel(channelSlug)
     setCurrentRoute(computedMatch.path)
   }
 
@@ -35,10 +35,10 @@ class Playlist extends Component {
     })
   }
 
-  handleIsSelected = item => {
-    const { trackIsFromCurrentPlaylist, currentTrack } = this.props
+  handleIsSelected = block => {
+    const { blockIsFromCurrentChannel, currentTrack } = this.props
     if (currentTrack) {
-      if (currentTrack.id === item.id && trackIsFromCurrentPlaylist) {
+      if (currentTrack.id === block.id && blockIsFromCurrentChannel) {
         return true
       }
     }
@@ -46,38 +46,32 @@ class Playlist extends Component {
   }
 
   makeSongRejectList = rejects => {
-    return rejects.map(item => {
-      return (
-        <SongItemReject
-          message={item.macarenaURLValidity.message}
-          key={item.id}
-          song={item}
-        />
-      )
+    return rejects.map(block => {
+      return <SongItemReject key={block.id} block={block} />
     })
   }
 
   render() {
     const {
-      currentOpenPlaylist,
-      isCurrentPlaylistLoaded,
-      handlePlaylistSelect,
-      currentOpenPlaylistRejects,
+      currentOpenChannel,
+      isCurrentChannelLoaded,
+      handleChannelSelect,
+      currentOpenChannelRejects,
       toggleShowRejects,
       showRejects
     } = this.props
 
-    if (isCurrentPlaylistLoaded && currentOpenPlaylist) {
+    if (isCurrentChannelLoaded && currentOpenChannel) {
       const renderList = this.makeSongList(
-        currentOpenPlaylist.contents,
-        handlePlaylistSelect
+        currentOpenChannel.contents,
+        handleChannelSelect
       )
-      const rejectCount = currentOpenPlaylistRejects.length
+      const rejectCount = currentOpenChannelRejects.length
       return (
         <div className="w-100 min-vh-100">
           {renderList}
           {showRejects ? (
-            this.makeSongRejectList(currentOpenPlaylistRejects)
+            this.makeSongRejectList(currentOpenChannelRejects)
           ) : (
             <div />
           )}
@@ -98,20 +92,20 @@ class Playlist extends Component {
   }
 }
 
-Playlist.propTypes = {
+Channel.propTypes = {
   match: PropTypes.any,
   setSelectedChannel: PropTypes.func,
   setCurrentRoute: PropTypes.func,
   computedMatch: PropTypes.any,
   handleBlockUserSelection: PropTypes.func,
   currentTrack: PropTypes.any,
-  trackIsFromCurrentPlaylist: PropTypes.bool,
-  currentOpenPlaylist: PropTypes.any,
-  isCurrentPlaylistLoaded: PropTypes.bool,
-  handlePlaylistSelect: PropTypes.func,
-  currentOpenPlaylistRejects: PropTypes.any,
+  blockIsFromCurrentChannel: PropTypes.bool,
+  currentOpenChannel: PropTypes.any,
+  isCurrentChannelLoaded: PropTypes.bool,
+  handleChannelSelect: PropTypes.func,
+  currentOpenChannelRejects: PropTypes.any,
   toggleShowRejects: PropTypes.func,
   showRejects: PropTypes.bool
 }
 
-export default Playlist
+export default Channel

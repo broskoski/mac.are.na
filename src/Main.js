@@ -25,7 +25,6 @@ class Main extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      playlistListLength: 0,
       playlistChannel: null,
       isPlaying: false,
       currentOpenChannel: null,
@@ -62,10 +61,9 @@ class Main extends Component {
   componentWillMount() {
     this.initializeCookies()
     window.addEventListener('keydown', e => this.handleInvert(e))
-    Promise.all([this.API.getBlockCount(playlistChannel), this.API.getChannelContents(playlistChannel)]).then(
-      ([length, playlistChannel]) => {
+    Promise.all([this.API.getChannelContents(playlistChannel)]).then(
+      ([playlistChannel]) => {
         this.setState({
-          playlistListLength: length,
           playlistChannel: playlistChannel
         })
       }
@@ -152,10 +150,10 @@ class Main extends Component {
         this.validator.validate(block)
       )
       const onlyValids = validatedContents.filter(
-        block => block.validity.isValid
+        block => block.validation.isValid
       )
       const onlyRejects = validatedContents.filter(
-        block => !block.validity.isValid
+        block => !block.validation.isValid
       )
       const { channelOfCurrentBlock } = this.state
       this.setState({
@@ -173,11 +171,11 @@ class Main extends Component {
   // update +1 track and index
   goToNextBlock = () => {
     const { channelOfCurrentBlock, blockOnDeck } = this.state
-    const trackList = channelOfCurrentBlock.contents
-    const indexOfCurrentBlock = trackList.findIndex(
+    const channelContents = channelOfCurrentBlock.contents
+    const indexOfCurrentBlock = channelContents.findIndex(
       block => block.id === blockOnDeck.id
     )
-    const nextItem = incrementInList(trackList, indexOfCurrentBlock)
+    const nextItem = incrementInList(channelContents, indexOfCurrentBlock)
     if (nextItem) {
       this.setState({ blockOnDeck: nextItem })
     } else {
@@ -189,11 +187,11 @@ class Main extends Component {
   //  update -1 track and index
   goToPreviousBlock = () => {
     const { channelOfCurrentBlock, blockOnDeck } = this.state
-    const trackList = channelOfCurrentBlock.contents
-    const indexOfCurrentBlock = trackList.findIndex(
+    const channelContents = channelOfCurrentBlock.contents
+    const indexOfCurrentBlock = channelContents.findIndex(
       block => block.id === blockOnDeck.id
     )
-    const previousItem = decrementInList(trackList, indexOfCurrentBlock)
+    const previousItem = decrementInList(channelContents, indexOfCurrentBlock)
     if (previousItem) {
       this.setState({ blockOnDeck: previousItem })
     } else {
