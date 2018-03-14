@@ -1,5 +1,5 @@
 import reactPlayer from 'react-player'
-import { mark } from './validator'
+import { mark } from 'obcheck'
 import { getURL, fillTitle } from './core'
 
 const validatorConfig = {
@@ -7,15 +7,20 @@ const validatorConfig = {
     class: ['Attachement', 'Media'],
     'source.provider.name': ['YouTube', 'Vimeo', 'SoundCloud'],
     'attachment.extension': ['mp3', 'flac', 'wav'],
-    state: ['available']
+    state: ['available'],
   },
   sanitizers: {
-    cleanURL: a => cleanURL(a),
-    fillTitle: a => fillTitle(a.title)
+    'source.url': val => cleanURL(val),
+    title: val => fillTitle(val),
   },
   validators: {
-    reactPlayerValidator: a => reactPlayerValidator(a)
-  }
+    reactPlayerValidator: obj => reactPlayerValidator(obj),
+    getURL: obj => getURL(obj),
+  },
+  options: {
+    rejectNonexistantPaths: false,
+    returnUpdatedCopy: false,
+  },
 }
 
 /**
@@ -39,9 +44,8 @@ function reactPlayerValidator(block) {
  * @param  {collection} block a block or channel from are.na API
  * @return {string URL}       returns a cleaned URL
  */
-function cleanURL(block) {
+function cleanURL(url) {
   const youtubeRegex = /(youtu(?:\.be|be\.com)\/(?:.*v(?:\/|=)|(?:.*\/)?)([\w'-]+))/gi
-  const url = getURL(block)
   if (url) {
     const youtubeResult = url.match(youtubeRegex)
     if (youtubeResult) {

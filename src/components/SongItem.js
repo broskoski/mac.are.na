@@ -7,9 +7,9 @@ const SongItem = ({ status, isSelected, handleSelection, block }) => {
   const itemClasses = 'list-item'
   const isSelectedClassNames = classnames({
     'bg-selected': isSelected,
-    '': !isSelected
+    '': !isSelected,
   })
-  const title = block.validation.sanitizers.fillTitle
+  const title = block.validation.sanitizers.title
   return (
     <button
       key={`button-play-${block.id}`}
@@ -27,12 +27,12 @@ SongItem.propTypes = {
   status: PropTypes.string,
   isSelected: PropTypes.bool,
   handleSelection: PropTypes.func,
-  block: PropTypes.any
+  block: PropTypes.any,
 }
 
 const SongItemReject = ({ isSelected, handleSelection, block }) => {
   const itemClasses = 'list-item rejected'
-  const title = block.validation.sanitizers.fillTitle
+  const title = block.validation.sanitizers.title
   return (
     <div key={`button-reject-${block.id}`} className={`${itemClasses}`}>
       <div className={'flexBetween'}>
@@ -46,7 +46,7 @@ SongItemReject.propTypes = {
   isSelected: PropTypes.bool,
   handleSelection: PropTypes.func,
   block: PropTypes.any,
-  message: PropTypes.string
+  message: PropTypes.string,
 }
 
 export { SongItem, SongItemReject }

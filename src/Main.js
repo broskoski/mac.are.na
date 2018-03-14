@@ -3,9 +3,10 @@ import {
   BrowserRouter as Router,
   Route,
   Switch,
-  withRouter
+  withRouter,
 } from 'react-router-dom'
 import PropTypes from 'prop-types'
+import { Obcheck } from 'obcheck'
 
 import Header from './components/Header'
 import Playlists from './containers/Playlists'
@@ -15,7 +16,6 @@ import Sortainer from './components/Sortainer'
 
 import { playlistChannel } from './config'
 import { TinyAPI } from './lib/api'
-import { Validator } from './lib/validator'
 import { playerStates } from './lib/keys'
 import { updateInObject, incrementInList, decrementInList } from './lib/core'
 import { sortChannelContents, sortKeys } from './lib/sort'
@@ -41,10 +41,10 @@ class Main extends Component {
       currentRoute: '/',
       playlistChannelSortObj: { orderKey: true, paramKey: sortKeys.position },
       playlistSortObj: { orderKey: true, paramKey: sortKeys.position },
-      showRejects: false
+      showRejects: false,
     }
     this.API = new TinyAPI()
-    this.validator = new Validator(validatorConfig)
+    this.validator = new Obcheck(validatorConfig)
     this.playerRef = null
   }
 
@@ -64,7 +64,7 @@ class Main extends Component {
     Promise.all([this.API.getChannelContents(playlistChannel)]).then(
       ([playlistChannel]) => {
         this.setState({
-          playlistChannel: playlistChannel
+          playlistChannel: playlistChannel,
         })
       }
     )
@@ -102,7 +102,7 @@ class Main extends Component {
       currentRoute,
       currentOpenChannel,
       isPlaying,
-      blockOnDeck
+      blockOnDeck,
     } = this.state
     if (currentRoute === '/playlist/:channelSlug' && !blockOnDeck) {
       const firstBlock = currentOpenChannel.contents[0]
@@ -117,7 +117,7 @@ class Main extends Component {
     this.setState({
       blockOnDeck: block,
       blockIsFromCurrentChannel: true,
-      channelOfCurrentBlock: this.state.currentOpenChannel
+      channelOfCurrentBlock: this.state.currentOpenChannel,
     })
     this.play()
   }
@@ -146,9 +146,10 @@ class Main extends Component {
     this.setState({ isCurrentChannelLoaded: false })
     this.API.getFullChannel(channelSlug).then(channel => {
       // validate it right off the bat
-      const validatedContents = channel.contents.map(block =>
-        this.validator.validate(block)
-      )
+      const validatedContents = channel.contents.map(block => {
+        const validationResults = this.validator.validate(block)
+        return updateInObject(block, 'validation', validationResults)
+      })
       const onlyValids = validatedContents.filter(
         block => block.validation.isValid
       )
@@ -163,7 +164,7 @@ class Main extends Component {
         blockIsFromCurrentChannel: this.isBlockIsFromCurrentChannel(
           channelOfCurrentBlock,
           channel
-        )
+        ),
       })
     })
   }
@@ -243,7 +244,11 @@ class Main extends Component {
       const sortedList = sortChannelContents(playlistChannel.contents, sortObj)
       this.setState({
         playlistChannelSortObj: { orderKey, paramKey },
-        playlistChannel: updateInObject(sortedList, 'contents', playlistChannel)
+        playlistChannel: updateInObject(
+          sortedList,
+          'contents',
+          playlistChannel
+        ),
       })
     } else if (stateKey === 'playlist') {
       const sortedList = sortChannelContents(
@@ -256,7 +261,7 @@ class Main extends Component {
           sortedList,
           'contents',
           currentOpenChannel
-        )
+        ),
       })
     }
   }
@@ -344,7 +349,7 @@ const PropsRoute = ({ component, ...mePropsies }) => {
 }
 
 PropsRoute.propTypes = {
-  component: PropTypes.any
+  component: PropTypes.any,
 }
 
 export default Main

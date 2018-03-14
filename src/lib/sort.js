@@ -1,4 +1,3 @@
-import ReactPlayer from 'react-player'
 import { fillTitle } from './core'
 
 const sortKeys = {
@@ -6,7 +5,7 @@ const sortKeys = {
   updated_at: 'updated_at',
   created_at: 'created_at',
   connected_at: 'connected_at',
-  position: 'position'
+  position: 'position',
 }
 
 function stringComparator(a, b) {
@@ -75,8 +74,4 @@ function sortChannelContents(channelContents, sortObj) {
   }
 }
 
-
-export {
-  sortKeys,
-  sortChannelContents,
-}
+export { sortKeys, sortChannelContents }
