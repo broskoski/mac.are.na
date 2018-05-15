@@ -1,5 +1,7 @@
 {
-  "editor.rulers": [80],
+  "editor.rulers": [
+    80
+  ],
   "editor.tabSize": 2,
   "search.exclude": {
     "**/node_modules": true
@@ -10,5 +12,4 @@
   "[json]": {
     "editor.formatOnSave": false
   },
-  "editor.formatOnSave": true
 }
