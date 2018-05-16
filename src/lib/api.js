@@ -1,11 +1,13 @@
 import { apiBase, playlistChannel } from '../config'
+import { flattenDeep } from 'lodash'
+
 const BASE = apiBase[process.env.NODE_ENV]
 
 const parse = {
   playlistChannel: a => a,
   paginatedPlaylistChannel: a => a.contents,
   playlist: a => a,
-  playlistListLength: a => a.length
+  playlistListLength: a => a.length,
 }
 
 class tinyAPI {
@@ -21,22 +23,45 @@ class tinyAPI {
     )
   }
 
-  getPaginatedChannelContents = (pageIndex, per) => {
+  getPaginatedChannelContents = (pageIndex, per = 25) => {
     return this.get(
-      `${BASE}/channels/${playlistChannel}/contents?page=${pageIndex}&per=${per}`
-    ).then(data => parse.paginatedPlaylistChannel(data))
+      `${BASE}/channels/${playlistChannel}?page=${pageIndex}&per=${per}`
+    )
   }
 
   getChannelContents = () => {
-    return this.get(`${BASE}/channels/${playlistChannel}/contents`).then(data =>
+    return this.getFullChannel(playlistChannel).then(data =>
       parse.playlistChannel(data)
     )
   }
 
-  getFullChannel = (playlistID, pagination) => {
-    return this.get(`${BASE}/channels/${playlistID}`).then(data =>
-      parse.playlist(data)
-    )
+  getFullChannel = playlistID => {
+    const PER = 100
+    const mergedContents = []
+    const getChannelPage = page =>
+      this.get(`${BASE}/channels/${playlistID}?per=${PER}&page=${page}`)
+
+    return getChannelPage(1).then(channel => {
+      mergedContents.push(channel.contents)
+
+      const totalPages = Math.ceil((channel.length - 1) / PER)
+      return Array(totalPages)
+        .fill(undefined)
+        .map((_, pageN) => pageN + 2)
+        .reduce(
+          (promise, pageN) =>
+            promise
+              .then(() => getChannelPage(pageN))
+              .then(({ contents }) => mergedContents.push(contents)),
+          Promise.resolve()
+        )
+        .then(_ => {
+          const entireChannel = Object.assign({}, channel, {
+            contents: flattenDeep(mergedContents),
+          })
+          return entireChannel
+        })
+    })
   }
 }
 
