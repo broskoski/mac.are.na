@@ -110,7 +110,7 @@ class Main extends Component {
     } = this.state
     if (currentRoute === '/playlist/:playlistSlug' && !currentTrack) {
       const item = currentOpenPlaylist.contents[0]
-      this.handleSongSelection(item, false)
+      this.handleSongUserSelection(item)
     } else if (currentRoute === '/playlist/:playlistSlug' || currentTrack) {
       isPlaying ? this.pause() : this.play()
     }
