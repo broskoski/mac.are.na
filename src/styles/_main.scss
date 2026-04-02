@@ -147,6 +147,25 @@ main {
   font-variant-numeric: tabular-nums;
 }
 
+.lcd-link {
+  color: $lcd-text-dim;
+  margin-right: 6px;
+  opacity: 0.6;
+  transition: opacity 150ms;
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+
+  &:hover {
+    opacity: 1;
+    color: $lcd-text;
+  }
+
+  svg {
+    display: block;
+  }
+}
+
 #lcd-progress-bar {
   height: 4px;
   background: $lcd-progress-bg;

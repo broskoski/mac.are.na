@@ -51,6 +51,10 @@ class Main extends Component {
           playlistListLength: length,
           playlistChannel: playlistChannel,
         })
+        const match = window.location.pathname.match(/^\/playlist\/(.+)$/)
+        if (match) {
+          this.selectPlaylist(match[1])
+        }
       }
     )
   }
@@ -94,6 +98,7 @@ class Main extends Component {
   }
 
   selectPlaylist = playlistSlug => {
+    window.history.pushState(null, '', '/playlist/' + playlistSlug)
     this.setState({
       selectedPlaylistSlug: playlistSlug,
       isCurrentPlaylistLoaded: false,

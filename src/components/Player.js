@@ -101,6 +101,24 @@ class Player extends Component {
             </span>
             {currentTrack && (
               <span id="lcd-time">
+                <a
+                  className="lcd-link"
+                  href={`https://www.are.na/block/${currentTrack.id}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title="View on Are.na"
+                >
+                  <svg viewBox="0 0 16 16" width="10" height="10">
+                    <path
+                      d="M6 3H3v10h10v-3M9 2h5v5M14 2L7 9"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </a>
                 {progress} / {duration}
               </span>
             )}
