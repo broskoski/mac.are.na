@@ -477,6 +477,117 @@ main {
 }
 
 // ==========================================
+// ALBUM ART PANEL (bottom of source list)
+// ==========================================
+
+#album-art-panel {
+  border-top: 1px solid $source-border;
+  background: linear-gradient(180deg, #d8d8d8, #c8c8c8);
+  padding: 8px;
+  flex-shrink: 0;
+
+  img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #999;
+    border-radius: 2px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+  }
+}
+
+// ==========================================
+// ALBUM GRID VIEW
+// ==========================================
+
+.album-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  align-content: start;
+  gap: 12px;
+  padding: 12px;
+  overflow-y: auto;
+  flex: 1;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: $scrollbar-thumb;
+    border-radius: 4px;
+  }
+  &::-webkit-scrollbar-track {
+    background: #f0f0f0;
+  }
+}
+
+.album-item {
+  cursor: pointer;
+  text-align: center;
+  padding: 6px;
+  border-radius: 4px;
+  transition: background-color 150ms;
+
+  &:hover {
+    background: #e0ecf8;
+  }
+}
+
+.album-selected {
+  background: linear-gradient(180deg, $track-selected-top, $track-selected-bottom) !important;
+  color: $track-selected-text;
+  border-radius: 4px;
+
+  .album-title {
+    color: #fff;
+  }
+}
+
+.album-art-wrapper {
+  width: 100%;
+  padding-bottom: 100%;
+  position: relative;
+  overflow: hidden;
+  border-radius: 3px;
+  border: 1px solid #ccc;
+  background: #f0f0f0;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+  margin-bottom: 4px;
+}
+
+.album-art-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.album-art-placeholder {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #e8e8e8, #d0d0d0);
+}
+
+.album-title {
+  font-size: $font-size-small;
+  line-height: 1.2;
+  color: $track-text;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 0 2px;
+}
+
+// ==========================================
 // STATUS BAR
 // ==========================================
 
@@ -487,10 +598,128 @@ main {
   border-top: 1px solid $status-border;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   font-size: $font-size-small;
   color: $status-text;
-  padding: 0 12px;
+  padding: 0 8px;
+}
+
+#status-left,
+#status-right {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  min-width: 50px;
+}
+
+#status-right {
+  justify-content: flex-end;
+}
+
+#status-center {
+  flex: 1;
+  text-align: center;
+}
+
+.status-btn {
+  background: none;
+  border: none;
+  color: #777;
+  cursor: pointer;
+  padding: 1px 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 2px;
+  outline: none;
+
+  &:hover {
+    color: #333;
+    background: rgba(0,0,0,0.08);
+  }
+
+  &.active {
+    color: #333;
+    background: rgba(0,0,0,0.12);
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.15);
+  }
+}
+
+// ==========================================
+// INFO MODAL
+// ==========================================
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-window {
+  width: 340px;
+  background: linear-gradient(180deg, #e8e8e8, #d4d4d4);
+  border: 1px solid #888;
+  border-radius: 8px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+.modal-titlebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 10px;
+  background: linear-gradient(180deg, #e0e0e0, #ccc);
+  border-bottom: 1px solid #aaa;
+  font-size: $font-size-base;
+  font-weight: bold;
+  color: #333;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 16px;
+  color: #666;
+  cursor: pointer;
+  padding: 0 2px;
+  line-height: 1;
+  outline: none;
+
+  &:hover {
+    color: #000;
+  }
+}
+
+.modal-body {
+  padding: 16px 20px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #333;
+
+  p {
+    margin: 0 0 10px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  a {
+    color: #2060c0;
+    text-decoration: underline !important;
+
+    &:hover {
+      color: #104090;
+    }
+  }
 }
 
 // ==========================================

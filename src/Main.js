@@ -37,6 +37,8 @@ class Main extends Component {
       playlistChannelSortObj: { orderKey: true, paramKey: sortKeys.position },
       playlistSortObj: { orderKey: true, paramKey: sortKeys.position },
       showRejects: false,
+      showInfoModal: false,
+      viewMode: 'list',
     }
     this.API = new tinyAPI()
     this.playerRef = null
@@ -204,6 +206,16 @@ class Main extends Component {
     this.setState({ showRejects: !this.state.showRejects })
   }
 
+  toggleInfoModal = () => {
+    this.setState({ showInfoModal: !this.state.showInfoModal })
+  }
+
+  toggleViewMode = () => {
+    this.setState({
+      viewMode: this.state.viewMode === 'list' ? 'album' : 'list',
+    })
+  }
+
   render() {
     const {
       playlistChannel,
@@ -218,6 +230,12 @@ class Main extends Component {
     const trackCount = currentOpenPlaylist
       ? currentOpenPlaylist.contents.length
       : 0
+
+    const currentTrack = this.state.currentTrack
+    const albumArt =
+      currentTrack && currentTrack.image && currentTrack.image.square
+        ? currentTrack.image.square.src
+        : null
 
     return (
       <main>
@@ -258,6 +276,11 @@ class Main extends Component {
                 setSort={this.setSort}
               />
             </div>
+            {albumArt && (
+              <div id="album-art-panel">
+                <img src={albumArt} alt="Now playing" />
+              </div>
+            )}
           </div>
           <div id="track-list">
             <Playlist
@@ -272,16 +295,121 @@ class Main extends Component {
               selectedPlaylistSlug={selectedPlaylistSlug}
               playlistSortObj={playlistSortObj}
               setSort={this.setSort}
+              viewMode={this.state.viewMode}
             />
           </div>
         </div>
         <div id="status-bar">
-          {currentOpenPlaylist ? (
-            <span>{trackCount} songs</span>
-          ) : (
-            <span>Select a playlist</span>
-          )}
+          <div id="status-left">
+            <button
+              className="status-btn"
+              onClick={this.toggleInfoModal}
+              title="About mac.are.na"
+            >
+              <svg viewBox="0 0 16 16" width="11" height="11">
+                <circle
+                  cx="8"
+                  cy="8"
+                  r="7"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                />
+                <text
+                  x="8"
+                  y="12"
+                  textAnchor="middle"
+                  fontSize="10"
+                  fill="currentColor"
+                  fontFamily="serif"
+                  fontStyle="italic"
+                >
+                  i
+                </text>
+              </svg>
+            </button>
+          </div>
+          <div id="status-center">
+            {currentOpenPlaylist ? (
+              <span>{trackCount} songs</span>
+            ) : (
+              <span>Select a playlist</span>
+            )}
+          </div>
+          <div id="status-right">
+            <button
+              className={`status-btn view-toggle ${
+                this.state.viewMode === 'list' ? 'active' : ''
+              }`}
+              onClick={
+                this.state.viewMode !== 'list' ? this.toggleViewMode : undefined
+              }
+              title="List view"
+            >
+              <svg viewBox="0 0 16 16" width="11" height="11">
+                <rect x="1" y="2" width="14" height="2" fill="currentColor" />
+                <rect x="1" y="7" width="14" height="2" fill="currentColor" />
+                <rect x="1" y="12" width="14" height="2" fill="currentColor" />
+              </svg>
+            </button>
+            <button
+              className={`status-btn view-toggle ${
+                this.state.viewMode === 'album' ? 'active' : ''
+              }`}
+              onClick={
+                this.state.viewMode !== 'album'
+                  ? this.toggleViewMode
+                  : undefined
+              }
+              title="Album view"
+            >
+              <svg viewBox="0 0 16 16" width="11" height="11">
+                <rect x="1" y="1" width="6" height="6" fill="currentColor" />
+                <rect x="9" y="1" width="6" height="6" fill="currentColor" />
+                <rect x="1" y="9" width="6" height="6" fill="currentColor" />
+                <rect x="9" y="9" width="6" height="6" fill="currentColor" />
+              </svg>
+            </button>
+          </div>
         </div>
+
+        {this.state.showInfoModal && (
+          <div className="modal-overlay" onClick={this.toggleInfoModal}>
+            <div className="modal-window" onClick={e => e.stopPropagation()}>
+              <div className="modal-titlebar">
+                <span>About mac.are.na</span>
+                <button className="modal-close" onClick={this.toggleInfoModal}>
+                  &times;
+                </button>
+              </div>
+              <div className="modal-body">
+                <p>
+                  <strong>mac.are.na</strong> is a music player that reads from{' '}
+                  <a
+                    href="https://www.are.na/charles-broskoski/mac-are-na"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Are.na
+                  </a>{' '}
+                  channels.
+                </p>
+                <p>
+                  Add a channel containing playable media (YouTube, SoundCloud,
+                  MP3s, etc.) to the{' '}
+                  <a
+                    href="https://www.are.na/charles-broskoski/mac-are-na"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    mac.are.na
+                  </a>{' '}
+                  channel and it will appear as a playlist.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
       </main>
     )
   }

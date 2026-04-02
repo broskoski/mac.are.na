@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
 import LoadState from '../components/LoadState'
-import { SongItem, SongItemReject } from '../components/SongItem'
+import { SongItem, SongItemReject, AlbumItem } from '../components/SongItem'
 import { sortKeys } from '../lib/helpers'
 import sortArrow from '../assets/sortArrow.svg'
 
@@ -76,6 +76,7 @@ class Playlist extends Component {
       toggleShowRejects,
       showRejects,
       selectedPlaylistSlug,
+      viewMode,
     } = this.props
 
     if (!selectedPlaylistSlug) {
@@ -88,6 +89,23 @@ class Playlist extends Component {
 
     if (!isCurrentPlaylistLoaded || !currentOpenPlaylist) {
       return <LoadState />
+    }
+
+    if (viewMode === 'album') {
+      return (
+        <div className="track-list-content">
+          <div className="album-grid">
+            {currentOpenPlaylist.contents.map(item => (
+              <AlbumItem
+                key={item.id}
+                song={item}
+                isSelected={this.handleIsSelected(item)}
+                handleSelection={() => handleSongUserSelection(item)}
+              />
+            ))}
+          </div>
+        </div>
+      )
     }
 
     return (
@@ -135,6 +153,7 @@ Playlist.propTypes = {
   selectedPlaylistSlug: PropTypes.string,
   playlistSortObj: PropTypes.any,
   setSort: PropTypes.func,
+  viewMode: PropTypes.string,
 }
 
 export default Playlist

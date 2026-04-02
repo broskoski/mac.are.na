@@ -43,4 +43,42 @@ SongItemReject.propTypes = {
   message: PropTypes.string,
 }
 
-export { SongItem, SongItemReject }
+const AlbumItem = ({ isSelected, handleSelection, song }) => {
+  const title = scrubTitle(song.title)
+  const imgSrc = song.image && song.image.square ? song.image.square.src : null
+  return (
+    <div
+      className={`album-item ${isSelected ? 'album-selected' : ''}`}
+      onClick={handleSelection}
+    >
+      <div className="album-art-wrapper">
+        {imgSrc ? (
+          <img src={imgSrc} alt={decode(title)} className="album-art-img" />
+        ) : (
+          <div className="album-art-placeholder">
+            <svg viewBox="0 0 24 24" width="24" height="24">
+              <circle
+                cx="12"
+                cy="12"
+                r="10"
+                fill="none"
+                stroke="#bbb"
+                strokeWidth="1"
+              />
+              <circle cx="12" cy="12" r="3" fill="#bbb" />
+            </svg>
+          </div>
+        )}
+      </div>
+      <div className="album-title">{decode(title)}</div>
+    </div>
+  )
+}
+
+AlbumItem.propTypes = {
+  isSelected: PropTypes.bool,
+  handleSelection: PropTypes.func,
+  song: PropTypes.any,
+}
+
+export { SongItem, SongItemReject, AlbumItem }
