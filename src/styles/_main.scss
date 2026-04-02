@@ -638,6 +638,18 @@ main {
 #status-center {
   flex: 1;
   text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.status-link {
+  color: $status-text;
+  text-decoration: underline !important;
+
+  &:hover {
+    color: #333;
+  }
 }
 
 .status-btn {

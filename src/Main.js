@@ -336,7 +336,20 @@ class Main extends Component {
           </div>
           <div id="status-center">
             {currentOpenPlaylist ? (
-              <span>{trackCount} songs</span>
+              <span>
+                <a
+                  className="status-link"
+                  href={`https://www.are.na/${currentOpenPlaylist.owner.slug}/${
+                    currentOpenPlaylist.slug
+                  }`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {currentOpenPlaylist.title}
+                </a>
+                {' — '}
+                {trackCount} songs
+              </span>
             ) : (
               <span>Select a playlist</span>
             )}
