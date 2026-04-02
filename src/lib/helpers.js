@@ -27,7 +27,7 @@ function sanitizeURL(url) {
 function mm(isValid, message, item) {
   return {
     ...item,
-    macarenaURLValidity: { isValid, message }
+    macarenaURLValidity: { isValid, message },
   }
 }
 
@@ -36,16 +36,17 @@ const message = {
   missing: 'Missing URL 😮',
   class: 'Unplayable block type 😥',
   noPlay: 'Cannot play items from this source 😞',
-  valid: 'Valid'
+  valid: 'Valid',
 }
 
 // get URL from different types of blocks
 function getURL(item) {
-  switch (item.class) {
+  switch (item.type) {
     case 'Attachment':
-      return item.attachment.url
-    case 'Media':
-      return item.source.url
+      return item.attachment && item.attachment.url
+    case 'Embed':
+    case 'Link':
+      return item.source && item.source.url
     default:
       return false
   }
@@ -87,13 +88,15 @@ function scrubTitle(title) {
   return title
 }
 
-// get block status
+// get block/channel visibility
 function getStatus(item) {
-  switch (item.status) {
+  switch (item.visibility) {
     case 'public':
       return 'public'
     case 'closed':
       return 'closed'
+    case 'private':
+      return 'private'
     default:
       return 'public'
   }
@@ -103,7 +106,7 @@ const playerStates = {
   idle: 'IDLE',
   buffering: 'BUFFERING',
   playing: 'PLAYING',
-  errored: 'ERRORED'
+  errored: 'ERRORED',
 }
 
 const sortKeys = {
@@ -111,7 +114,7 @@ const sortKeys = {
   updated_at: 'updated_at',
   created_at: 'created_at',
   connected_at: 'connected_at',
-  position: 'position'
+  position: 'position',
 }
 
 function stringComparator(a, b) {
@@ -167,11 +170,18 @@ function comparator(a, b, param) {
   }
 }
 
+function getValue(item, paramKey) {
+  if (paramKey === 'position') {
+    return item.connection ? item.connection.position : item.position || 0
+  }
+  return item[paramKey]
+}
+
 // executes array.sort with comparator and handles order inversion
 function sortChannelContents(channelContents, sortObj) {
   const { orderKey, paramKey } = sortObj
   const sortedArr = channelContents.sort((a, b) =>
-    comparator(a[paramKey], b[paramKey], paramKey)
+    comparator(getValue(a, paramKey), getValue(b, paramKey), paramKey)
   )
   if (orderKey) {
     return sortedArr
@@ -183,7 +193,7 @@ function sortChannelContents(channelContents, sortObj) {
 function immutablyChangeContents(newContents, channel) {
   return {
     ...channel,
-    contents: newContents
+    contents: newContents,
   }
 }
 
@@ -214,5 +224,5 @@ export {
   sortChannelContents,
   immutablyChangeContents,
   incrementInList,
-  decrementInList
+  decrementInList,
 }

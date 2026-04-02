@@ -1,17 +1,8 @@
 import React, { Component } from 'react'
-import {
-  BrowserRouter as Router,
-  Route,
-  Switch,
-  withRouter
-} from 'react-router-dom'
-import PropTypes from 'prop-types'
 
-import Header from './components/Header'
 import Playlists from './containers/Playlists'
 import Playlist from './containers/Playlist'
 import Player from './components/Player'
-import Sortainer from './components/Sortainer'
 
 import { tinyAPI } from './lib/api'
 import {
@@ -21,7 +12,7 @@ import {
   immutablyChangeContents,
   validateWithMessage,
   incrementInList,
-  decrementInList
+  decrementInList,
 } from './lib/helpers'
 
 class Main extends Component {
@@ -42,33 +33,23 @@ class Main extends Component {
       playerStatus: playerStates.idle,
       trackIsFromCurrentPlaylist: true,
       searchQuery: '',
-      currentRoute: '/',
+      selectedPlaylistSlug: null,
       playlistChannelSortObj: { orderKey: true, paramKey: sortKeys.position },
       playlistSortObj: { orderKey: true, paramKey: sortKeys.position },
-      showRejects: false
+      showRejects: false,
+      showInfoModal: false,
+      viewMode: 'list',
     }
     this.API = new tinyAPI()
     this.playerRef = null
   }
 
-  initializeCookies = () => {
-    // FYI cookie returns string
-    if (localStorage.getItem('isInverted') === 'true') {
-      this.invert()
-    } else {
-      this.unInvert()
-    }
-  }
-
-  // get list of playlists and playlist list length. also attach invert event
   componentWillMount() {
-    this.initializeCookies()
-    window.addEventListener('keydown', e => this.handleInvert(e))
     Promise.all([this.API.getBlockCount(), this.API.getChannelContents()]).then(
       ([length, playlistChannel]) => {
         this.setState({
           playlistListLength: length,
-          playlistChannel: playlistChannel
+          playlistChannel: playlistChannel,
         })
       }
     )
@@ -78,62 +59,30 @@ class Main extends Component {
     this.setState({ searchQuery: event.target.value })
   }
 
-  // mhm
-  handleInvert = e => {
-    if (e.shiftKey && e.ctrlKey && e.code === 'KeyI') {
-      if (document.body.classList.contains('invert')) {
-        this.unInvert()
-      } else {
-        this.invert()
-      }
-    }
-  }
-
-  invert = () => {
-    document.body.classList.add('invert')
-    localStorage.setItem('isInverted', 'true')
-  }
-
-  unInvert = () => {
-    document.body.classList.remove('invert')
-    localStorage.setItem('isInverted', 'false')
-  }
-
-  // toggle function for playing and pausing with 1 UI element. Plays 1st track
-  // of playlist if pressed and nothing has been played yet
   handlePlayback = () => {
-    const {
-      currentRoute,
-      currentOpenPlaylist,
-      isPlaying,
-      currentTrack
-    } = this.state
-    if (currentRoute === '/playlist/:playlistSlug' && !currentTrack) {
+    const { currentOpenPlaylist, isPlaying, currentTrack } = this.state
+    if (currentOpenPlaylist && !currentTrack) {
       const item = currentOpenPlaylist.contents[0]
       this.handleSongUserSelection(item)
-    } else if (currentRoute === '/playlist/:playlistSlug' || currentTrack) {
+    } else if (currentTrack) {
       isPlaying ? this.pause() : this.play()
     }
   }
 
-  // change the currentTrack state.
   handleSongUserSelection = item => {
     this.setState({
       currentTrack: item,
       trackIsFromCurrentPlaylist: true,
-      currentTrackPlaylist: this.state.currentOpenPlaylist
+      currentTrackPlaylist: this.state.currentOpenPlaylist,
     })
     this.play()
   }
 
-  // determines if the currently playing/paused track is from the currently
-  // displayed playlist
   isTrackIsFromCurrentPlaylist = (pl1, pl2) => {
     if (pl1 && pl2) {
-      return pl1.id === pl2.id ? true : false
-    } else {
-      return true
+      return pl1.id === pl2.id
     }
+    return true
   }
 
   play = () => {
@@ -144,12 +93,12 @@ class Main extends Component {
     this.setState({ isPlaying: false, playerStatus: playerStates.idle })
   }
 
-  // if we select a playlist, get it's contents.
-  // then, set it as the current open playlist
-  setSelectedPlaylist = playlistSlug => {
-    this.setState({ isCurrentPlaylistLoaded: false })
+  selectPlaylist = playlistSlug => {
+    this.setState({
+      selectedPlaylistSlug: playlistSlug,
+      isCurrentPlaylistLoaded: false,
+    })
     this.API.getFullChannel(playlistSlug).then(playlist => {
-      // validate it right off the bat
       const validatedContents = playlist.contents.map(item =>
         validateWithMessage(item)
       )
@@ -167,12 +116,11 @@ class Main extends Component {
         trackIsFromCurrentPlaylist: this.isTrackIsFromCurrentPlaylist(
           currentTrackPlaylist,
           playlist
-        )
+        ),
       })
     })
   }
 
-  // update +1 track and index
   goToNextTrack = () => {
     const { currentTrackPlaylist, currentTrack } = this.state
     const trackList = currentTrackPlaylist.contents
@@ -184,11 +132,10 @@ class Main extends Component {
       this.setState({ currentTrack: nextItem })
     } else {
       this.pause()
-      this.setState({ currentTrackURL: false, currentTrack: false })
+      this.setState({ currentTrack: false })
     }
   }
 
-  //  update -1 track and index
   goToPreviousTrack = () => {
     const { currentTrackPlaylist, currentTrack } = this.state
     const trackList = currentTrackPlaylist.contents
@@ -203,17 +150,8 @@ class Main extends Component {
     }
   }
 
-  setCurrentRoute = currentRoute => {
-    this.setState({ currentRoute })
-  }
-
-  handleOnReady = e => {
-    // console.log(e, 'ready')
-  }
-
-  handleOnStart = e => {
-    // console.log(e, 'start')
-  }
+  handleOnReady = e => {}
+  handleOnStart = e => {}
 
   handleOnPlay = e => {
     this.setState({ playerStatus: playerStates.playing })
@@ -247,7 +185,7 @@ class Main extends Component {
       const sortedList = sortChannelContents(playlistChannel.contents, sortObj)
       this.setState({
         playlistChannelSortObj: { orderKey, paramKey },
-        playlistChannel: immutablyChangeContents(sortedList, playlistChannel)
+        playlistChannel: immutablyChangeContents(sortedList, playlistChannel),
       })
     } else if (stateKey === 'playlist') {
       const sortedList = sortChannelContents(
@@ -259,7 +197,7 @@ class Main extends Component {
         currentOpenPlaylist: immutablyChangeContents(
           sortedList,
           currentOpenPlaylist
-        )
+        ),
       })
     }
   }
@@ -268,18 +206,42 @@ class Main extends Component {
     this.setState({ showRejects: !this.state.showRejects })
   }
 
+  toggleInfoModal = () => {
+    this.setState({ showInfoModal: !this.state.showInfoModal })
+  }
+
+  toggleViewMode = () => {
+    this.setState({
+      viewMode: this.state.viewMode === 'list' ? 'album' : 'list',
+    })
+  }
+
   render() {
+    const {
+      playlistChannel,
+      currentOpenPlaylist,
+      isCurrentPlaylistLoaded,
+      selectedPlaylistSlug,
+      searchQuery,
+      playlistChannelSortObj,
+      playlistSortObj,
+    } = this.state
+
+    const trackCount = currentOpenPlaylist
+      ? currentOpenPlaylist.contents.length
+      : 0
+
+    const currentTrack = this.state.currentTrack
+    const albumArt =
+      currentTrack && currentTrack.image && currentTrack.image.square
+        ? currentTrack.image.square.src
+        : null
+
     return (
-      <Router>
-        <main>
-          <HeaderWithRouter
-            currentRoute={'/'}
-            currentOpenPlaylist={this.state.currentOpenPlaylist}
-            isCurrentPlaylistLoaded={this.state.isCurrentPlaylistLoaded}
-          />
+      <main>
+        <div id="toolbar">
           <Player
             {...this.state}
-            ref={this.ref}
             returnRef={this.returnRef}
             handlePlayback={this.handlePlayback}
             goToNextTrack={this.goToNextTrack}
@@ -292,62 +254,165 @@ class Main extends Component {
             handleOnBuffer={this.handleOnBuffer}
             handleOnError={this.handleOnError}
           />
-          <Sortainer
-            {...this.state}
-            setSort={this.setSort}
-            setQueryInState={this.setQueryInState}
-          />
-          <Switch>
-            <PropsRoute
-              {...this.state}
-              exact
-              path={'/'}
-              component={Playlists}
-              handlePlaylistSelect={this.handlePlaylistSelect}
-              setCurrentRoute={this.setCurrentRoute}
-            />
-            <PropsRoute
-              {...this.state}
-              path={'/playlist/:playlistSlug'}
-              component={Playlist}
+        </div>
+        <div id="content-area">
+          <div id="source-list">
+            <div id="source-list-header">
+              <input
+                className="source-search"
+                value={searchQuery}
+                type="text"
+                placeholder="Search"
+                onChange={this.setQueryInState}
+              />
+            </div>
+            <div id="source-list-items">
+              <Playlists
+                playlistChannel={playlistChannel}
+                searchQuery={searchQuery}
+                playlistChannelSortObj={playlistChannelSortObj}
+                selectedPlaylistSlug={selectedPlaylistSlug}
+                selectPlaylist={this.selectPlaylist}
+                setSort={this.setSort}
+              />
+            </div>
+            {albumArt && (
+              <div id="album-art-panel">
+                <img src={albumArt} alt="Now playing" />
+              </div>
+            )}
+          </div>
+          <div id="track-list">
+            <Playlist
+              currentOpenPlaylist={currentOpenPlaylist}
+              isCurrentPlaylistLoaded={isCurrentPlaylistLoaded}
+              currentOpenPlaylistRejects={this.state.currentOpenPlaylistRejects}
               handleSongUserSelection={this.handleSongUserSelection}
-              setSelectedPlaylist={this.setSelectedPlaylist}
-              setCurrentRoute={this.setCurrentRoute}
+              currentTrack={this.state.currentTrack}
+              trackIsFromCurrentPlaylist={this.state.trackIsFromCurrentPlaylist}
               toggleShowRejects={this.toggleShowRejects}
+              showRejects={this.state.showRejects}
+              selectedPlaylistSlug={selectedPlaylistSlug}
+              playlistSortObj={playlistSortObj}
+              setSort={this.setSort}
+              viewMode={this.state.viewMode}
             />
-          </Switch>
-        </main>
-      </Router>
+          </div>
+        </div>
+        <div id="status-bar">
+          <div id="status-left">
+            <button
+              className="status-btn"
+              onClick={this.toggleInfoModal}
+              title="About mac.are.na"
+            >
+              <svg viewBox="0 0 16 16" width="11" height="11">
+                <circle
+                  cx="8"
+                  cy="8"
+                  r="7"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                />
+                <text
+                  x="8"
+                  y="12"
+                  textAnchor="middle"
+                  fontSize="10"
+                  fill="currentColor"
+                  fontFamily="serif"
+                  fontStyle="italic"
+                >
+                  i
+                </text>
+              </svg>
+            </button>
+          </div>
+          <div id="status-center">
+            {currentOpenPlaylist ? (
+              <span>{trackCount} songs</span>
+            ) : (
+              <span>Select a playlist</span>
+            )}
+          </div>
+          <div id="status-right">
+            <button
+              className={`status-btn view-toggle ${
+                this.state.viewMode === 'list' ? 'active' : ''
+              }`}
+              onClick={
+                this.state.viewMode !== 'list' ? this.toggleViewMode : undefined
+              }
+              title="List view"
+            >
+              <svg viewBox="0 0 16 16" width="11" height="11">
+                <rect x="1" y="2" width="14" height="2" fill="currentColor" />
+                <rect x="1" y="7" width="14" height="2" fill="currentColor" />
+                <rect x="1" y="12" width="14" height="2" fill="currentColor" />
+              </svg>
+            </button>
+            <button
+              className={`status-btn view-toggle ${
+                this.state.viewMode === 'album' ? 'active' : ''
+              }`}
+              onClick={
+                this.state.viewMode !== 'album'
+                  ? this.toggleViewMode
+                  : undefined
+              }
+              title="Album view"
+            >
+              <svg viewBox="0 0 16 16" width="11" height="11">
+                <rect x="1" y="1" width="6" height="6" fill="currentColor" />
+                <rect x="9" y="1" width="6" height="6" fill="currentColor" />
+                <rect x="1" y="9" width="6" height="6" fill="currentColor" />
+                <rect x="9" y="9" width="6" height="6" fill="currentColor" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        {this.state.showInfoModal && (
+          <div className="modal-overlay" onClick={this.toggleInfoModal}>
+            <div className="modal-window" onClick={e => e.stopPropagation()}>
+              <div className="modal-titlebar">
+                <span>About mac.are.na</span>
+                <button className="modal-close" onClick={this.toggleInfoModal}>
+                  &times;
+                </button>
+              </div>
+              <div className="modal-body">
+                <p>
+                  <strong>mac.are.na</strong> is a music player that reads from{' '}
+                  <a
+                    href="https://www.are.na/charles-broskoski/mac-are-na"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Are.na
+                  </a>{' '}
+                  channels.
+                </p>
+                <p>
+                  Add a channel containing playable media (YouTube, SoundCloud,
+                  MP3s, etc.) to the{' '}
+                  <a
+                    href="https://www.are.na/charles-broskoski/mac-are-na"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    mac.are.na
+                  </a>{' '}
+                  channel and it will appear as a playlist.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+      </main>
     )
   }
-}
-
-// we need router info from <Router /> in header but header is not a route
-const HeaderWithRouter = withRouter(props => <Header {...props} />)
-
-// this takes props from <PropsRoute /> and passes them in a new
-// object to the wrapped component
-const renderMergedProps = (component, ...mePropsies) => {
-  const finalProps = Object.assign({}, ...mePropsies)
-  return React.createElement(component, finalProps)
-}
-
-// this component serves as a wrapper that allows props to be passed into routes
-// this is why we can use one local state for most of the app
-const PropsRoute = ({ component, ...mePropsies }) => {
-  return (
-    <Route
-      key={mePropsies.location.key}
-      {...mePropsies}
-      render={routeProps => {
-        return renderMergedProps(component, routeProps, mePropsies)
-      }}
-    />
-  )
-}
-
-PropsRoute.propTypes = {
-  component: PropTypes.any
 }
 
 export default Main

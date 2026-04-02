@@ -1,54 +1,84 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import classnames from 'classnames'
 import { decode } from 'he'
 import { scrubTitle } from '../lib/helpers'
 
-const SongItem = ({ status, isSelected, handleSelection, song }) => {
-  const itemClasses = 'list-item'
-  const isSelectedClassNames = classnames({
-    'bg-selected': isSelected,
-    '': !isSelected
-  })
+const SongItem = ({ isSelected, handleSelection, song, index }) => {
   const title = scrubTitle(song.title)
   return (
-    <button
-      key={`button-play-${song.id}`}
-      className={`${itemClasses} ${isSelectedClassNames}`}
+    <div
+      className={`track-row ${isSelected ? 'track-selected' : ''}`}
       onClick={handleSelection}
+      onDoubleClick={handleSelection}
     >
-      <div>
-        <p>{decode(title)}</p>
-      </div>
-    </button>
-  )
-}
-
-SongItem.propTypes = {
-  status: PropTypes.string,
-  isSelected: PropTypes.bool,
-  handleSelection: PropTypes.func,
-  song: PropTypes.any
-}
-
-const SongItemReject = ({ isSelected, handleSelection, song, message }) => {
-  const itemClasses = 'list-item rejected'
-  const title = scrubTitle(song.title)
-  return (
-    <div key={`button-reject-${song.id}`} className={`${itemClasses}`}>
-      <div className={'flexBetween'}>
-        <p>{`${decode(title)}`}</p>
-        <p>{`${message}`}</p>
+      <div className="col col-num">{isSelected ? '\u25B6' : index}</div>
+      <div className="col col-name">{decode(title)}</div>
+      <div className="col col-position">
+        {song.connection ? song.connection.position : song.position}
       </div>
     </div>
   )
 }
 
-SongItemReject.propTypes = {
+SongItem.propTypes = {
   isSelected: PropTypes.bool,
   handleSelection: PropTypes.func,
   song: PropTypes.any,
-  message: PropTypes.string
+  index: PropTypes.number,
 }
 
-export { SongItem, SongItemReject }
+const SongItemReject = ({ song, message }) => {
+  const title = scrubTitle(song.title)
+  return (
+    <div className="track-row track-rejected">
+      <div className="col col-num">-</div>
+      <div className="col col-name">{decode(title)}</div>
+      <div className="col col-position">{message}</div>
+    </div>
+  )
+}
+
+SongItemReject.propTypes = {
+  song: PropTypes.any,
+  message: PropTypes.string,
+}
+
+const AlbumItem = ({ isSelected, handleSelection, song }) => {
+  const title = scrubTitle(song.title)
+  const imgSrc = song.image && song.image.square ? song.image.square.src : null
+  return (
+    <div
+      className={`album-item ${isSelected ? 'album-selected' : ''}`}
+      onClick={handleSelection}
+    >
+      <div className="album-art-wrapper">
+        {imgSrc ? (
+          <img src={imgSrc} alt={decode(title)} className="album-art-img" />
+        ) : (
+          <div className="album-art-placeholder">
+            <svg viewBox="0 0 24 24" width="24" height="24">
+              <circle
+                cx="12"
+                cy="12"
+                r="10"
+                fill="none"
+                stroke="#bbb"
+                strokeWidth="1"
+              />
+              <circle cx="12" cy="12" r="3" fill="#bbb" />
+            </svg>
+          </div>
+        )}
+      </div>
+      <div className="album-title">{decode(title)}</div>
+    </div>
+  )
+}
+
+AlbumItem.propTypes = {
+  isSelected: PropTypes.bool,
+  handleSelection: PropTypes.func,
+  song: PropTypes.any,
+}
+
+export { SongItem, SongItemReject, AlbumItem }
