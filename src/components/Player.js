@@ -123,7 +123,16 @@ class Player extends Component {
               </span>
             )}
           </div>
-          <div id="lcd-progress-bar">
+          <div
+            id="lcd-progress-bar"
+            onClick={e => {
+              if (trackDuration > 0 && this.player) {
+                const rect = e.currentTarget.getBoundingClientRect()
+                const fraction = (e.clientX - rect.left) / rect.width
+                this.player.seekTo(fraction, 'fraction')
+              }
+            }}
+          >
             <div
               id="lcd-progress-fill"
               style={{ width: `${progressPercent}%` }}
