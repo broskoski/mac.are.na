@@ -3,14 +3,19 @@
   "version": "0.1.0",
   "private": true,
   "description": "Are.na channel -> Music",
+  "engines": {
+    "node": "20.x"
+  },
   "scripts": {
     "precommit": "lint-staged",
     "lint": "eslint ./",
     "start-js": "react-scripts start",
     "build-css": "sass src/styles/index.scss src/styles/index.css",
     "watch-css": "npm run build-css && sass src/styles/index.scss src/styles/index.css --watch",
-    "start": "npm-run-all -p watch-css start-js",
+    "dev": "npm-run-all -p watch-css start-js",
+    "start": "serve -s build",
     "build": "npm run build-css && SKIP_PREFLIGHT_CHECK=true react-scripts build",
+    "heroku-postbuild": "npm run build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
@@ -50,7 +55,8 @@
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-player": "^1.1.1",
-    "react-router-dom": "^4.2.2"
+    "react-router-dom": "^4.2.2",
+    "serve": "^14.2.0"
   },
   "devDependencies": {
     "sass": "^1.60.0",
