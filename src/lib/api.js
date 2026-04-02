@@ -1,14 +1,6 @@
 import { apiBase, playlistChannel } from '../config'
-import { flattenDeep } from 'lodash'
 
 const BASE = apiBase[process.env.NODE_ENV]
-
-const parse = {
-  playlistChannel: a => a,
-  paginatedPlaylistChannel: a => a.contents,
-  playlist: a => a,
-  playlistListLength: a => a.length,
-}
 
 class tinyAPI {
   get = endpoint => {
@@ -18,49 +10,45 @@ class tinyAPI {
   }
 
   getBlockCount = () => {
-    return this.get(`${BASE}/channels/${playlistChannel}/thumb`).then(data =>
-      parse.playlistListLength(data)
-    )
-  }
-
-  getPaginatedChannelContents = (pageIndex, per = 25) => {
-    return this.get(
-      `${BASE}/channels/${playlistChannel}?page=${pageIndex}&per=${per}`
+    return this.get(`${BASE}/channels/${playlistChannel}`).then(
+      data => data.counts.contents
     )
   }
 
   getChannelContents = () => {
-    return this.getFullChannel(playlistChannel).then(data =>
-      parse.playlistChannel(data)
-    )
+    return this.getFullChannel(playlistChannel)
   }
 
   getFullChannel = playlistID => {
     const PER = 100
-    const mergedContents = []
-    const getChannelPage = page =>
-      this.get(`${BASE}/channels/${playlistID}?per=${PER}&page=${page}`)
+    const allContents = []
 
-    return getChannelPage(1).then(channel => {
-      mergedContents.push(channel.contents)
+    const getContentsPage = page =>
+      this.get(
+        `${BASE}/channels/${playlistID}/contents?per=${PER}&page=${page}`
+      )
 
-      const totalPages = Math.ceil((channel.length - 1) / PER)
-      return Array(totalPages)
-        .fill(undefined)
-        .map((_, pageN) => pageN + 2)
-        .reduce(
-          (promise, pageN) =>
-            promise
-              .then(() => getChannelPage(pageN))
-              .then(({ contents }) => mergedContents.push(contents)),
-          Promise.resolve()
-        )
-        .then(_ => {
-          const entireChannel = Object.assign({}, channel, {
-            contents: flattenDeep(mergedContents),
+    return this.get(`${BASE}/channels/${playlistID}`).then(channel => {
+      return getContentsPage(1).then(firstPage => {
+        allContents.push(...firstPage.data)
+        const totalPages = firstPage.meta.total_pages
+
+        if (totalPages <= 1) {
+          return Object.assign({}, channel, { contents: allContents })
+        }
+
+        return Array.from({ length: totalPages - 1 }, (_, i) => i + 2)
+          .reduce(
+            (promise, pageN) =>
+              promise
+                .then(() => getContentsPage(pageN))
+                .then(page => allContents.push(...page.data)),
+            Promise.resolve()
+          )
+          .then(() => {
+            return Object.assign({}, channel, { contents: allContents })
           })
-          return entireChannel
-        })
+      })
     })
   }
 }

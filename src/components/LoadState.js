@@ -2,11 +2,11 @@ import React from 'react'
 
 const LoadState = () => {
   return (
-    <div id="loader-container" className="abs-fill">
+    <div className="loader-wrap">
       <div className="loader">
         <svg
-          width="40"
-          height="40"
+          width="24"
+          height="24"
           viewBox="0 0 40 40"
           xmlns="http://www.w3.org/2000/svg"
         >

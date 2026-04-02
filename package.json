@@ -7,10 +7,10 @@
     "precommit": "lint-staged",
     "lint": "eslint ./",
     "start-js": "react-scripts start",
-    "build-css": "node-sass src/styles -o src/styles",
-    "watch-css": "npm run build-css && node-sass src/styles -o src/styles --watch --recursive",
+    "build-css": "sass src/styles/index.scss src/styles/index.css",
+    "watch-css": "npm run build-css && sass src/styles/index.scss src/styles/index.css --watch",
     "start": "npm-run-all -p watch-css start-js",
-    "build": "npm run build-css && react-scripts build",
+    "build": "npm run build-css && SKIP_PREFLIGHT_CHECK=true react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
@@ -53,7 +53,7 @@
     "react-router-dom": "^4.2.2"
   },
   "devDependencies": {
-    "node-sass": "^4.7.2",
+    "sass": "^1.60.0",
     "npm-run-all": "^4.1.2",
     "react-scripts": "^1.1.1"
   }

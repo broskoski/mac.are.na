@@ -1,48 +1,70 @@
-// VARS
+// iTunes 4-5 era (2003-2005) design tokens
+
+// Chrome / Brushed metal
+$chrome-light:            #e8e4e0;
+$chrome-mid:              #d6d2ce;
+$chrome-dark:             #c0bcb8;
+$chrome-border:           #888;
+$chrome-border-light:     #a0a0a0;
+
+// Source list
+$source-bg:               #d4d4d4;
+$source-bg-light:         #ddd;
+$source-selected-top:     #3d80df;
+$source-selected-bottom:  #2060c0;
+$source-text:             #1a1a1a;
+$source-selected-text:    #fff;
+$source-border:           #b0b0b0;
+
+// LCD display
+$lcd-bg-top:              #282840;
+$lcd-bg-bottom:           #1a1a2e;
+$lcd-text:                #b8d4e8;
+$lcd-text-dim:            #6a8a9e;
+$lcd-border:              #0a0a14;
+$lcd-progress-bg:         #0d0d1a;
+$lcd-progress-fill:       #5a9ed6;
+
+// Track list
+$track-row-even:          #fff;
+$track-row-odd:           #edf3fe;
+$track-selected-top:      #3d80df;
+$track-selected-bottom:   #2860c0;
+$track-selected-text:     #fff;
+$track-header-bg:         #eee;
+$track-header-border:     #ccc;
+$track-border:            #ddd;
+$track-text:              #1a1a1a;
+
+// Channel visibility colors
 $colors-public:           #17ac10;
 $colors-closed:           #4b3d67;
 $colors-private:          #b60202;
-$colors-premium:          #00c5ff;
-$colors-alert:            #e24d4d;
-$colors-edit:             #fdffdb;
-$gavins-made-up-yellow:   #f2ba3d;
 
-$colors-gray-background:  #f7f7f7;
-$colors-gray-secondary:   #f0f0f0;
-$colors-gray-border:      #e7e7e5;
-$colors-gray-border-bold: #c6c6c6;
-$colors-gray-lighter:     #cbcbcb;
-$colors-gray-light:       #9d9d9d;
-$colors-gray-text:        #585858;
-$colors-gray-hover:       #050505;
+// Transport buttons
+$transport-bg:            #e0dcd8;
+$transport-border:        #999;
+$transport-active:        #c8c4c0;
+$transport-text:          #333;
 
-$font-size-h1:            2.5rem;
-$font-size-h2:            2rem;
-$font-size-h3:            1.75rem;
-$font-size-h4:            1.5rem;
-$font-size-h5:            1.25rem;
-$font-size-h6:            1rem;
+// Status bar
+$status-bg:               #e8e4e0;
+$status-border:           #b0b0b0;
+$status-text:             #555;
 
-// ATOMICS
-.flexBetween {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-}
+// Typography
+$font-family:             'Lucida Grande', 'Geneva', 'Trebuchet MS', 'Helvetica Neue', 'Helvetica', sans-serif;
+$font-size-base:          11px;
+$font-size-small:         10px;
+$font-size-lcd:           11px;
 
-.inlineBlock {
-  display: inline-block;
-}
+// Layout
+$toolbar-height:          68px;
+$source-width:            200px;
+$status-height:           22px;
+$track-row-height:        19px;
+$column-header-height:    17px;
 
-.invert {
-  filter: invert(100%) hue-rotate(180deg);
-  -webkit-filter: invert(100%) hue-rotate(180deg);
-}
-
-.public {
-  color: $colors-public;
-}
-
-.closed {
-  color: $colors-closed;
-}
+// Scrollbar
+$scrollbar-thumb:         #aaa;
+$scrollbar-track:         #ddd;
